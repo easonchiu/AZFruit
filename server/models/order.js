@@ -1,7 +1,9 @@
 var mongoose = require('../conf/mongoose')
 
+// 创建一个schema对象
 var Schema = mongoose.Schema
 
+// 创建一个schema实例
 var OrderSchema = Schema({
 	// 商品名称
 	productName: {
