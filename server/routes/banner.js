@@ -6,11 +6,11 @@ router
 	.prefix(`${prefix}/banner`)
 	// 添加banner
 	.post('/', banner.create)
-	// 获取banner
-	.get('/', banner.read)
+	// 获取banner列表
+	.get('/list', banner.fetchList)
+	// 获取banner详情
+	.get('/detail/:id', banner.fetchDetail)
 	// 修改banner
-	.patch('/', banner.update)
-	// 删除banner
-	.delete('/', banner.delete)
+	.patch('/detail/:id', banner.update)
 
 module.exports = router
