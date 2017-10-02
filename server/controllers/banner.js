@@ -54,11 +54,8 @@ class banner {
 	
 	// 获取banner列表
 	static async fetchList(ctx, next) {
-
-		
-
 		try {
-			const { skip = 0, limit = 10} = ctx.query
+			const { skip = 0, limit = 10 } = ctx.query
 
 			const count = await Banner.count({})
 			let list = []
@@ -102,12 +99,26 @@ class banner {
 
 	// 获取banner详情
 	static async fetchDetail(ctx, next) {
+		try {
+			const { id } = ctx.params
 
-		const res = await Banner.create({
-			
-		})
-		
-		return ctx.body = res
+			const res = await Banner
+				.findOne({_id: id}, {
+					_id: 0,
+					uri: 1,
+					index: 1,
+					link: 1,
+					desc: 1,
+					online: 1,
+					createTime: 1,
+				})
+
+			return ctx.success({
+				data: res
+			})
+		} catch(e) {
+			return ctx.error()
+		}
 	}
 	
 	// 更新banner
