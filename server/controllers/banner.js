@@ -34,7 +34,6 @@ class banner {
 
 			if (res) {
 				return ctx.error({
-					code: 0,
 					msg: '已存在相同地址的图片'
 				})
 			}
@@ -55,33 +54,36 @@ class banner {
 	// 获取banner列表
 	static async fetchList(ctx, next) {
 		try {
-			const { skip = 0, limit = 10 } = ctx.query
+			let { skip = 0, limit = 10 } = ctx.query
+			skip = parseInt(skip)
+			limit = parseInt(limit)
 
 			const count = await Banner.count({})
 			let list = []
 
 			if (count > 0) {
-				list = await Banner.aggregate([{
-					$sort: {
-						online: -1,
-						index: 1
-					}
-				}, {
-					$project: {
-						_id: 0,
-						uri: 1,
-						index: 1,
-						link: 1,
-						desc: 1,
-						online: 1,
-						createTime: 1,
-						id: '$_id'
-					}
-				}, {
-					$skip: +skip
-				}, {
-					$limit: +limit
-				}])
+				list = await Banner
+					.aggregate([{
+						$sort: {
+							online: -1,
+							index: 1
+						}
+					}, {
+						$project: {
+							_id: 0,
+							uri: 1,
+							index: 1,
+							link: 1,
+							desc: 1,
+							online: 1,
+							createTime: 1,
+							id: '$_id'
+						}
+					}, {
+						$skip: skip
+					}, {
+						$limit: limit
+					}])
 			}
 
 			return ctx.success({
@@ -103,18 +105,18 @@ class banner {
 			const { id } = ctx.params
 
 			const res = await Banner
-				.findOne({_id: id}, {
-					_id: 0,
-					uri: 1,
-					index: 1,
-					link: 1,
-					desc: 1,
-					online: 1,
-					createTime: 1,
-				})
+				.findOne({_id: id})
 
 			return ctx.success({
-				data: res
+				data: {
+					uri: res.uri,
+					index: res.index,
+					link: res.link,
+					online: res.online,
+					desc: res.desc,
+					createTime: res.createTime,
+					id: id
+				}
 			})
 		} catch(e) {
 			return ctx.error()
@@ -123,14 +125,82 @@ class banner {
 	
 	// 更新banner
 	static async update(ctx, next) {
-
-		const res = await Banner.create({
+		try {
+			const { id } = ctx.params
 			
-		})
-		
-		return ctx.body = res
+			let find = await Banner.findOne({
+				_id: id
+			})
+
+			if (!find) {
+				return ctx.error({
+					msg: '该banner不存在'
+				})
+			}
+
+			const body = ctx.request.body
+
+			if (!body.uri) {
+				return ctx.error({
+					msg: '图片地址不能为空'
+				})
+			}
+
+			find = await Banner.findOne({
+				uri: body.uri
+			})
+
+			if (find) {
+				return ctx.error({
+					code: 0,
+					msg: '已存在相同地址的图片'
+				})
+			}
+
+			if (!(/^[0-9]*$/g).test(body.index)) {
+				return ctx.error({
+					msg: '排序编号不能为空且必须为数字'
+				})
+			}
+
+			await Banner.update({
+				_id: id
+			}, body)
+
+			return ctx.success()
+		} catch(e) {
+			return ctx.error()
+		}
 	}
 
+	// 前端获取banner列表
+	static async appFetchList(ctx, next) {
+		try {
+			const list = await Banner
+				.aggregate([{
+					$match: {
+						online: true
+					}
+				}, {
+					$sort: {
+						index: 1
+					}
+				}, {
+					$project: {
+						_id: 0,
+						uri: 1,
+						index: 1,
+						link: 1,
+					}
+				}])
+
+			return ctx.success({
+				data: list
+			})
+		} catch(e) {
+			return ctx.error()
+		}
+	}
 }
 
 module.exports = banner

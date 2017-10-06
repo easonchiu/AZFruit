@@ -3,7 +3,7 @@ var prefix = require('../conf/prefix')
 var order = require('../controllers/order')
 
 router
-	.prefix(`${prefix}/order`)
+	.prefix(`${prefix.api}/order`)
 	// 获取列表
 	.get('/list', order.fetchList)
 	// 获取详情

@@ -10,18 +10,49 @@ var ProductSchema = Schema({
 		type: String,
 		required: true
 	},
+	// 顶图片
+	imgs: [{
+		type: String,
+		default: ''
+	}],
 	// 商品价格，单位为分
 	price: {
 		type: Number,
 		default: 0,
 		required: true
 	},
+	// 排序
+	index: {
+		type: Number,
+		default: 0
+	},
+	// 整箱价格
+	FCLprice: {
+		type: Number,
+		default: 0
+	},
 	// 商品描述
 	desc: {
 		type: String,
+		default: ''
+	},
+	// 计量单位
+	unit: {
+		type: String,
+		required: true
+	},
+	// 整箱数量
+	FCLcount: {
+		type: String,
+		default: ''
 	},
 	// 售卖量
 	sellCount: {
+		type: Number,
+		default: 0
+	},
+	// 整箱售卖量
+	FCLsellCount: {
 		type: Number,
 		default: 0
 	},
@@ -33,9 +64,14 @@ var ProductSchema = Schema({
 			default: ''
 		},
 		// 留言时间
-		commentTime: {
+		createTime: {
 			type: Date,
 			default: Date.now
+		},
+		// 用户id
+		userId: {
+			type: Schema.Types.ObjectId,
+			required: true
 		},
 		// 用户名
 		name: {
@@ -57,6 +93,21 @@ var ProductSchema = Schema({
 	online: {
 		type: Boolean,
 		default: false
+	},
+	// 整箱上架中
+	FCLonline: {
+		type: Boolean,
+		default: false
+	},
+	// 库存
+	stock: {
+		type: Number,
+		default: 0
+	},
+	// 整箱库存
+	FCLstock: {
+		type: Number,
+		default: 0
 	},
 	// 创建时间
 	createTime: {

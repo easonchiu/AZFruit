@@ -88,4 +88,4 @@ var OrderSchema = Schema({
 	}
 })
 
-module.exports = mongoose.model('Skill', OrderSchema)
+module.exports = mongoose.model('Order', OrderSchema)

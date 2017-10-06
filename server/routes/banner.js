@@ -3,14 +3,16 @@ var prefix = require('../conf/prefix')
 var banner = require('../controllers/banner')
 
 router
-	.prefix(`${prefix}/banner`)
+	.prefix(`${prefix.api}`)
 	// 添加banner
-	.post('/', banner.create)
+	.post('/banner', banner.create)
 	// 获取banner列表
-	.get('/list', banner.fetchList)
+	.get('/banner/list', banner.fetchList)
 	// 获取banner详情
-	.get('/detail/:id', banner.fetchDetail)
+	.get('/banner/detail/:id', banner.fetchDetail)
 	// 修改banner
-	.patch('/detail/:id', banner.update)
+	.patch('/banner/detail/:id', banner.update)
+	// 前端banner列表
+	.get(`${prefix.app}/banner/list`, banner.appFetchList)
 
 module.exports = router

@@ -1,7 +1,7 @@
 var User = require('../models/user')
 
 class user {
-	static async login(ctx, next) {
+	static async fetchList(ctx, next) {
 
 		const res = await User.create({
 			
@@ -10,7 +10,7 @@ class user {
 		return ctx.body = res
 	}
 	
-	static async register(ctx, next) {
+	static async fetchDetail(ctx, next) {
 
 		const res = await User.create({
 			

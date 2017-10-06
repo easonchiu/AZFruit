@@ -1,1 +1,4 @@
-module.exports = '/api'
+module.exports = {
+	api: '/api',
+	app: '/app'
+}
