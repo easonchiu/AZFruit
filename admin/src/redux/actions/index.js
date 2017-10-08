@@ -1,6 +1,6 @@
-import $demo from './demo'
+import $banner from './banner'
 
 
 export {
-	$demo
+	$banner
 }

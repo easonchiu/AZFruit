@@ -162,3 +162,8 @@ input:not([type=radio]):not([type=checkbox]),textarea { -webkit-user-select: aut
 * { -webkit-text-size-adjust: none;}
 *, *:after, *:before { -webkit-box-sizing: border-box; box-sizing: border-box; padding: 0; margin: 0; -webkit-transform-origin: 0 0;}
 
+
+
+body {
+	background: #f7f9fc;
+}

@@ -1,34 +1,25 @@
 import { handleActions } from 'redux-actions'
 import Immutable from 'seamless-immutable'
 
-let initialState = Immutable({
-	list: [0, 1, 2]
+const initialState = Immutable({
+	list: [],
+	total: 0,
+	skip: 0,
+	limit: 0,
+	detail: {},
 })
 
-const demo = handleActions({
-	DEMO_POP (state, action) {
-		const list = Immutable.asMutable(state.list)
-		list.pop()
-
+const reducer = handleActions({
+	BANNER_FETCH_LIST (state, action) {
 		return Immutable.merge(state, {
-			list
+			list: action.payload.list
 		})
 	},
-	DEMO_PUSH (state, action) {
-		const length = state.list.length
-
-		const list = Immutable.asMutable(state.list)
-		list.push(length)
-
+	BANNER_FETCH_DETAIL (state, action) {
 		return Immutable.merge(state, {
-			list
-		})
-	},
-	DEMO_CLEAR (state, action) {
-		return Immutable.merge(state, {
-			list: []
+			detail: action.payload
 		})
 	}
 }, initialState)
 
-export default demo
+export default reducer

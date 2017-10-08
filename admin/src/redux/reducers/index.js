@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux'
 
-import $$demo from './demo'
+import $$banner from './banner'
 
-let reducers = {
-	$$demo,
+const reducers = {
+	$$banner,
 }
 
 export default combineReducers({
