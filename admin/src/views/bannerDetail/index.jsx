@@ -51,6 +51,32 @@ class ViewBannerDetail extends Component {
 		this.data[target] = value
 	}
 
+	submit = async e => {
+		try {
+			if (this.data.id) {
+				await this.props.$banner.update({
+					id: this.data.id,
+					index: this.data.index,
+					link: this.data.link,
+					online: this.data.online,
+					uri: this.data.uri,
+					desc: this.data.desc,
+				})
+			} else {
+				await this.props.$banner.create({
+					index: this.data.index,
+					link: this.data.link,
+					online: this.data.online,
+					uri: this.data.uri,
+					desc: this.data.desc,
+				})
+			}
+			this.props.history.goBack()
+		} catch(e) {
+			console.error(e)
+		}
+	}
+
 	render() {
 		const data = this.data
 		return (
@@ -59,24 +85,29 @@ class ViewBannerDetail extends Component {
 				<p>{data.id}</p>
 				<hr />
 				<p>index:</p>
-				<input type="text" value={data.index} onChange={e => this.valueChange.call(this, 'index', e.target.value)} />
+				<input type="text" value={data.index}
+					onChange={e => this.valueChange.call(this, 'index', e.target.value)} />
 				<hr />
 				<p>link:</p>
-				<input type="text" value={data.link} onChange={e => {}} />
+				<input type="text" value={data.link}
+					onChange={e => this.valueChange.call(this, 'link', e.target.value)} />
 				<hr />
 				<p>online:</p>
-				<select value={data.online} onChange={e => {}}>
+				<select value={data.online}
+					onChange={e => this.valueChange.call(this, 'online', e.target.value)} >
 					<option value={true}>上架中</option>
 					<option value={false}>已下架</option>
 				</select>
 				<hr />
 				<p>uri:</p>
-				<input type="text" value={data.uri} onChange={e => {}} />
+				<input type="text" value={data.uri}
+					onChange={e => this.valueChange.call(this, 'uri', e.target.value)} />
 				<hr />
 				<p>desc:</p>
-				<input type="text" value={data.desc} onChange={e => {}} />
+				<input type="text" value={data.desc}
+					onChange={e => this.valueChange.call(this, 'desc', e.target.value)} />
 				<hr />
-				<button onClick={e => {}}>提交</button>
+				<button onClick={this.submit}>提交</button>
 			</div>
 		)
 	}

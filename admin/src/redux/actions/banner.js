@@ -2,7 +2,6 @@ import { createAction } from 'redux-actions'
 import http from 'src/assets/libs/http'
 
 const _fetchList = createAction('BANNER_FETCH_LIST')
-const _fetchDetail = createAction('BANNER_FETCH_DETAIL')
 
 const fetchList = (payload = {}) => async (dispatch, getState) => {
 	const res = await http.request({
@@ -23,10 +22,28 @@ const fetchDetail = payload => async (dispatch, getState) => {
         params: {}
 	})
 	return res
-	// dispatch(_fetchDetail(res))
 }
+
+const update = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'patch',
+        url: `/banner/detail/${payload.id}`,
+        data: payload
+	})
+}
+
+const create = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'post',
+        url: `/banner`,
+        data: payload
+	})
+}
+
 
 export default {
 	fetchList,
 	fetchDetail,
+	create,
+	update,
 }

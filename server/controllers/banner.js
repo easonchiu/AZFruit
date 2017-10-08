@@ -28,16 +28,6 @@ class banner {
 		}
 		
 		try {
-			const res = await Banner.findOne({
-				uri: body.uri
-			})
-
-			if (res) {
-				return ctx.error({
-					msg: '已存在相同地址的图片'
-				})
-			}
-
 			await Banner.create({
 				uri: body.uri,
 				index: body.index,
@@ -143,17 +133,6 @@ class banner {
 			if (!body.uri) {
 				return ctx.error({
 					msg: '图片地址不能为空'
-				})
-			}
-
-			find = await Banner.findOne({
-				uri: body.uri
-			})
-
-			if (find) {
-				return ctx.error({
-					code: 0,
-					msg: '已存在相同地址的图片'
 				})
 			}
 
