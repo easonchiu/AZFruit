@@ -136,8 +136,9 @@ class product {
 		try {
 			const { id } = ctx.params
 
-			const res = await Product
-				.findOne({_id: id})
+			const res = await Product.findOne({
+				_id: id
+			})
 
 			return ctx.success({
 				data: {
@@ -296,8 +297,9 @@ class product {
 		try {
 			const { id } = ctx.params
 
-			const res = await Product
-				.findOne({_id: id})
+			const res = await Product.findOne({
+				_id: id
+			})
 
 			return ctx.success({
 				data: {
@@ -329,8 +331,9 @@ class product {
 		try {
 			const { id } = ctx.params
 
-			let find = await Product
-				.findOne({_id: id})
+			let find = await Product.findOne({
+				_id: id
+			})
 
 			if (!find) {
 				return ctx.error({
@@ -363,11 +366,12 @@ class product {
 		try {
 			const { id } = ctx.params
 
-			let res = await Product
-				.findOne({_id: id}, {
-					'commentList._id': 0,
-					'commentList.userId': 0,
-				})
+			let res = await Product.findOne({
+				_id: id
+			}, {
+				'commentList._id': 0,
+				'commentList.userId': 0,
+			})
 
 			return ctx.success({
 				data: res.commentList

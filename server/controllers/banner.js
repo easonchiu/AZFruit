@@ -107,8 +107,9 @@ class banner {
 		try {
 			const { id } = ctx.params
 
-			const res = await Banner
-				.findOne({_id: id})
+			const res = await Banner.findOne({
+				_id: id
+			})
 
 			return ctx.success({
 				data: {

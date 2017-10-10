@@ -8,7 +8,7 @@ var UserSchema = Schema({
 	// 姓名
 	name: {
 		type: String,
-		required: true
+		default: ''
 	},
 	// 头像
 	header: {
@@ -18,10 +18,15 @@ var UserSchema = Schema({
 	// 微信openid
 	openId: {
 		type: String,
-		required: true
+		default: ''
 	},
 	// 绑定的手机号
 	mobile: {
+		type: String,
+		required: true
+	},
+	// 默认收货地址
+	defaultAddress: {
 		type: String,
 		default: ''
 	},
@@ -31,7 +36,13 @@ var UserSchema = Schema({
 		city: {
 			type: String,
 			default: '上海',
-			enum: ['上海']
+			enum: ['上海'],
+			required: true
+		},
+		// 城市编号
+		cityCode: {
+			type: String,
+			default: ''
 		},
 		// 邮编号码
 		zipCode: {
@@ -52,11 +63,6 @@ var UserSchema = Schema({
 		desc: {
 			type: String,
 			default: ''
-		},
-		// 是否默认
-		def: {
-			type: Boolean,
-			default: false
 		}
 	}],
 	// 创建时间
