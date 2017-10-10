@@ -1,4 +1,5 @@
 import 'src/assets/css/reset'
+import 'element-theme-default'
 
 import React, { Component } from 'react'
 import { render } from 'react-dom'

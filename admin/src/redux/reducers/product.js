@@ -9,12 +9,12 @@ const initialState = Immutable({
 })
 
 const reducer = handleActions({
-	BANNER_FETCH_LIST (state, action) {
+	PRODUCT_FETCH_LIST (state, action) {
 		return Immutable.merge(state, {
 			list: action.payload.list,
 			count: action.payload.count,
 			skip: action.payload.skip,
-			limit: action.payload.limit,
+			limit: action.payload.limit
 		})
 	}
 }, initialState)

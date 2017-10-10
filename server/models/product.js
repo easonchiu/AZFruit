@@ -41,8 +41,13 @@ var ProductSchema = Schema({
 		type: String,
 		required: true
 	},
-	// 整箱数量
-	FCLcount: {
+	// 整箱计量单位
+	FCLunit: {
+		type: String,
+		default: ''
+	},
+	// 整箱描述
+	FCLdesc: {
 		type: String,
 		default: ''
 	},

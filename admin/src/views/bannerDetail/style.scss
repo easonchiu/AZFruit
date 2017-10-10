@@ -1,11 +1,13 @@
 @charset "utf-8";
 
 .view-bannerDetail {
-	hr {
-		height: auto;
-		margin: 5px 0;
+	> h1 {
+		font-size: 30px;
+		margin-bottom: 20px;
+		color: #3c404c + 30;
 	}
 	input {
-		border: 1px solid #999 !important;
+		border-radius: 4px !important;
+		width: 300px;
 	}
 }

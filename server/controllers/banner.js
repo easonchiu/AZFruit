@@ -40,6 +40,19 @@ class banner {
 			return ctx.error()
 		}
 	}
+
+	// 删除
+	static async remove(ctx, next) {
+		try {
+			const { id } = ctx.params
+			await Banner.remove({
+				_id: id
+			})
+			return ctx.success()
+		} catch(e) {
+			return ctx.error()
+		}
+	}
 	
 	// 获取banner列表
 	static async fetchList(ctx, next) {

@@ -10,7 +10,8 @@ class product {
 	 * !@price 商品价格，单位为分
 	 * @index 排序
 	 * @FCLprice 整箱价格，单位为分
-	 * @FCLunit 整箱数量，例：10-12只
+	 * @FCLunit 整箱计量单位，例：箱
+	 * @FCLdesc 整箱描述，例：10-12只
 	 * @desc 商品描述
 	 * @sellCount 售卖量
 	 * @FCLsellCount 整箱售卖量
@@ -42,12 +43,14 @@ class product {
 
 		try {
 			const res = await Product.create({
+				index: body.index,
 				name: body.name,
 				imgs: body.imgs,
 				unit: body.unit,
 				price: body.price,
 				FCLprice: body.FCLprice,
 				FCLunit: body.FCLunit,
+				FCLdesc: body.FCLdesc,
 				desc: body.desc,
 				sellCount: body.sellCount,
 				FCLsellCount: body.FCLsellCount,
@@ -84,16 +87,21 @@ class product {
 				list = await Product
 					.aggregate([{
 						$sort: {
+							online: -1,
 							index: 1,
 						}
 					}, {
 						$project: {
 							_id: 0,
+							index: 1,
 							name: 1,
 							desc: 1,
 							imgs: 1,
 							price: 1,
+							unit: 1,
 							FCLprice: 1,
+							FCLunit: 1,
+							FCLdesc: 1,
 							sellCount: 1,
 							FCLsellCount: 1,
 							online: 1,
@@ -133,12 +141,14 @@ class product {
 
 			return ctx.success({
 				data: {
+					index: res.index,
 					name: res.name,
 					imgs: res.imgs,
 					unit: res.unit,
 					price: res.price,
 					FCLprice: res.FCLprice,
 					FCLunit: res.FCLunit,
+					FCLdesc: res.FCLdesc,
 					desc: res.desc,
 					sellCount: res.sellCount,
 					FCLsellCount: res.FCLsellCount,
@@ -249,6 +259,7 @@ class product {
 					}, {
 						$project: {
 							_id: 0,
+							index: 1,
 							name: 1,
 							unit: 1,
 							FCLstock: 1,
@@ -257,7 +268,8 @@ class product {
 							online: 1,
 							FCLsellCount: 1,
 							sellCount: 1,
-							FCLcount: 1,
+							FCLunit: 1,
+							FCLdesc: 1,
 							desc: 1,
 							FCLprice: 1,
 							price: 1,
@@ -295,6 +307,7 @@ class product {
 					price: res.price,
 					FCLprice: res.FCLprice,
 					FCLunit: res.FCLunit,
+					FCLdesc: res.FCLdesc,
 					desc: res.desc,
 					sellCount: res.sellCount,
 					FCLsellCount: res.FCLsellCount,

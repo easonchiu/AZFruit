@@ -1,5 +1,26 @@
 @charset "utf-8";
 
 .view-productDetail {
-	border: 1px solid #999;
+	> h1 {
+		font-size: 30px;
+		margin-bottom: 20px;
+		color: #3c404c + 30;
+	}
+	input {
+		border-radius: 4px !important;
+		width: 300px;
+	}
+	hr {
+		margin: 10px 0;
+		border-top: 1px solid #bfcbd9;
+	}
+	h6 {
+		display: block;
+		margin-bottom: 10px;
+		line-height: 2;
+		color: #3c404c + 30;
+	}
+	.red {
+		color: #ff4949;
+	}
 }

@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 
+import { Button, Form, Input, Switch } from 'element-react'
 
 @connect
 @reactStateData
@@ -47,29 +48,26 @@ class ViewBannerDetail extends Component {
 		}
 	}
 
-	valueChange(target, value) {
-		this.data[target] = value
+	valueChange(e, target) {
+		this.data[e] = target
 	}
 
 	submit = async e => {
 		try {
+			const data = {
+				index: this.data.index,
+				link: this.data.link,
+				online: this.data.online,
+				uri: this.data.uri,
+				desc: this.data.desc,
+			}
 			if (this.data.id) {
 				await this.props.$banner.update({
 					id: this.data.id,
-					index: this.data.index,
-					link: this.data.link,
-					online: this.data.online,
-					uri: this.data.uri,
-					desc: this.data.desc,
+					...data
 				})
 			} else {
-				await this.props.$banner.create({
-					index: this.data.index,
-					link: this.data.link,
-					online: this.data.online,
-					uri: this.data.uri,
-					desc: this.data.desc,
-				})
+				await this.props.$banner.create(data)
 			}
 			this.props.history.goBack()
 		} catch(e) {
@@ -81,33 +79,51 @@ class ViewBannerDetail extends Component {
 		const data = this.data
 		return (
 			<div className="view-bannerDetail">
-				<p>id:</p>
-				<p>{data.id}</p>
-				<hr />
-				<p>index:</p>
-				<input type="text" value={data.index}
-					onChange={e => this.valueChange.call(this, 'index', e.target.value)} />
-				<hr />
-				<p>link:</p>
-				<input type="text" value={data.link}
-					onChange={e => this.valueChange.call(this, 'link', e.target.value)} />
-				<hr />
-				<p>online:</p>
-				<select value={data.online}
-					onChange={e => this.valueChange.call(this, 'online', e.target.value)} >
-					<option value={true}>上架中</option>
-					<option value={false}>已下架</option>
-				</select>
-				<hr />
-				<p>uri:</p>
-				<input type="text" value={data.uri}
-					onChange={e => this.valueChange.call(this, 'uri', e.target.value)} />
-				<hr />
-				<p>desc:</p>
-				<input type="text" value={data.desc}
-					onChange={e => this.valueChange.call(this, 'desc', e.target.value)} />
-				<hr />
-				<button onClick={this.submit}>提交</button>
+
+				<h1>Banner管理</h1>
+				
+				<Form labelWidth={80}>
+
+					<Form.Item label="排序">
+						<Input
+							value={this.data.index}
+							onChange={this.valueChange.bind(this, 'index')} />
+					</Form.Item>
+
+					<Form.Item label="描述">
+						<Input
+							value={this.data.desc}
+							onChange={this.valueChange.bind(this, 'desc')} />
+					</Form.Item>
+
+					<Form.Item label="图片地址">
+						<Input
+							value={this.data.uri}
+							onChange={this.valueChange.bind(this, 'uri')} />
+					</Form.Item>
+
+					<Form.Item label="跳转链接">
+						<Input
+							value={this.data.link}
+							onChange={this.valueChange.bind(this, 'link')} />
+					</Form.Item>
+
+					<Form.Item label="状态">
+						<Switch
+							value={this.data.online}
+							onText=""
+							offText=""
+							onColor="#13ce66"
+							offColor="#ff4949"
+							onChange={this.valueChange.bind(this, 'online')} />
+					</Form.Item>
+
+					<Form.Item label="">
+						<Button type="primary" size="large" onClick={this.submit}>提交</Button>
+						<Button size="large" onClick={this.props.history.goBack}>取消</Button>
+					</Form.Item>
+				</Form>
+				
 			</div>
 		)
 	}

@@ -6,6 +6,8 @@ router
 	.prefix(`${prefix.api}`)
 	// 添加banner
 	.post('/banner', banner.create)
+	// 删除banner
+	.delete('/banner/detail/:id', banner.remove)
 	// 获取banner列表
 	.get('/banner/list', banner.fetchList)
 	// 获取banner详情

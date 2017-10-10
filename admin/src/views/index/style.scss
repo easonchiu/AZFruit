@@ -1,5 +1,17 @@
 @charset "utf-8";
 
 .view-index {
-	
+	height: 100%;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	.app-body {
+		-webkit-box-flex: 1;
+		display: -webkit-box;
+		height: 100%;
+	}
+	.app-body-scroller {
+		padding: 20px;
+		-webkit-box-flex: 1;
+		overflow: auto;
+	}
 }

@@ -60,6 +60,8 @@
     "webpack-visualizer-plugin": "^0.1.11"
   },
   "dependencies": {
-    "axios": "^0.16.2"
+    "axios": "^0.16.2",
+    "element-react": "^1.2.6",
+    "element-theme-default": "^1.4.6"
   }
 }

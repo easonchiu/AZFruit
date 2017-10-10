@@ -22,9 +22,15 @@ class ViewIndex extends Component {
 	render() {
 		return (
 			<div className="view-index">
-				<Aside />
+				
 				<Header />
-				<Route component={Main} />
+
+				<div className="app-body">
+					<Route component={Aside} />
+					<div className="app-body-scroller">
+						<Route component={Main} />
+					</div>
+				</div>
 			</div>
 		)
 	}

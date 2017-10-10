@@ -1,17 +1,32 @@
 @charset "utf-8";
 
 .app-aside {
-	padding: 10px;
+	padding: 10px 0;
 	width: 200px;
-	float: left;
-	background: #fff;
-	height: 100%;
-	position: absolute;
-	left: 0;
-	top: 0;
-	z-index: 10;
-	border-right: 1px solid #dee3e8;
+	background: #2d313d;
 	box-shadow: 0 3px 0 rgba(0,0,0,.04);
+	li {
+		position: relative;
+	}
+	li.active {
+		background: #2d313d + 15;
+		a {
+			pointer-events: none;
+		}
+	}
+	a {
+		display: block;
+		color: #fff;
+		font-size: 14px;
+		padding: 15px 20px;
+		line-height: 1.5;
+	}
+	.mark {
+		position: absolute;
+		right: 20px;
+		top: 50%;
+		margin-top: -10px;
+	}
 }
 
 

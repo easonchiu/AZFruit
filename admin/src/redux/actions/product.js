@@ -1,12 +1,12 @@
 import { createAction } from 'redux-actions'
 import http from 'src/assets/libs/http'
 
-const _fetchList = createAction('BANNER_FETCH_LIST')
+const _fetchList = createAction('PRODUCT_FETCH_LIST')
 
 const fetchList = (payload = {}) => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/banner/list`,
+        url: `/product/list`,
         params: {
         	skip: payload.skip || 0,
         	limit: payload.limit || 10,
@@ -18,7 +18,7 @@ const fetchList = (payload = {}) => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/banner/detail/${payload.id}`,
+        url: `/product/detail/${payload.id}`,
         params: {}
 	})
 	return res
@@ -27,7 +27,7 @@ const fetchDetail = payload => async (dispatch, getState) => {
 const update = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'patch',
-        url: `/banner/detail/${payload.id}`,
+        url: `/product/detail/${payload.id}`,
         data: payload
 	})
 }
@@ -35,15 +35,8 @@ const update = payload => async (dispatch, getState) => {
 const create = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'post',
-        url: `/banner`,
+        url: `/product`,
         data: payload
-	})
-}
-
-const remove = payload => async (dispatch, getState) => {
-	const res = await http.request({
-		method: 'delete',
-        url: `/banner/detail/${payload.id}`,
 	})
 }
 
@@ -53,5 +46,4 @@ export default {
 	fetchDetail,
 	create,
 	update,
-	remove,
 }
