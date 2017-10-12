@@ -14,6 +14,8 @@ var userRoute = require('./routes/user')
 var bannerRoute = require('./routes/banner')
 var orderRoute = require('./routes/order')
 var productRoute = require('./routes/product')
+var classRoute = require('./routes/class')
+var quickRoute = require('./routes/quick')
 
 // 创建实例
 var app = new Koa()
@@ -34,6 +36,8 @@ app
 	.use(bannerRoute.routes(), bannerRoute.allowedMethods())
 	.use(orderRoute.routes(), orderRoute.allowedMethods())
 	.use(productRoute.routes(), productRoute.allowedMethods())
+	.use(classRoute.routes(), classRoute.allowedMethods())
+	.use(quickRoute.routes(), quickRoute.allowedMethods())
 
 // 起一个服务
 const server = http.createServer(app.callback())

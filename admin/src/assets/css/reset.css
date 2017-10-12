@@ -160,7 +160,7 @@ input:not([type=radio]):not([type=checkbox]),textarea { -webkit-user-select: aut
 
 /* 阻止旋转屏幕时自动调整字体大小 */
 * { -webkit-text-size-adjust: none;}
-*, *:after, *:before { -webkit-box-sizing: border-box; box-sizing: border-box; padding: 0; margin: 0; -webkit-transform-origin: 0 0;}
+*, *:after, *:before { -webkit-box-sizing: border-box; box-sizing: border-box; padding: 0; margin: 0;}
 
 
 body {
@@ -169,4 +169,29 @@ body {
 html, body, #root {
 	height: 100%;
 	overflow: hidden;
+}
+
+body .el-form {
+	border: 1px solid #dfe6ec;
+	border-bottom: none;
+	margin-bottom: 20px;
+}
+body .el-form-item {
+	border-bottom: 1px solid #dfe6ec;
+	margin-bottom: 0;
+	display: -webkit-box;
+}
+body .el-form-item__label {
+	padding: 0 15px 0 0;
+	display: -webkit-box;
+	-webkit-box-align: center;
+	-webkit-box-pack: end;
+	float: none;
+	background: #f7f9fc;
+	border-right: 1px solid #dfe6ec;
+}
+body .el-form-item__content {
+	padding: 10px;
+	margin-left: 0 !important;
+	-webkit-box-flex: 1;
 }

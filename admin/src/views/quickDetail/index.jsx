@@ -7,7 +7,7 @@ import { Button, Form, Input, Switch, Message, Loading } from 'element-react'
 
 @connect
 @reactStateData
-class ViewBannerDetail extends Component {
+class ViewQuickDetail extends Component {
 	constructor(props) {
 		super(props)
 
@@ -37,7 +37,7 @@ class ViewBannerDetail extends Component {
 
 	async fetch(id) {
 		try {
-			const res = await this.props.$banner.fetchDetail({
+			const res = await this.props.$quick.fetchDetail({
 				id
 			})
 			this.data.id = id
@@ -68,12 +68,12 @@ class ViewBannerDetail extends Component {
 				desc: this.data.desc,
 			}
 			if (this.data.id) {
-				await this.props.$banner.update({
+				await this.props.$quick.update({
 					id: this.data.id,
 					...data
 				})
 			} else {
-				await this.props.$banner.create(data)
+				await this.props.$quick.create(data)
 			}
 			this.props.history.goBack()
 		} catch(e) {
@@ -86,9 +86,9 @@ class ViewBannerDetail extends Component {
 	render() {
 		const data = this.data
 		return (
-			<div className="view-bannerDetail">
-
-				<h1>Banner管理</h1>
+			<div className="view-quickDetail">
+				
+				<h1>首页快捷入口管理</h1>
 				<Loading loading={this.data.loading}>
 				
 				<Form labelWidth={120}>
@@ -99,23 +99,22 @@ class ViewBannerDetail extends Component {
 							onChange={this.valueChange.bind(this, 'index')} />
 					</Form.Item>
 
-					<Form.Item label="描述">
-						<Input
-							value={this.data.desc}
-							onChange={this.valueChange.bind(this, 'desc')} />
-					</Form.Item>
-
-					<Form.Item label="图片">
+					<Form.Item label="图标">
 						<Input
 							value={this.data.uri}
 							onChange={this.valueChange.bind(this, 'uri')} />
 					</Form.Item>
 
-					<Form.Item label="跳转链接">
+					<Form.Item label="链接">
 						<Input
 							value={this.data.link}
-							placeholder="为空则不跳转"
 							onChange={this.valueChange.bind(this, 'link')} />
+					</Form.Item>
+
+					<Form.Item label="文字">
+						<Input
+							value={this.data.desc}
+							onChange={this.valueChange.bind(this, 'desc')} />
 					</Form.Item>
 
 					<Form.Item label="状态">
@@ -140,4 +139,4 @@ class ViewBannerDetail extends Component {
 	}
 }
 
-export default ViewBannerDetail
+export default ViewQuickDetail

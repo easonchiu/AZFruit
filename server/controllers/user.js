@@ -1,3 +1,4 @@
+var mongoose = require('../conf/mongoose')
 var User = require('../models/user')
 var Reg = require('../utils/reg')
 
@@ -85,12 +86,14 @@ class user {
 				})
 			}
 			
-			// 添加新地址
-			await User.update({
-				_id: body.id
-			}, {
+			// 手动生成objectId，如果需要设置成默认时直接采用
+			const addressId = new mongoose.Types.ObjectId()
+			
+			// 需要操作的数据
+			const sql = {
 				$push: {
 					addressList: {
+						_id: addressId,
 						city: body.city,
 						cityCode: body.cityCode,
 						zipCode: body.zipCode,
@@ -100,23 +103,19 @@ class user {
 						def: body.def
 					}
 				}
-			})
+			}
 			
 			// 如果新的一条设置成了默认地址，要将defaultAddress设置成这条
 			if (body.def) {
-				// 获取最新添加的那条地址
-				const res = await User.findOne({_id: body.id})
-				const address = res.addressList[res.addressList.length - 1]
-
-				// 更新defaultAddress的值
-				await User.update({
-					_id: body.id
-				}, {
-					$set: {
-						defaultAddress: address._id
-					}
-				})
+				sql.$set = {
+					defaultAddress: addressId
+				}
 			}
+
+			// 添加新地址
+			await User.update({
+				_id: body.id
+			}, sql)
 
 			return ctx.success()
 		} catch(e) {

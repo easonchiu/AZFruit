@@ -7,17 +7,17 @@ import { Button, Form, Input, Switch, Message, Loading } from 'element-react'
 
 @connect
 @reactStateData
-class ViewBannerDetail extends Component {
+class ViewClassDetail extends Component {
 	constructor(props) {
 		super(props)
 
 		this.setData({
 			id: '',
 			index: 0,
-			link: '',
 			online: false,
-			uri: '',
-			desc: '',
+			badge: '',
+			badgeColor: '',
+			name: '',
 			loading: true
 		})
 	}
@@ -37,15 +37,15 @@ class ViewBannerDetail extends Component {
 
 	async fetch(id) {
 		try {
-			const res = await this.props.$banner.fetchDetail({
+			const res = await this.props.$class.fetchDetail({
 				id
 			})
 			this.data.id = id
 			this.data.index = res.index
-			this.data.link = res.link
 			this.data.online = res.online
-			this.data.uri = res.uri
-			this.data.desc = res.desc
+			this.data.badge = res.badge
+			this.data.badgeColor = res.badgeColor
+			this.data.name = res.name
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)
@@ -62,18 +62,18 @@ class ViewBannerDetail extends Component {
 		try {
 			const data = {
 				index: this.data.index,
-				link: this.data.link,
 				online: this.data.online,
-				uri: this.data.uri,
-				desc: this.data.desc,
+				badge: this.data.badge,
+				badgeColor: this.data.badgeColor,
+				name: this.data.name,
 			}
 			if (this.data.id) {
-				await this.props.$banner.update({
+				await this.props.$class.update({
 					id: this.data.id,
 					...data
 				})
 			} else {
-				await this.props.$banner.create(data)
+				await this.props.$class.create(data)
 			}
 			this.props.history.goBack()
 		} catch(e) {
@@ -86,9 +86,9 @@ class ViewBannerDetail extends Component {
 	render() {
 		const data = this.data
 		return (
-			<div className="view-bannerDetail">
-
-				<h1>Banner管理</h1>
+			<div className="view-classDetail">
+				
+				<h1>分类管理</h1>
 				<Loading loading={this.data.loading}>
 				
 				<Form labelWidth={120}>
@@ -99,23 +99,22 @@ class ViewBannerDetail extends Component {
 							onChange={this.valueChange.bind(this, 'index')} />
 					</Form.Item>
 
-					<Form.Item label="描述">
+					<Form.Item label="分类名">
 						<Input
-							value={this.data.desc}
-							onChange={this.valueChange.bind(this, 'desc')} />
+							value={this.data.name}
+							onChange={this.valueChange.bind(this, 'name')} />
 					</Form.Item>
 
-					<Form.Item label="图片">
+					<Form.Item label="标签">
 						<Input
-							value={this.data.uri}
-							onChange={this.valueChange.bind(this, 'uri')} />
+							value={this.data.badge}
+							onChange={this.valueChange.bind(this, 'badge')} />
 					</Form.Item>
 
-					<Form.Item label="跳转链接">
+					<Form.Item label="标签底色">
 						<Input
-							value={this.data.link}
-							placeholder="为空则不跳转"
-							onChange={this.valueChange.bind(this, 'link')} />
+							value={this.data.badgeColor}
+							onChange={this.valueChange.bind(this, 'badgeColor')} />
 					</Form.Item>
 
 					<Form.Item label="状态">
@@ -133,11 +132,11 @@ class ViewBannerDetail extends Component {
 					<Button type="primary" size="large" onClick={this.submit}>提交</Button>
 					<Button size="large" onClick={this.props.history.goBack}>取消</Button>
 				</div>
-				
+
 				</Loading>
 			</div>
 		)
 	}
 }
 
-export default ViewBannerDetail
+export default ViewClassDetail

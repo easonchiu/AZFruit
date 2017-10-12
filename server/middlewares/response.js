@@ -17,7 +17,7 @@ module.exports = e => async (ctx, next) => {
     	let { msg = SERVER_ERROR, code } = res
     	if (code === undefined) {
     		if (msg != SERVER_ERROR) {
-				code = 0
+				code = 1
     		} else {
     			code = 500
     		}
