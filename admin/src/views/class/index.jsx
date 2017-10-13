@@ -93,7 +93,6 @@ class ViewClass extends Component {
 							}
 						}, {
 							label: '状态',
-							prop: 'online',
 							width: 120,
 							align: 'center',
 							render: data => {

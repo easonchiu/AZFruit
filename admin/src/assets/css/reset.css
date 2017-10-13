@@ -195,3 +195,9 @@ body .el-form-item__content {
 	margin-left: 0 !important;
 	-webkit-box-flex: 1;
 }
+body .el-input {
+	max-width: 300px;
+}
+body .el-input-number .el-input {
+	width: auto;
+}

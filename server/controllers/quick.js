@@ -8,12 +8,18 @@ class quick {
 	 * !@uri 图标地址
 	 * !@index 排序
 	 * !@link 链接
-	 * @desc 描述内容
+	 * !@name 名称
 	 * @online 使用中
 	 *
 	 */
 	static async create(ctx, next) {
 		const body = ctx.request.body
+		
+		if (!body.name) {
+			return ctx.error({
+				msg: '名称不能为空'
+			})
+		}
 
 		if (!body.uri) {
 			return ctx.error({
@@ -38,7 +44,7 @@ class quick {
 				uri: body.uri,
 				index: body.index,
 				link: body.link,
-				desc: body.desc,
+				name: body.name,
 				online: body.online,
 			})
 			return ctx.success()
@@ -64,9 +70,21 @@ class quick {
 
 			const body = ctx.request.body
 
+			if (!body.name) {
+				return ctx.error({
+					msg: '名称不能为空'
+				})
+			}
+
 			if (!body.uri) {
 				return ctx.error({
 					msg: '图标地址不能为空'
+				})
+			}
+
+			if (!body.link) {
+				return ctx.error({
+					msg: '链接不能为空'
 				})
 			}
 
@@ -122,7 +140,7 @@ class quick {
 							uri: 1,
 							index: 1,
 							link: 1,
-							desc: 1,
+							name: 1,
 							online: 1,
 							createTime: 1,
 							id: '$_id'
@@ -162,7 +180,7 @@ class quick {
 					index: res.index,
 					link: res.link,
 					online: res.online,
-					desc: res.desc,
+					name: res.name,
 					createTime: res.createTime,
 					id: id
 				}

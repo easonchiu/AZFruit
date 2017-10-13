@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 
-import { Button, Form, Input, Switch, Message, Loading } from 'element-react'
+import { Button, Form, Input, InputNumber, Switch, Message, Loading } from 'element-react'
+import Colors from 'src/components/colors'
 
 @connect
 @reactStateData
@@ -94,7 +95,8 @@ class ViewClassDetail extends Component {
 				<Form labelWidth={120}>
 
 					<Form.Item label="排序">
-						<Input
+						<InputNumber
+							defaultValue={this.data.index}
 							value={this.data.index}
 							onChange={this.valueChange.bind(this, 'index')} />
 					</Form.Item>
@@ -112,7 +114,7 @@ class ViewClassDetail extends Component {
 					</Form.Item>
 
 					<Form.Item label="标签底色">
-						<Input
+						<Colors
 							value={this.data.badgeColor}
 							onChange={this.valueChange.bind(this, 'badgeColor')} />
 					</Form.Item>

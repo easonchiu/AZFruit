@@ -83,15 +83,17 @@ class ViewQuick extends Component {
 							width: 80,
 							align: 'center'
 						}, {
+							label: '名称',
+							prop: 'name',
+							width: 200,
+							align: 'center'
+						}, {
 							label: '图标',
-							prop: 'uri'
+							prop: 'uri',
+							width: 200,
 						}, {
 							label: '链接',
 							prop: 'link'
-						}, {
-							label: '文字',
-							prop: 'desc',
-							width: 200,
 						}, {
 							label: '状态',
 							prop: 'online',

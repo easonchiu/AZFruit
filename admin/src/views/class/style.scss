@@ -13,6 +13,7 @@
 			color: #fff;
 			padding: 0 10px;
 			border-radius: 3px;
+			font-size: 12px;
 		}
 		tr:hover {
 			.console {
@@ -22,7 +23,6 @@
 		.hover-row td {
 			background: #fffff0 !important;
 		}
-
 		.offline td {
 			background: #f7f9fc !important;
 			color: #999;

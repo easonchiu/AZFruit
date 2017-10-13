@@ -5,10 +5,10 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var QuickSchema = Schema({
-	// 描述
-	desc: {
+	// 名称
+	name: {
 		type: String,
-		default: ''
+		required: true
 	},
 	// 图标地址
 	uri: {

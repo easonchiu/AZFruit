@@ -3,7 +3,8 @@ import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 
-import { Button, Form, Input, Switch } from 'element-react'
+import { Button, Form, Input, InputNumber, Switch, Loading } from 'element-react'
+import Colors from 'src/components/colors'
 
 @connect
 @reactStateData
@@ -13,25 +14,20 @@ class ViewProductDetail extends Component {
 
 		this.setData({
 			id: '',
-			index: 0,
-			name: '',
-			desc: '',
-			imgs: [],
-			
-			price: 0,
-			unit: '',
-			sellCount: 0,
-			online: false,
-			stock: 0,
+			loading: true,
 
-			FCLprice: 0,
-			FCLunit: '',
-			FCLdesc: '',
-			FCLsellCount: 0,
-			FCLonline: false,
-			FCLstock: 0,
-			
-			commentList: [],
+			name: '',
+			index: 0,
+			desc: '',
+			isImport: false,
+			origin: '',
+			classes: [],
+			badge: '',
+			badgeColor: '',
+			imgs: [],
+			detail: '',
+			atIndex: false,
+			online: false,
 		})
 	}
 
@@ -43,6 +39,8 @@ class ViewProductDetail extends Component {
 		const id = this.props.match.params.id
 		if (id) {
 			this.fetch(id)
+		} else {
+			this.data.loading = false
 		}
 	}
 
@@ -52,25 +50,23 @@ class ViewProductDetail extends Component {
 				id
 			})
 			this.data.id = id
-			this.data.index = res.index
 			this.data.name = res.name
-			this.data.imgs = res.imgs
-			this.data.unit = res.unit
-			this.data.price = res.price
-			this.data.FCLprice = res.FCLprice
-			this.data.FCLdesc = res.FCLdesc
-			this.data.FCLunit = res.FCLunit
+			this.data.index = res.index
 			this.data.desc = res.desc
-			this.data.sellCount = res.sellCount
-			this.data.FCLsellCount = res.FCLsellCount
-			this.data.commentList = res.commentList
+			this.data.isImport = res.isImport
+			this.data.origin = res.origin
+			this.data.classes = res.classes
+			this.data.badge = res.badge
+			this.data.badgeColor = res.badgeColor
+			this.data.imgs = res.imgs
+			this.data.detail = res.detail
+			this.data.atIndex = res.atIndex
 			this.data.online = res.online
-			this.data.FCLonline = res.FCLonline
-			this.data.stock = res.stock
-			this.data.FCLstock = res.FCLstock
 		} catch(e) {
+			Message.error(e.msg)
 			console.error(e)
 		}
+		this.data.loading = false
 	}
 
 	valueChange(target, value) {
@@ -78,25 +74,22 @@ class ViewProductDetail extends Component {
 	}
 
 	submit = async e => {
+		this.data.loading = true
 		try {
 			const data = {
 				id: this.data.id,
-				index: this.data.index,
 				name: this.data.name,
-				imgs: this.data.imgs,
-				unit: this.data.unit,
-				price: this.data.price,
-				FCLprice: this.data.FCLprice,
-				FCLdesc: this.data.FCLdesc,
-				FCLunit: this.data.FCLunit,
+				index: this.data.index,
 				desc: this.data.desc,
-				sellCount: this.data.sellCount,
-				FCLsellCount: this.data.FCLsellCount,
-				commentList: this.data.commentList,
+				isImport: this.data.isImport,
+				origin: this.data.origin,
+				classes: this.data.classes,
+				badge: this.data.badge,
+				badgeColor: this.data.badgeColor,
+				imgs: this.data.imgs,
+				detail: this.data.detail,
+				atIndex: this.data.atIndex,
 				online: this.data.online,
-				FCLonline: this.data.FCLonline,
-				stock: this.data.stock,
-				FCLstock: this.data.FCLstock,
 			}
 			if (this.data.id) {
 				await this.props.$product.update({
@@ -108,48 +101,26 @@ class ViewProductDetail extends Component {
 			}
 			this.props.history.goBack()
 		} catch(e) {
+			Message.error(e.msg)
 			console.error(e)
 		}
+		this.data.loading = false
 	}
 
-	render() {
-		const data = this.data
+	renderSpec() {
 		return (
-			<div className="view-productDetail">
-
-				<h1>产品管理</h1>
-				
-				<Form labelWidth={80}>
-					<Form.Item label="排序">
+			<div>
+				<h2>
+					<p>规格</p>
+					<Button plain type="danger" size="mini">删除</Button>
+				</h2>
+				<Form labelWidth={120}>
+					<Form.Item label="规格描述">
 						<Input
-							value={this.data.index}
-							onChange={this.valueChange.bind(this, 'index')} />
+							value={this.data.stock}
+							onChange={this.valueChange.bind(this, 'stock')} />
 					</Form.Item>
 
-					<Form.Item label="产品名称">
-						<Input
-							value={this.data.name}
-							onChange={this.valueChange.bind(this, 'name')} />
-					</Form.Item>
-
-					<Form.Item label="产品描述">
-						<Input
-							value={this.data.desc}
-							onChange={this.valueChange.bind(this, 'desc')} />
-					</Form.Item>
-
-					<Form.Item label="产品顶图">
-						{this.data.imgs.join(',')}
-					</Form.Item>
-
-					<Form.Item label="详情图">
-						{this.data.imgs.join(',')}
-					</Form.Item>
-
-					<hr />
-
-					<h6>散件</h6>
-					
 					<Form.Item label="计量单位">
 						<Input
 							value={this.data.unit}
@@ -169,6 +140,18 @@ class ViewProductDetail extends Component {
 						</p>
 					</Form.Item>
 
+					<Form.Item label="原价">
+						<Input
+							value={this.data.stock}
+							onChange={this.valueChange.bind(this, 'stock')} />
+					</Form.Item>
+
+					<Form.Item label="重量">
+						<Input
+							value={this.data.stock}
+							onChange={this.valueChange.bind(this, 'stock')} />
+					</Form.Item>
+
 					<Form.Item label="库存">
 						<Input
 							value={this.data.stock}
@@ -184,57 +167,111 @@ class ViewProductDetail extends Component {
 							offColor="#ff4949"
 							onChange={this.valueChange.bind(this, 'online')} />
 					</Form.Item>
+				</Form>
+			</div>
+		)
+	}
 
-					<hr />
+	render() {
+		const data = this.data
+		return (
+			<div className="view-productDetail">
 
-					<h6>整箱</h6>
-					
-					<Form.Item label="计量单位">
-						<Input
-							value={this.data.FCLunit}
-							onChange={this.valueChange.bind(this, 'FCLunit')} />
+				<h1>产品管理</h1>
+				<Loading loading={this.data.loading}>
+				
+				<Form labelWidth={120}>
+					<Form.Item label="排序">
+						<InputNumber
+							defaultValue={this.data.index}
+							value={this.data.index}
+							onChange={this.valueChange.bind(this, 'index')} />
 					</Form.Item>
 
-					<Form.Item label="整箱描述">
+					<Form.Item label="产品名称">
 						<Input
-							value={this.data.FCLdesc}
-							onChange={this.valueChange.bind(this, 'FCLdesc')} />
+							value={this.data.name}
+							onChange={this.valueChange.bind(this, 'name')} />
 					</Form.Item>
 
-					<Form.Item label="出售价格">
+					<Form.Item label="产品描述">
 						<Input
-							value={this.data.FCLprice}
-							onChange={this.valueChange.bind(this, 'FCLprice')} />
-						<p>
-							单位:
-							<span className="red">分</span>
-							，计
-							<strong className="red">{this.data.FCLprice/100}</strong>
-							元
-						</p>
+							value={this.data.desc}
+							onChange={this.valueChange.bind(this, 'desc')} />
 					</Form.Item>
 
-					<Form.Item label="库存">
-						<Input
-							value={this.data.FCLstock}
-							onChange={this.valueChange.bind(this, 'FCLstock')} />
-					</Form.Item>
-
-					<Form.Item label="上下架">
+					<Form.Item label="是否进口">
 						<Switch
-							value={this.data.FCLonline}
+							value={this.data.isImport}
 							onText=""
 							offText=""
 							onColor="#13ce66"
 							offColor="#ff4949"
-							onChange={this.valueChange.bind(this, 'FCLonline')} />
+							onChange={this.valueChange.bind(this, 'isImport')} />
 					</Form.Item>
 
-					<Form.Item label="">
-						<Button type="primary" size="large" onClick={this.submit}>提交</Button>
-						<Button size="large" onClick={this.props.history.goBack}>取消</Button>
+					<Form.Item label="产地">
+						<Input
+							value={this.data.origin}
+							onChange={this.valueChange.bind(this, 'origin')} />
+					</Form.Item>
+
+					<Form.Item label="所属分类">
+						<Input
+							value={this.data.classes}
+							onChange={this.valueChange.bind(this, 'classes')} />
+					</Form.Item>
+
+					<Form.Item label="标签文字">
+						<Input
+							value={this.data.badge}
+							onChange={this.valueChange.bind(this, 'badge')} />
+					</Form.Item>
+
+					<Form.Item label="标签文字底色">
+						<Colors
+							value={this.data.badgeColor}
+							onChange={this.valueChange.bind(this, 'badgeColor')} />
+					</Form.Item>
+
+					<Form.Item label="产品轮播图">
+						imgs array
+					</Form.Item>
+
+					<Form.Item label="详情">
+						<Input
+							value={this.data.detail}
+							onChange={this.valueChange.bind(this, 'detail')} />
+					</Form.Item>
+
+					<Form.Item label="是否首页推荐">
+						<Switch
+							value={this.data.atIndex}
+							onText=""
+							offText=""
+							onColor="#13ce66"
+							offColor="#ff4949"
+							onChange={this.valueChange.bind(this, 'atIndex')} />
+					</Form.Item>
+
+					<Form.Item label="上下架">
+						<Switch
+							value={this.data.online}
+							onText=""
+							offText=""
+							onColor="#13ce66"
+							offColor="#ff4949"
+							onChange={this.valueChange.bind(this, 'online')} />
+						<em>设置为下架后，所有规格均下架</em>
 					</Form.Item>
 				</Form>
+
+				<div className="btns">
+					<Button type="primary" size="large" onClick={this.submit}>提交</Button>
+					<Button size="large" onClick={this.props.history.goBack}>取消</Button>
+				</div>
+
+				</Loading>
 
 			</div>
 		)

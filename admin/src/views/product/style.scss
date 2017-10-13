@@ -8,6 +8,13 @@
 	}
 	.table {
 		margin-bottom: 10px;
+		.badge {
+			display: inline-block;
+			color: #fff;
+			padding: 0 10px;
+			border-radius: 3px;
+			font-size: 12px;
+		}
 		tr:hover {
 			.console {
 				opacity: 1;
@@ -56,6 +63,7 @@
 	}
 	.console {
 		text-align: center;
+		opacity: 0;
 		a {
 			display: inline-block;
 			margin: 0 5px;

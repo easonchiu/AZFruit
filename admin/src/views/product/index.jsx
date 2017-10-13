@@ -80,23 +80,48 @@ class ViewProduct extends Component {
 							prop: 'desc',
 							width: 250,
 						}, {
-							label: '价格',
-							width: 150,
+							label: '是否进口',
+							width: 100,
 							align: 'center',
-							render: data => (data.price / 100) + '元/' + data.unit
+							render: data => {
+								return (
+									<div className="status">
+									{
+										data.isImport ?
+										<i className="online" /> :
+										<i className="offline" />
+									}
+									{
+										data.isImport ?
+										'是' :
+										'否'
+									}
+									</div>
+								)
+							}
 						}, {
-							label: '整箱价格',
-							width: 150,
+							label: '首页推荐',
+							width: 100,
 							align: 'center',
-							render: data => (data.FCLprice / 100) + '元/' + data.FCLunit
+							render: data => {
+								return (
+									<div className="status">
+									{
+										data.atIndex ?
+										<i className="online" /> :
+										<i className="offline" />
+									}
+									{
+										data.atIndex ?
+										'是' :
+										'否'
+									}
+									</div>
+								)
+							}
 						}, {
-							label: '整箱描述',
-							width: 250,
-							prop: 'FCLdesc',
-						}, {
-							label: '上下架及库存',
-							width: 200,
-							fixed: 'left',
+							label: '上下架',
+							width: 100,
 							align: 'center',
 							render: data => {
 								return (
@@ -106,27 +131,35 @@ class ViewProduct extends Component {
 										<i className="online" /> :
 										<i className="offline" />
 									}
-									<p>{data.stock}{data.unit}</p>
 									{
-										data.FCLonline ?
-										<i className="online" /> :
-										<i className="offline" />
+										data.online ?
+										'上架' :
+										'下架'
 									}
-									{data.FCLstock}
-									{data.FCLunit}
 									</div>
 								)
 							}
 						}, {
+							label: '所属分类',
+							prop: 'classes',
+						}, {
+							label: '标签',
+							width: 120,
+							render: data => {
+								return <p className="badge" style={{background:data.badgeColor}}>{data.badge}</p>
+							}
+						}, {
 							label: '',
-							width: 80,
-							fixed: 'right',
+							width: 150,
 							render: data => {
 								return (
 									<p className="console">
 										<Link to={`/product/detail/${data.id}`}>
 											编辑
 										</Link>
+										<a href="javascript:;">
+											规格
+										</a>
 									</p>
 								)
 							}

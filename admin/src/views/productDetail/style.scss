@@ -6,21 +6,20 @@
 		margin-bottom: 20px;
 		color: #3c404c + 30;
 	}
-	input {
-		border-radius: 4px !important;
-		width: 300px;
-	}
-	hr {
-		margin: 10px 0;
-		border-top: 1px solid #bfcbd9;
-	}
-	h6 {
-		display: block;
+	h2 {
+		font-size: 20px;
 		margin-bottom: 10px;
-		line-height: 2;
-		color: #3c404c + 30;
+		color: #3c404c + 50;
+		display: -webkit-box;
+		-webkit-box-align: center;
+		p, button {
+			display: block;
+			margin-right: 10px;
+		}
 	}
-	.red {
-		color: #ff4949;
+	em {
+		padding-left: 10px;
+		color: #999;
+		font-style: normal;
 	}
 }

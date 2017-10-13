@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 
-import { Button, Form, Input, Switch, Message, Loading } from 'element-react'
+import { Button, Form, Input, InputNumber, Switch, Message, Loading } from 'element-react'
 
 @connect
 @reactStateData
@@ -94,7 +94,8 @@ class ViewBannerDetail extends Component {
 				<Form labelWidth={120}>
 
 					<Form.Item label="排序">
-						<Input
+						<InputNumber
+							defaultValue={this.data.index}
 							value={this.data.index}
 							onChange={this.valueChange.bind(this, 'index')} />
 					</Form.Item>

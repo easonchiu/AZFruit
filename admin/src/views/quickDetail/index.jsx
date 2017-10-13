@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 
-import { Button, Form, Input, Switch, Message, Loading } from 'element-react'
+import { Button, Form, Input, InputNumber, Switch, Message, Loading } from 'element-react'
 
 @connect
 @reactStateData
@@ -17,7 +17,7 @@ class ViewQuickDetail extends Component {
 			link: '',
 			online: false,
 			uri: '',
-			desc: '',
+			name: '',
 			loading: true
 		})
 	}
@@ -45,7 +45,7 @@ class ViewQuickDetail extends Component {
 			this.data.link = res.link
 			this.data.online = res.online
 			this.data.uri = res.uri
-			this.data.desc = res.desc
+			this.data.name = res.name
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)
@@ -65,7 +65,7 @@ class ViewQuickDetail extends Component {
 				link: this.data.link,
 				online: this.data.online,
 				uri: this.data.uri,
-				desc: this.data.desc,
+				name: this.data.name,
 			}
 			if (this.data.id) {
 				await this.props.$quick.update({
@@ -94,9 +94,16 @@ class ViewQuickDetail extends Component {
 				<Form labelWidth={120}>
 
 					<Form.Item label="排序">
-						<Input
+						<InputNumber
+							defaultValue={this.data.index}
 							value={this.data.index}
 							onChange={this.valueChange.bind(this, 'index')} />
+					</Form.Item>
+
+					<Form.Item label="名称">
+						<Input
+							value={this.data.name}
+							onChange={this.valueChange.bind(this, 'name')} />
 					</Form.Item>
 
 					<Form.Item label="图标">
@@ -109,12 +116,6 @@ class ViewQuickDetail extends Component {
 						<Input
 							value={this.data.link}
 							onChange={this.valueChange.bind(this, 'link')} />
-					</Form.Item>
-
-					<Form.Item label="文字">
-						<Input
-							value={this.data.desc}
-							onChange={this.valueChange.bind(this, 'desc')} />
 					</Form.Item>
 
 					<Form.Item label="状态">
