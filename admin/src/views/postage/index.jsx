@@ -112,24 +112,11 @@ class ViewPostage extends Component {
 								return data.eachPostage / 100 + '元'
 							}
 						}, {
-							label: '配送',
-							width: 120,
+							label: '满消费免运费',
+							width: 150,
 							align: 'center',
 							render: data => {
-								return (
-									<div className="status">
-									{
-										!data.reject ?
-										<i className="online" /> :
-										<i className="offline" />
-									}
-									{
-										!data.reject ?
-										'配送' :
-										'拒送'
-									}
-									</div>
-								)
+								return data.freePostage / 100 + '元'
 							}
 						}, {
 							label: '使用中',

@@ -7,6 +7,7 @@ import $$order from './order'
 import $$class from './class'
 import $$quick from './quick'
 import $$postage from './postage'
+import $$upload from './upload'
 
 const reducers = {
 	$$banner,
@@ -16,6 +17,7 @@ const reducers = {
 	$$class,
 	$$quick,
 	$$postage,
+	$$upload,
 }
 
 export default combineReducers({

@@ -5,6 +5,7 @@ import $order from './order'
 import $class from './class'
 import $quick from './quick'
 import $postage from './postage'
+import $upload from './upload'
 
 
 export {
@@ -15,4 +16,5 @@ export {
 	$class,
 	$quick,
 	$postage,
+	$upload,
 }

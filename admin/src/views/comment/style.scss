@@ -1,5 +1,9 @@
 @charset "utf-8";
 
 .view-comment {
-	border: 1px solid #999;
+	> h1 {
+		font-size: 30px;
+		margin-bottom: 20px;
+		color: #3c404c + 30;
+	}
 }

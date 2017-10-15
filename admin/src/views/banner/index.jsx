@@ -94,8 +94,10 @@ class ViewBanner extends Component {
 							prop: 'desc',
 							width: 200,
 						}, {
-							label: '图片地址',
-							prop: 'uri'
+							label: '图片',
+							render: data => {
+								return <img src={data.uri} />
+							}
 						}, {
 							label: '跳转链接',
 							prop: 'link'

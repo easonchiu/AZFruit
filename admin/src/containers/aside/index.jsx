@@ -26,7 +26,8 @@ class Aside extends Component {
 		}, {
 			link: '/product/list',
 			match: '/product',
-			name: '产品管理'
+			name: '产品管理',
+			badge: '差图片与详情文案'
 		}, {
 			link: '/quick/list',
 			match: '/quick',
@@ -51,7 +52,8 @@ class Aside extends Component {
 		}, {
 			link: '/postage/list',
 			match: '/postage',
-			name: '运费规则管理'
+			name: '运费规则管理',
+			badge: 'OK'
 		}, {
 			link: '/discount/list',
 			match: '/discount',

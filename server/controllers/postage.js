@@ -10,26 +10,26 @@ class control {
 	 * !@postage 运费，单位：分
 	 * @eachWeight 递增重量
 	 * @eachPostage 每份重量加价
-	 * @reject 是否不予送货，用于限制送货公里数上限
+	 * @freePostage 满消费免运费
 	 * @online 规则使用中
 	 *
 	 */
 	static async create(ctx, next) {
 		const body = ctx.request.body
 
-		if (!body.km) {
+		if (!(/^[0-9]*$/g).test(body.km)) {
 			return ctx.error({
 				msg: '超出距离不能为空'
 			})
 		}
 
-		if (!body.weight) {
+		if (!(/^[0-9]*$/g).test(body.weight)) {
 			return ctx.error({
 				msg: '重量不能为空'
 			})
 		}
 
-		if (!body.postage) {
+		if (!(/^[0-9]*$/g).test(body.postage)) {
 			return ctx.error({
 				msg: '基础运费不能为空'
 			})
@@ -42,7 +42,7 @@ class control {
 				postage: body.postage,
 				eachWeight: body.eachWeight,
 				eachPostage: body.eachPostage,
-				reject: body.reject,
+				freePostage: body.freePostage,
 				online: body.online,
 			})
 			return ctx.success()
@@ -62,25 +62,25 @@ class control {
 
 			if (!find) {
 				return ctx.error({
-					msg: '该运费不存在'
+					msg: '该规则不存在'
 				})
 			}
 
 			const body = ctx.request.body
 
-			if (!body.km) {
+			if (!(/^[0-9]*$/g).test(body.km)) {
 				return ctx.error({
 					msg: '超出距离不能为空'
 				})
 			}
 
-			if (!body.weight) {
+			if (!(/^[0-9]*$/g).test(body.weight)) {
 				return ctx.error({
 					msg: '重量不能为空'
 				})
 			}
 
-			if (!body.postage) {
+			if (!(/^[0-9]*$/g).test(body.postage)) {
 				return ctx.error({
 					msg: '基础运费不能为空'
 				})
@@ -134,7 +134,7 @@ class control {
 							postage: 1,
 							eachWeight: 1,
 							eachPostage: 1,
-							reject: 1,
+							freePostage: 1,
 							online: 1,
 							id: '$_id'
 						}
@@ -174,7 +174,7 @@ class control {
 					postage: res.postage,
 					eachWeight: res.eachWeight,
 					eachPostage: res.eachPostage,
-					reject: res.reject,
+					freePostage: res.freePostage,
 					online: res.online,
 					id: id
 				}

@@ -18,7 +18,7 @@ class ViewComment extends Component {
 	render() {
 		return (
 			<div className="view-comment">
-				<h1>comment (view)</h1>
+				<h1>评价管理 / 一期暂不开发</h1>
 			</div>
 		)
 	}

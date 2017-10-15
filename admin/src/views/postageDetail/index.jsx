@@ -20,7 +20,7 @@ class ViewPostageDetail extends Component {
 			postage: 0,
 			eachWeight: 0,
 			eachPostage: 0,
-			reject: false,
+			freePostage: 999999,
 			online: false,
 
 			loading: true
@@ -51,7 +51,7 @@ class ViewPostageDetail extends Component {
 			this.data.postage = res.postage
 			this.data.eachWeight = res.eachWeight
 			this.data.eachPostage = res.eachPostage
-			this.data.reject = res.reject
+			this.data.freePostage = res.freePostage
 			this.data.online = res.online
 		} catch(e) {
 			Message.error(e.msg)
@@ -61,9 +61,6 @@ class ViewPostageDetail extends Component {
 	}
 
 	valueChange(e, target) {
-		if (e === 'reject') {
-			target = !target
-		}
 		this.data[e] = target
 	}
 
@@ -76,7 +73,7 @@ class ViewPostageDetail extends Component {
 				postage: this.data.postage,
 				eachWeight: this.data.eachWeight,
 				eachPostage: this.data.eachPostage,
-				reject: this.data.reject,
+				freePostage: this.data.freePostage,
 				online: this.data.online,
 			}
 			if (this.data.id) {
@@ -148,15 +145,13 @@ class ViewPostageDetail extends Component {
 						<em style={{color:'#ff4949'}}>当前{this.data.eachPostage/100}元</em>
 					</Form.Item>
 
-					<Form.Item label="是否配送">
-						<Switch
-							value={!this.data.reject}
-							onText=""
-							offText=""
-							onColor="#13ce66"
-							offColor="#ff4949"
-							onChange={this.valueChange.bind(this, 'reject')} />
-						<em>若要拒绝，请确保该规则的距离是所有配置中最远的</em>
+					<Form.Item label="满消费免运费">
+						<InputNumber
+							defaultValue={this.data.freePostage}
+							value={this.data.freePostage}
+							onChange={this.valueChange.bind(this, 'freePostage')} />
+						<em>单位：分</em>
+						<em style={{color:'#ff4949'}}>当前{this.data.freePostage/100}元</em>
 					</Form.Item>
 
 					<Form.Item label="使用中">

@@ -30,10 +30,10 @@ var PostageSchema = Schema({
 		type: Number,
 		default: 200
 	},
-	// 不予送货
-	reject: {
-		type: Boolean,
-		default: false
+	// 满消费免运费
+	freePostage: {
+		type: Number,
+		default: 999999
 	},
 	// 使用中
 	online: {

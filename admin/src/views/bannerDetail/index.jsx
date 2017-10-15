@@ -4,6 +4,7 @@ import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 
 import { Button, Form, Input, InputNumber, Switch, Message, Loading } from 'element-react'
+import Upload from 'src/components/upload'
 
 @connect
 @reactStateData
@@ -107,7 +108,7 @@ class ViewBannerDetail extends Component {
 					</Form.Item>
 
 					<Form.Item label="图片">
-						<Input
+						<Upload
 							value={this.data.uri}
 							onChange={this.valueChange.bind(this, 'uri')} />
 					</Form.Item>
