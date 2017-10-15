@@ -16,6 +16,7 @@ var orderRoute = require('./routes/order')
 var productRoute = require('./routes/product')
 var classRoute = require('./routes/class')
 var quickRoute = require('./routes/quick')
+var postageRoute = require('./routes/postage')
 
 // 创建实例
 var app = new Koa()
@@ -38,6 +39,7 @@ app
 	.use(productRoute.routes(), productRoute.allowedMethods())
 	.use(classRoute.routes(), classRoute.allowedMethods())
 	.use(quickRoute.routes(), quickRoute.allowedMethods())
+	.use(postageRoute.routes(), postageRoute.allowedMethods())
 
 // 起一个服务
 const server = http.createServer(app.callback())

@@ -1,38 +1,48 @@
-var Class = require('../models/class')
+var Postage = require('../models/postage')
 
 class control {
 	
 	/* 
-	 * 创建分类
+	 * 创建运费
 	 *
-	 * !@name 图标地址
-	 * !@index 排序
-	 * @badge 标签
-	 * @badgeColor 标签色
-	 * @online 使用中
+	 * !@km 超出距离
+	 * !@weight 多少重量以内，单位：克
+	 * !@postage 运费，单位：分
+	 * @eachWeight 递增重量
+	 * @eachPostage 每份重量加价
+	 * @reject 是否不予送货，用于限制送货公里数上限
+	 * @online 规则使用中
 	 *
 	 */
 	static async create(ctx, next) {
 		const body = ctx.request.body
 
-		if (!body.name) {
+		if (!body.km) {
 			return ctx.error({
-				msg: '分类名不能为空'
+				msg: '超出距离不能为空'
 			})
 		}
 
-		if (!(/^[0-9]*$/g).test(body.index)) {
+		if (!body.weight) {
 			return ctx.error({
-				msg: '排序编号不能为空且必须为数字'
+				msg: '重量不能为空'
+			})
+		}
+
+		if (!body.postage) {
+			return ctx.error({
+				msg: '基础运费不能为空'
 			})
 		}
 		
 		try {
-			await Class.create({
-				name: body.name,
-				index: body.index,
-				badge: body.badge,
-				badgeColor: body.badgeColor,
+			await Postage.create({
+				km: body.km,
+				weight: body.weight,
+				postage: body.postage,
+				eachWeight: body.eachWeight,
+				eachPostage: body.eachPostage,
+				reject: body.reject,
 				online: body.online,
 			})
 			return ctx.success()
@@ -41,36 +51,42 @@ class control {
 		}
 	}
 
-	// 更新分类
+	// 更新运费
 	static async update(ctx, next) {
 		try {
 			const { id } = ctx.params
 			
-			let find = await Class.findOne({
+			let find = await Postage.findOne({
 				_id: id
 			})
 
 			if (!find) {
 				return ctx.error({
-					msg: '该分类不存在'
+					msg: '该运费不存在'
 				})
 			}
 
 			const body = ctx.request.body
 
-			if (!body.name) {
+			if (!body.km) {
 				return ctx.error({
-					msg: '分类名不能为空'
+					msg: '超出距离不能为空'
 				})
 			}
 
-			if (!(/^[0-9]*$/g).test(body.index)) {
+			if (!body.weight) {
 				return ctx.error({
-					msg: '排序编号不能为空且必须为数字'
+					msg: '重量不能为空'
 				})
 			}
 
-			await Class.update({
+			if (!body.postage) {
+				return ctx.error({
+					msg: '基础运费不能为空'
+				})
+			}
+
+			await Postage.update({
 				_id: id
 			}, body)
 
@@ -84,7 +100,7 @@ class control {
 	static async remove(ctx, next) {
 		try {
 			const { id } = ctx.params
-			await Class.remove({
+			await Postage.remove({
 				_id: id
 			})
 			return ctx.success()
@@ -93,32 +109,33 @@ class control {
 		}
 	}
 	
-	// 获取分类列表
+	// 获取运费列表
 	static async fetchList(ctx, next) {
 		try {
 			let { skip = 0, limit = 10 } = ctx.query
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
-			const count = await Class.count({})
+			const count = await Postage.count({})
 			let list = []
 
 			if (count > 0) {
-				list = await Class
+				list = await Postage
 					.aggregate([{
 						$sort: {
 							online: -1,
-							index: 1
+							km: 1
 						}
 					}, {
 						$project: {
 							_id: 0,
-							name: 1,
-							index: 1,
-							badge: 1,
-							badgeColor: 1,
+							km: 1,
+							weight: 1,
+							postage: 1,
+							eachWeight: 1,
+							eachPostage: 1,
+							reject: 1,
 							online: 1,
-							createTime: 1,
 							id: '$_id'
 						}
 					}, {
@@ -141,51 +158,24 @@ class control {
 		}
 	}
 
-	// 获取使用中的分类列表
-	static async fetchOnlineList(ctx, next) {
-		try {
-			let list = await Class
-				.aggregate([{
-					$match: {
-						online: true
-					}
-				}, {
-					$sort: {
-						index: 1
-					}
-				}, {
-					$project: {
-						_id: 0,
-						name: 1,
-						id: '$_id'
-					}
-				}])
-
-			return ctx.success({
-				data: list
-			})
-		} catch(e) {
-			return ctx.error()
-		}
-	}
-
-	// 获取分类详情
+	// 获取运费详情
 	static async fetchDetail(ctx, next) {
 		try {
 			const { id } = ctx.params
 
-			const res = await Class.findOne({
+			const res = await Postage.findOne({
 				_id: id
 			})
 
 			return ctx.success({
 				data: {
-					name: res.name,
-					index: res.index,
+					km: res.km,
+					weight: res.weight,
+					postage: res.postage,
+					eachWeight: res.eachWeight,
+					eachPostage: res.eachPostage,
+					reject: res.reject,
 					online: res.online,
-					badge: res.badge,
-					badgeColor: res.badgeColor,
-					createTime: res.createTime,
 					id: id
 				}
 			})

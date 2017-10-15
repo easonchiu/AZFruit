@@ -17,7 +17,7 @@ class Aside extends Component {
 			link: '/banner/list',
 			match: '/banner',
 			name: 'Banner管理',
-			badge: 'OK'
+			badge: '差图片上传'
 		}, {
 			link: '/class/list',
 			match: '/class',
@@ -31,7 +31,7 @@ class Aside extends Component {
 			link: '/quick/list',
 			match: '/quick',
 			name: '首页快捷入口管理',
-			badge: 'OK'
+			badge: '差图片上传'
 		}, {
 			link: '/order/list',
 			match: '/order',
@@ -52,6 +52,10 @@ class Aside extends Component {
 			link: '/postage/list',
 			match: '/postage',
 			name: '运费规则管理'
+		}, {
+			link: '/discount/list',
+			match: '/discount',
+			name: '满减规则管理'
 		}]
 
 		const current = this.props.location.pathname

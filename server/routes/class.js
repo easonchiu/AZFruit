@@ -11,6 +11,8 @@ router
 	.patch(`${prefix.api}/class/detail/:id`, control.update)
 	// 获取分类列表
 	.get(`${prefix.api}/class/list`, control.fetchList)
+	// 获取使用中的分类列表
+	.get(`${prefix.api}/class/onlinelist`, control.fetchOnlineList)
 	// 获取分类详情
 	.get(`${prefix.api}/class/detail/:id`, control.fetchDetail)
 	

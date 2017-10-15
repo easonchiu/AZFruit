@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 
-import { Button, Form, Input, InputNumber, Switch, Loading } from 'element-react'
+import { Button, Form, Input, InputNumber, Switch, Loading, Message, Select, Toast } from 'element-react'
 import Colors from 'src/components/colors'
 
 @connect
@@ -22,6 +22,7 @@ class ViewProductDetail extends Component {
 			isImport: false,
 			origin: '',
 			classes: [],
+			classNames: [],
 			badge: '',
 			badgeColor: '',
 			imgs: [],
@@ -62,6 +63,9 @@ class ViewProductDetail extends Component {
 			this.data.detail = res.detail
 			this.data.atIndex = res.atIndex
 			this.data.online = res.online
+			this.data.classNames = res.classes.map(res => res.id)
+
+			await this.props.$class.fetchOnlineList()
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)
@@ -77,7 +81,6 @@ class ViewProductDetail extends Component {
 		this.data.loading = true
 		try {
 			const data = {
-				id: this.data.id,
 				name: this.data.name,
 				index: this.data.index,
 				desc: this.data.desc,
@@ -107,73 +110,25 @@ class ViewProductDetail extends Component {
 		this.data.loading = false
 	}
 
-	renderSpec() {
-		return (
-			<div>
-				<h2>
-					<p>规格</p>
-					<Button plain type="danger" size="mini">删除</Button>
-				</h2>
-				<Form labelWidth={120}>
-					<Form.Item label="规格描述">
-						<Input
-							value={this.data.stock}
-							onChange={this.valueChange.bind(this, 'stock')} />
-					</Form.Item>
+	changeClass = e => {
+		const onlineList = this.props.$$class.onlineList
 
-					<Form.Item label="计量单位">
-						<Input
-							value={this.data.unit}
-							onChange={this.valueChange.bind(this, 'unit')} />
-					</Form.Item>
+		const res = e.map(res => {
+			for (let i = 0; i < onlineList.length; i++) {
+				if (onlineList[i].id == res) {
+					return onlineList[i]
+				}
+			}
+		})
 
-					<Form.Item label="出售价格">
-						<Input
-							value={this.data.price}
-							onChange={this.valueChange.bind(this, 'price')} />
-						<p>
-							单位:
-							<span className="red">分</span>
-							，计
-							<strong className="red">{this.data.price/100}</strong>
-							元
-						</p>
-					</Form.Item>
-
-					<Form.Item label="原价">
-						<Input
-							value={this.data.stock}
-							onChange={this.valueChange.bind(this, 'stock')} />
-					</Form.Item>
-
-					<Form.Item label="重量">
-						<Input
-							value={this.data.stock}
-							onChange={this.valueChange.bind(this, 'stock')} />
-					</Form.Item>
-
-					<Form.Item label="库存">
-						<Input
-							value={this.data.stock}
-							onChange={this.valueChange.bind(this, 'stock')} />
-					</Form.Item>
-
-					<Form.Item label="上下架">
-						<Switch
-							value={this.data.online}
-							onText=""
-							offText=""
-							onColor="#13ce66"
-							offColor="#ff4949"
-							onChange={this.valueChange.bind(this, 'online')} />
-					</Form.Item>
-				</Form>
-			</div>
-		)
+		this.data.classes = res
 	}
 
 	render() {
 		const data = this.data
+
+		const onlineList = this.props.$$class.onlineList
+
 		return (
 			<div className="view-productDetail">
 
@@ -217,9 +172,18 @@ class ViewProductDetail extends Component {
 					</Form.Item>
 
 					<Form.Item label="所属分类">
-						<Input
-							value={this.data.classes}
-							onChange={this.valueChange.bind(this, 'classes')} />
+						<Select className="classSelect"
+							value={this.data.classNames}
+							onChange={this.changeClass}
+							multiple={true}>
+						{
+							onlineList.map(res => {
+								return (
+									<Select.Option key={res.id} label={res.name} value={res.id} />
+								)
+							})
+						}
+						</Select>
 					</Form.Item>
 
 					<Form.Item label="标签文字">

@@ -17,6 +17,7 @@ class product {
 	 * @detail 详情
 	 * @atIndex 首页推荐
 	 * @online 上下架
+	 * @specCount 有库存并上架中的规格数量，该值在规格操作时自动修改
 	 *
 	 */
 	static async create(ctx, next) {
@@ -87,13 +88,17 @@ class product {
 							desc: 1,
 							isImport: 1,
 							origin: 1,
-							classes: 1,
+							classes: {
+								id: 1,
+								name: 1,
+							},
 							badge: 1,
 							badgeColor: 1,
 							imgs: 1,
 							detail: 1,
 							atIndex: 1,
 							online: 1,
+							specCount: 1,
 							id: '$_id'
 						}
 					}, {
@@ -140,6 +145,7 @@ class product {
 					detail: res.detail,
 					atIndex: res.atIndex,
 					online: res.online,
+					specCount: res.specCount,
 					createTime: res.createTime,
 					id: id
 				}

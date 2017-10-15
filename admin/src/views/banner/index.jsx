@@ -6,13 +6,17 @@ import cn from 'classnames'
 import qs from 'qs'
 
 import { Link } from 'react-router-dom'
-import { Button, Table, Pagination } from 'element-react'
+import { Button, Table, Pagination, Loading } from 'element-react'
 
 @connect
 @reactStateData
 class ViewBanner extends Component {
 	constructor(props) {
 		super(props)
+
+		this.setData({
+			loading: false
+		})
 	}
 
 	shouldComponentUpdate(nProps, nState) {
@@ -39,6 +43,7 @@ class ViewBanner extends Component {
 	}
 
 	async fetch(skip = 0) {
+		this.data.loading = true
 		try {
 			this.skip = skip
 			await this.props.$banner.fetchList({
@@ -51,6 +56,7 @@ class ViewBanner extends Component {
 		} catch(e) {
 			console.error(e)
 		}
+		this.data.loading = false
 	}
 
 	remove = async e => {
@@ -73,7 +79,8 @@ class ViewBanner extends Component {
 			<div className="view-banner">
 
 				<h1>Banner管理</h1>
-
+				
+				<Loading loading={this.data.loading}>
 				<Table
 					className="table"
 					columns={[
@@ -141,6 +148,8 @@ class ViewBanner extends Component {
 						total={this.props.$$banner.count}
 						onCurrentChange={this.changePage} />
 				</div>
+
+				</Loading>
 				
 				<Button className="bodybtn" size="large" type="primary" onClick={this.submit}>新增</Button>
 			</div>

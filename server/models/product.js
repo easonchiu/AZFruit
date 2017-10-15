@@ -32,8 +32,14 @@ var ProductSchema = Schema({
 	},
 	// 所属分类
 	classes: [{
-		type: String,
-		default: ''
+		name: {
+			type: String,
+			default: ''
+		},
+		id: {
+			type: String,
+			default: ''
+		}
 	}],
 	// 标签
 	badge: {
@@ -64,6 +70,11 @@ var ProductSchema = Schema({
 	online: {
 		type: Boolean,
 		default: false
+	},
+	// 有库存并上架中的规格数量
+	specCount: {
+		type: Number,
+		default: 0
 	},
 	// 创建时间
 	createTime: {

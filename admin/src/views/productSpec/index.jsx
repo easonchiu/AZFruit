@@ -5,17 +5,22 @@ import reactStateData from 'react-state-data'
 import cn from 'classnames'
 import qs from 'qs'
 
-import { Button, Table, Pagination, Loading } from 'element-react'
+import { Button, Table, Pagination, Loading, Message } from 'element-react'
 import { Link } from 'react-router-dom'
 
 @connect
 @reactStateData
-class ViewProduct extends Component {
+class ViewProductSpec extends Component {
 	constructor(props) {
 		super(props)
 
+		this.pid = props.match.params.pid
+
 		this.setData({
-			loading: false
+			loading: false,
+
+			pname: '',
+			pdesc: ''
 		})
 	}
 
@@ -38,7 +43,7 @@ class ViewProduct extends Component {
 
 	changePage = e => {
 		const skip = (e - 1) * 10
-		this.props.history.replace(`/product/list?skip=${skip}`)
+		this.props.history.replace(`/product/${this.pid}/spec/list?skip=${skip}`)
 		this.fetch(skip)
 	}
 
@@ -46,30 +51,54 @@ class ViewProduct extends Component {
 		this.data.loading = true
 		try {
 			this.skip = skip
-			await this.props.$product.fetchList({
-				skip
+			const res = await this.props.$product.fetchDetail({
+				id: this.pid
 			})
-			const count = this.props.$$product.count
+			
+			this.data.pname = res.name
+			this.data.pdesc = res.desc
+
+			await this.props.$productSpec.fetchList({
+				skip,
+				pid: this.pid
+			})
+			const count = this.props.$$productSpec.count
 			if (skip > 0 && skip >= count) {
 				this.changePage(Math.ceil(count / 10))
 			}
 		} catch(e) {
+			Message.error(e.msg)
 			console.error(e)
 		}
 		this.data.loading = false
 	}
 
+	remove = async e => {
+		try {
+			await this.props.$productSpec.remove({
+				sid: e.id,
+				pid: this.pid
+			})
+			this.fetch(this.skip)
+		} catch(e) {
+			console.error(e)
+		}
+	}
+
 	submit = async e => {
-		this.props.history.push('/product/detail')
+		this.props.history.push(`/product/${this.pid}/spec/detail`)
 	}
 
 	render() {
 		return (
-			<div className="view-product">
+			<div className="view-productSpec">
 
-				<h1>产品管理</h1>
+				<h1>产品规格管理</h1>
 				
 				<Loading loading={this.data.loading}>
+
+				<h6>{this.data.pname} - {this.data.pdesc}</h6>
+
 				<Table
 					className="table"
 					columns={[
@@ -79,56 +108,36 @@ class ViewProduct extends Component {
 							width: 80,
 							align: 'center'
 						}, {
-							label: '名称',
-							prop: 'name',
-							width: 200,
-						}, {
-							label: '描述',
+							label: '规格描述',
 							prop: 'desc',
-							width: 250,
 						}, {
-							label: '是否进口',
+							label: '库存',
 							width: 100,
 							align: 'center',
-							render: data => {
-								return (
-									<div className="status">
-									{
-										data.isImport ?
-										<i className="online" /> :
-										<i className="offline" />
-									}
-									{
-										data.isImport ?
-										'是' :
-										'否'
-									}
-									</div>
-								)
-							}
+							prop: 'stock'
 						}, {
-							label: '首页推荐',
+							label: '重量',
 							width: 100,
 							align: 'center',
-							render: data => {
-								return (
-									<div className="status">
-									{
-										data.atIndex ?
-										<i className="online" /> :
-										<i className="offline" />
-									}
-									{
-										data.atIndex ?
-										'是' :
-										'否'
-									}
-									</div>
-								)
-							}
+							prop: 'weight'
 						}, {
-							label: '上下架/可购规格',
+							label: '计量单位',
+							width: 120,
+							align: 'center',
+							prop: 'unit'
+						}, {
+							label: '价格',
 							width: 150,
+							align: 'center',
+							prop: 'price'
+						}, {
+							label: '原价',
+							width: 150,
+							align: 'center',
+							prop: 'prePrice'
+						}, {
+							label: '上下架',
+							width: 100,
 							align: 'center',
 							render: data => {
 								return (
@@ -143,27 +152,8 @@ class ViewProduct extends Component {
 										'上架' :
 										'下架'
 									}
-									&nbsp;
-									({data.specCount})
 									</div>
 								)
-							}
-						}, {
-							label: '所属分类',
-							render: data => {
-								let str = []
-								data.classes.forEach(res => {
-									if (res.name) {
-										str.push(res.name)
-									}
-								})
-								return str.join(' / ')
-							}
-						}, {
-							label: '标签',
-							width: 120,
-							render: data => {
-								return <p className="badge" style={{background:data.badgeColor}}>{data.badge}</p>
 							}
 						}, {
 							label: '',
@@ -171,18 +161,18 @@ class ViewProduct extends Component {
 							render: data => {
 								return (
 									<p className="console">
-										<Link to={`/product/detail/${data.id}`}>
+										<Link to={`/product/${this.pid}/spec/detail/${data.id}`}>
 											编辑
 										</Link>
-										<Link to={`/product/${data.id}/spec/list`}>
-											规格管理
-										</Link>
+										<a href="javascript:;" onClick={this.remove.bind(this, data)}>
+											删除
+										</a>
 									</p>
 								)
 							}
 						}
 					]}
-					data={this.props.$$product.list}
+					data={this.props.$$productSpec.list}
 					rowClassName={e => e.online || e.FCLonline ? 'online' : 'offline'}
 					border={true} />
 
@@ -190,15 +180,20 @@ class ViewProduct extends Component {
 					<Pagination
 						layout="prev, pager, next"
 						currentPage={this.skip / 10 + 1}
-						total={this.props.$$product.count}
+						total={this.props.$$productSpec.count}
 						onCurrentChange={this.changePage} />
 				</div>
 				</Loading>
 
-				<Button className="bodybtn" size="large" type="primary" onClick={this.submit}>新增</Button>
+				<div className="btns">
+					<Button size="large" type="primary" onClick={this.submit}>新增规格</Button>
+					<Button size="large" onClick={this.props.history.goBack}>返回</Button>
+				</div>
+
+				
 			</div>
 		)
 	}
 }
 
-export default ViewProduct
+export default ViewProductSpec
