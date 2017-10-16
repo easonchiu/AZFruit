@@ -5,6 +5,8 @@ import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 import cn from 'classnames'
 
+import CDN from 'src/assets/libs/cdn'
+
 @connect
 @reactStateData
 class Upload extends Component {
@@ -14,8 +16,83 @@ class Upload extends Component {
 		this.setData({
 			loading: false,
 			visible: false,
-			visibleUpload: false
+			visibleUpload: false,
+			value: ''
 		})
+	}
+
+	// 存base64
+	async uploadBase64(base64) {
+		try {
+			if (base64) {
+				const res = await this.props.$upload.upload({
+					base64,
+					class: this.props.classes
+				})
+				this.props.onChange(res)
+			} else {
+				Message.error('获取base64失败')
+			}
+		} catch(e) {
+			Message.error(e.msg)
+		}
+	}
+	
+	// 获取base64
+	renderBase64(src){
+		// 参数，最大宽度
+		var MAX_W = this.props.maxWidth || 100
+		// 创建一个 Image 对象
+		var image = new Image()
+		// 绑定 load 事件处理器，加载完成后执行
+		image.onload = e => {
+			// 获取 canvas DOM 对象
+			var canvas = document.createElement("canvas")
+			// 如果高度超标
+			if(image.width > MAX_W) {
+				// 宽度等比例缩放 *=
+				image.height *= MAX_W / image.width
+				image.width = MAX_W
+			}
+			// 获取 canvas的 2d 环境对象,
+			// 可以理解Context是管理员，canvas是房子
+			var ctx = canvas.getContext("2d")
+			// canvas清屏
+			ctx.clearRect(0, 0, canvas.width, canvas.height)
+			// 重置canvas宽高
+			canvas.width = image.width
+			canvas.height = image.height
+			// 将图像绘制到canvas上
+			ctx.drawImage(image, 0, 0, image.width, image.height)
+			
+			// 获取base64
+			var imgData = canvas.toDataURL('image/jpeg')
+			
+			this.uploadBase64(imgData)
+			canvas = null
+		}
+		// 设置src属性，浏览器会自动加载。
+		// 记住必须先绑定事件，才能设置src属性，否则会出同步问题。
+		image.src = src
+	}
+
+	// 加载 图像文件(url路径)  
+	loadImage(src) {
+	    // 过滤掉 非 image 类型的文件  
+	    if(!src.type.match(/image.*/)){  
+	        alert('asdf')
+	        return 
+	    }
+	
+		// 创建 FileReader 对象 并调用 render 函数来完成渲染.  
+		var reader = new FileReader() 
+		// 绑定load事件自动回调函数  
+		reader.onload = e => {  
+	        // 调用前面的 render 函数  
+	        this.renderBase64(e.target.result) 
+	    } 
+	    // 读取文件内容  
+	    reader.readAsDataURL(src) 
 	}
 
 	fromKu = e => {
@@ -28,6 +105,7 @@ class Upload extends Component {
 		try {
 			this.skip = skip
 			await this.props.$upload.fetchList({
+				class: this.props.classes,
 				skip,
 				limit: 999
 			})
@@ -42,13 +120,29 @@ class Upload extends Component {
 		this.data.visible = false
 	}
 
+	uploadInputChange = e => {
+		this.loadImage(e.target.files[0])
+	}
+
 	render() {
 		return (
 			<div className="img-upload">
-				<div className="box">
-					{this.props.value}
+				<div className="box" style={{backgroundImage: `url(${CDN+this.props.value})`}}>
+					{
+						!this.props.value ?
+						'无图片' :
+						null
+					}
 				</div>
-				<Button type="primary" onClick={e => this.data.visibleUpload = true}>上传新图</Button>
+				<div className="upload el-upload el-upload--text">
+					<Button type="primary">上传新图</Button>
+					<input
+						type="file"
+						value={this.data.value}
+						accept=".jpg,.jpeg,.png"
+						onChange={this.uploadInputChange} />
+				</div>
+				
 				<Button type="success" onClick={this.fromKu}>从图片库选择</Button>
 
 				<Dialog
@@ -68,9 +162,7 @@ class Upload extends Component {
 									onClick={this.imgClick.bind(this, res.uri)}
 									key={res.name}
 									className={css}>
-									<div className="in">
-										{res.uri}
-										<img src={res.uri} />
+									<div className="in" style={{backgroundImage: `url(${CDN+res.uri})`}}>
 										<h6>分类：{res.class}</h6>
 									</div>
 								</a>

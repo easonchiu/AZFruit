@@ -69,7 +69,7 @@ class ViewBannerDetail extends Component {
 				desc: this.data.desc,
 			}
 			if (this.data.id) {
-				await this.props.$banner.update({
+				const res = await this.props.$banner.update({
 					id: this.data.id,
 					...data
 				})
@@ -109,6 +109,8 @@ class ViewBannerDetail extends Component {
 
 					<Form.Item label="图片">
 						<Upload
+							maxWidth={300}
+							classes="banner"
 							value={this.data.uri}
 							onChange={this.valueChange.bind(this, 'uri')} />
 					</Form.Item>

@@ -49,15 +49,15 @@ class upload {
 			// 将base64存成一个buffer
 			const dataBuffer = new Buffer(base64Data, 'base64')
 			// 将buffer存到目录中
-			const f = await upload.write('upload/'+body.class+'-'+filename+type, dataBuffer)
+			await upload.write('upload/'+body.class+'-'+filename+type, dataBuffer)
 			// 数据库保存图片信息
 			await Upload.create({
 				name: body.class+'-'+filename,
-				uri: f,
+				uri: body.class+'-'+filename+type,
 				class: body.class,
 			})
 			return ctx.success({
-				data: f
+				data: body.class+'-'+filename+type
 			})
 		} catch(e) {
 			return ctx.error()
@@ -67,7 +67,7 @@ class upload {
 	// 获取分类列表
 	static async fetchList(ctx, next) {
 		try {
-			let { skip = 0, limit = 10 } = ctx.query
+			let { skip = 0, limit = 10, classes } = ctx.query
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
@@ -75,20 +75,28 @@ class upload {
 			let list = []
 
 			if (count > 0) {
-				list = await Upload
-					.aggregate([{
-						$project: {
-							_id: 0,
-							name: 1,
-							uri: 1,
-							class: 1,
-							createTime: 1,
+				const sql = [{
+					$project: {
+						_id: 0,
+						name: 1,
+						uri: 1,
+						class: 1,
+						createTime: 1,
+					}
+				}, {
+					$skip: skip
+				}, {
+					$limit: limit
+				}]
+				if (classes != '') {
+					sql.unshift({
+						$match: {
+							class: classes
 						}
-					}, {
-						$skip: skip
-					}, {
-						$limit: limit
-					}])
+					})
+				}
+				list = await Upload
+					.aggregate(sql)
 			}
 
 			return ctx.success({

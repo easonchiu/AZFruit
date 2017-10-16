@@ -8,6 +8,7 @@ const fetchList = (payload = {}) => async (dispatch, getState) => {
 		method: 'get',
         url: `/upload/list`,
         params: {
+            classes: payload.class || '',
         	skip: payload.skip || 0,
         	limit: payload.limit || 10,
         }
@@ -15,6 +16,19 @@ const fetchList = (payload = {}) => async (dispatch, getState) => {
 	dispatch(_fetchList(res))
 }
 
+const upload = (payload = {}) => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'post',
+        url: `/upload`,
+        data: {
+        	base64: payload.base64,
+        	class: payload.class,
+        }
+	})
+    return res
+}
+
 export default {
 	fetchList,
+	upload,
 }

@@ -109,6 +109,8 @@ class ViewQuickDetail extends Component {
 
 					<Form.Item label="图标">
 						<Upload
+							maxWidth={200}
+							classes="quick"
 							value={this.data.uri}
 							onChange={this.valueChange.bind(this, 'uri')} />
 					</Form.Item>

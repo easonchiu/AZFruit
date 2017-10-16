@@ -17,7 +17,7 @@ class Aside extends Component {
 			link: '/banner/list',
 			match: '/banner',
 			name: 'Banner管理',
-			badge: '差图片上传'
+			badge: 'OK'
 		}, {
 			link: '/class/list',
 			match: '/class',
@@ -32,7 +32,7 @@ class Aside extends Component {
 			link: '/quick/list',
 			match: '/quick',
 			name: '首页快捷入口管理',
-			badge: '差图片上传'
+			badge: 'OK'
 		}, {
 			link: '/order/list',
 			match: '/order',

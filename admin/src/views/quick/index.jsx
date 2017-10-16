@@ -5,6 +5,7 @@ import reactStateData from 'react-state-data'
 import cn from 'classnames'
 import qs from 'qs'
 
+import CDN from 'src/assets/libs/cdn'
 import { Link } from 'react-router-dom'
 import { Button, Table, Pagination, Loading } from 'element-react'
 
@@ -96,8 +97,11 @@ class ViewQuick extends Component {
 							align: 'center'
 						}, {
 							label: '图标',
-							prop: 'uri',
 							width: 200,
+							align: 'center',
+							render: data => {
+								return <img src={CDN+data.uri} />
+							}
 						}, {
 							label: '链接',
 							prop: 'link'

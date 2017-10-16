@@ -8,6 +8,10 @@
 	}
 	.table {
 		margin-bottom: 10px;
+		img {
+			width: 100px;
+			margin: 10px 0;
+		}
 		tr:hover {
 			.console {
 				opacity: 1;
