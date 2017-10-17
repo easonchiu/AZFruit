@@ -1,0 +1,19 @@
+@charset "utf-8";
+
+.view-category {
+	.body {
+		padding: 0;
+		overflow: hidden;
+		display: -webkit-box;
+	}
+
+	.category {
+		width: 2rem;
+		border: 1px solid #f00;
+	}
+
+	.list {
+		-webkit-box-flex: 1;
+		border: 1px solid #f00;
+	}
+}

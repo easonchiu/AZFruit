@@ -1,0 +1,24 @@
+html, body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin: 0;
+	* {
+		font-size: 0.3rem;
+	}
+}
+hr {
+	margin: 0.3rem 0;
+	border: none;
+	height: 1px;
+	background-color: #e5e5e5;
+}
+#root {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+hr.body-line {
+	border-bottom: 0.1rem solid #f5f5f5;
+	margin: 0 -0.4rem;
+}
