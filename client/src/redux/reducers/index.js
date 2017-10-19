@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux'
 
-import $$demo from './demo'
+import $$category from './category'
 
-let reducers = {
-	$$demo,
+const reducers = {
+	$$category,
 }
 
 export default combineReducers({

@@ -135,8 +135,11 @@ class Upload extends Component {
 					}
 				</div>
 				<div className="upload el-upload el-upload--text">
-					<Button type="primary">上传新图</Button>
+					<Button type="primary" onClick={e => {
+						this.refs.uploadInput.click()
+					}}>上传新图</Button>
 					<input
+						ref="uploadInput"
 						type="file"
 						value={this.data.value}
 						accept=".jpg,.jpeg,.png"

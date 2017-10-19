@@ -25,8 +25,8 @@ import ViewOrder from 'src/views/order'
 import ViewComment from 'src/views/comment'
 
 // 分类管理
-import ViewClass from 'src/views/class'
-import ViewClassDetail from 'src/views/classDetail'
+import ViewCategory from 'src/views/category'
+import ViewCategoryDetail from 'src/views/categoryDetail'
 
 // 用户管理
 import ViewUser from 'src/views/user'
@@ -42,8 +42,8 @@ const Main = ({children}) => {
 				<Route exact path="/banner/list" component={ ViewBanner } />
 				<Route exact path="/banner/detail/:id?" component={ ViewBannerDetail } />
 
-				<Route exact path="/class/list" component={ ViewClass } />
-				<Route exact path="/class/detail/:id?" component={ ViewClassDetail } />
+				<Route exact path="/category/list" component={ ViewCategory } />
+				<Route exact path="/category/detail/:id?" component={ ViewCategoryDetail } />
 
 				<Route exact path="/product/list" component={ ViewProduct } />
 				<Route exact path="/product/detail/:id?" component={ ViewProductDetail } />

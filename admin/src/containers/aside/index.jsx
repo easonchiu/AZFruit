@@ -19,8 +19,8 @@ class Aside extends Component {
 			name: 'Banner管理',
 			badge: 'OK'
 		}, {
-			link: '/class/list',
-			match: '/class',
+			link: '/category/list',
+			match: '/category',
 			name: '分类管理',
 			badge: 'OK'
 		}, {

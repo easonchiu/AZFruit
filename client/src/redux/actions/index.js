@@ -1,6 +1,5 @@
-import $demo from './demo'
-
+import $category from './category'
 
 export {
-	$demo
+	$category
 }

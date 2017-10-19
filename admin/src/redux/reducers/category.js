@@ -10,7 +10,7 @@ const initialState = Immutable({
 })
 
 const reducer = handleActions({
-	CLASS_FETCH_LIST (state, action) {
+	CATEGORY_FETCH_LIST (state, action) {
 		return Immutable.merge(state, {
 			list: action.payload.list,
 			count: action.payload.count,
@@ -18,7 +18,7 @@ const reducer = handleActions({
 			limit: action.payload.limit,
 		})
 	},
-	CLASS_FETCH_ONLINE_LIST (state, action) {
+	CATEGORY_FETCH_ONLINE_LIST (state, action) {
 		return Immutable.merge(state, {
 			onlineList: action.payload,
 		})

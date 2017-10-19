@@ -8,12 +8,39 @@
 	}
 
 	.category {
-		width: 2rem;
-		border: 1px solid #f00;
+		width: 2.5rem;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+		a {
+			display: -webkit-box;
+			-webkit-box-align: center;
+			color: #333;
+			height: 1rem;
+			overflow: hidden;
+			padding-left: 0.4rem;
+			
+			border-bottom: 1px solid #f2f4f9 - 20;
+			&.active {
+				background: #fff;
+			}
+			p {
+				font-size: 0.26rem;
+				display: block;
+			}
+			span {
+				display: block;
+				color: #fff;
+				font-size: 0.2rem;
+				padding: 0.05rem 0.08rem;
+				margin-left: 0.1rem;
+				border-radius: 0.1rem;
+			}
+		}
 	}
 
 	.list {
 		-webkit-box-flex: 1;
-		border: 1px solid #f00;
+		background: #fff;
+		padding: 0.4rem;
 	}
 }

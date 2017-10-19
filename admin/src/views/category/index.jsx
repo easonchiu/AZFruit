@@ -10,7 +10,7 @@ import { Button, Table, Pagination, Loading } from 'element-react'
 
 @connect
 @reactStateData
-class ViewClass extends Component {
+class ViewCategory extends Component {
 	constructor(props) {
 		super(props)
 
@@ -38,7 +38,7 @@ class ViewClass extends Component {
 
 	changePage = e => {
 		const skip = (e - 1) * 10
-		this.props.history.replace(`/class/list?skip=${skip}`)
+		this.props.history.replace(`/category/list?skip=${skip}`)
 		this.fetch(skip)
 	}
 
@@ -46,10 +46,10 @@ class ViewClass extends Component {
 		this.data.loading = true
 		try {
 			this.skip = skip
-			await this.props.$class.fetchList({
+			await this.props.$category.fetchList({
 				skip
 			})
-			const count = this.props.$$class.count
+			const count = this.props.$$category.count
 			if (skip > 0 && skip >= count) {
 				this.changePage(Math.ceil(count / 10))
 			}
@@ -61,7 +61,7 @@ class ViewClass extends Component {
 
 	remove = async e => {
 		try {
-			await this.props.$class.remove({
+			await this.props.$category.remove({
 				id: e.id
 			})
 			this.fetch(this.skip)
@@ -71,12 +71,12 @@ class ViewClass extends Component {
 	}
 
 	submit = async e => {
-		this.props.history.push('/class/detail')
+		this.props.history.push('/category/detail')
 	}
 
 	render() {
 		return (
-			<div className="view-class">
+			<div className="view-category">
 
 				<h1>分类管理</h1>
 				
@@ -124,7 +124,7 @@ class ViewClass extends Component {
 							render: data => {
 								return (
 									<p className="console">
-										<Link to={`/class/detail/${data.id}`}>
+										<Link to={`/category/detail/${data.id}`}>
 											编辑
 										</Link>
 										<a href="javascript:;" onClick={this.remove.bind(this, data)}>
@@ -135,7 +135,7 @@ class ViewClass extends Component {
 							}
 						}
 					]}
-					data={this.props.$$class.list}
+					data={this.props.$$category.list}
 					rowClassName={e => e.online ? 'online' : 'offline'}
 					border={true} />
 
@@ -143,7 +143,7 @@ class ViewClass extends Component {
 					<Pagination
 						layout="prev, pager, next"
 						currentPage={this.skip / 10 + 1}
-						total={this.props.$$class.count}
+						total={this.props.$$category.count}
 						onCurrentChange={this.changePage} />
 				</div>
 				</Loading>
@@ -154,4 +154,4 @@ class ViewClass extends Component {
 	}
 }
 
-export default ViewClass
+export default ViewCategory

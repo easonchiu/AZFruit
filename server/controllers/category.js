@@ -1,6 +1,6 @@
-var Class = require('../models/class')
+var Category = require('../models/category')
 
-class control {
+class category {
 	
 	/* 
 	 * 创建分类
@@ -28,7 +28,7 @@ class control {
 		}
 		
 		try {
-			await Class.create({
+			await Category.create({
 				name: body.name,
 				index: body.index,
 				badge: body.badge,
@@ -46,7 +46,7 @@ class control {
 		try {
 			const { id } = ctx.params
 			
-			let find = await Class.findOne({
+			let find = await Category.findOne({
 				_id: id
 			})
 
@@ -70,7 +70,7 @@ class control {
 				})
 			}
 
-			await Class.update({
+			await Category.update({
 				_id: id
 			}, body)
 
@@ -84,7 +84,7 @@ class control {
 	static async remove(ctx, next) {
 		try {
 			const { id } = ctx.params
-			await Class.remove({
+			await Category.remove({
 				_id: id
 			})
 			return ctx.success()
@@ -100,11 +100,11 @@ class control {
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
-			const count = await Class.count({})
+			const count = await Category.count({})
 			let list = []
 
 			if (count > 0) {
-				list = await Class
+				list = await Category
 					.aggregate([{
 						$sort: {
 							online: -1,
@@ -144,7 +144,7 @@ class control {
 	// 获取使用中的分类列表
 	static async fetchOnlineList(ctx, next) {
 		try {
-			let list = await Class
+			let list = await Category
 				.aggregate([{
 					$match: {
 						online: true
@@ -169,12 +169,42 @@ class control {
 		}
 	}
 
+	// 用户端获取列表
+	static async appFetchList(ctx, next) {
+		try {
+			let list = await Category
+				.aggregate([{
+					$match: {
+						online: true
+					}
+				}, {
+					$sort: {
+						index: 1
+					}
+				}, {
+					$project: {
+						_id: 0,
+						name: 1,
+						badge: 1,
+						badgeColor: 1,
+						id: '$_id'
+					}
+				}])
+
+			return ctx.success({
+				data: list
+			})
+		} catch(e) {
+			return ctx.error()
+		}
+	}
+
 	// 获取分类详情
 	static async fetchDetail(ctx, next) {
 		try {
 			const { id } = ctx.params
 
-			const res = await Class.findOne({
+			const res = await Category.findOne({
 				_id: id
 			})
 
@@ -197,4 +227,4 @@ class control {
 	
 }
 
-module.exports = control
+module.exports = category

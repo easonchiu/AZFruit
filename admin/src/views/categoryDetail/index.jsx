@@ -8,7 +8,7 @@ import Colors from 'src/components/colors'
 
 @connect
 @reactStateData
-class ViewClassDetail extends Component {
+class ViewCategoryDetail extends Component {
 	constructor(props) {
 		super(props)
 
@@ -38,7 +38,7 @@ class ViewClassDetail extends Component {
 
 	async fetch(id) {
 		try {
-			const res = await this.props.$class.fetchDetail({
+			const res = await this.props.$category.fetchDetail({
 				id
 			})
 			this.data.id = id
@@ -69,12 +69,12 @@ class ViewClassDetail extends Component {
 				name: this.data.name,
 			}
 			if (this.data.id) {
-				await this.props.$class.update({
+				await this.props.$category.update({
 					id: this.data.id,
 					...data
 				})
 			} else {
-				await this.props.$class.create(data)
+				await this.props.$category.create(data)
 			}
 			this.props.history.goBack()
 		} catch(e) {
@@ -87,7 +87,7 @@ class ViewClassDetail extends Component {
 	render() {
 		const data = this.data
 		return (
-			<div className="view-classDetail">
+			<div className="view-categoryDetail">
 				
 				<h1>分类管理</h1>
 				<Loading loading={this.data.loading}>
@@ -141,4 +141,4 @@ class ViewClassDetail extends Component {
 	}
 }
 
-export default ViewClassDetail
+export default ViewCategoryDetail

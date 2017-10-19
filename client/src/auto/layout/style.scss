@@ -7,19 +7,19 @@
 	position: relative;
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
-	background: #fff;
+	background: #f2f4f9;
 }
 
 .x-app-header {
 	position: relative;
 	z-index: 2;
 	background: #fff;
-	box-shadow: 0 0 0.1rem rgba(0,0,0,0.08);
+	box-shadow: 0 0 0.2rem rgba(0,0,0,0.08);
 	&__inner {
 		position: relative;
 		display: -webkit-box;
 		-webkit-box-align: center;
-		min-height: 1rem;
+		min-height: 1.1rem;
 		height: 100%;
 	}
 	&__title {
@@ -142,5 +142,7 @@
 .x-app-footer {
 	background: #fff;
 	min-height: 0.88rem;
-	box-shadow: 0 0 0.1rem rgba(0,0,0,0.08);
+	box-shadow: 0 0 0.2rem rgba(0,0,0,0.08);
+	position: relative;
+	z-index: 2;
 }
