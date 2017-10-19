@@ -3,9 +3,12 @@ import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 import ReactSwipe from 'react-swipe'
+import CDN from 'src/assets/libs/cdn'
 
 import Layout from 'src/auto/layout'
 import AppFooter from 'src/components/appFooter'
+import GoodsItem from 'src/components/goodsItem'
+import TopGoodsItem from 'src/components/topGoodsItem'
 
 @connect
 @reactStateData
@@ -14,12 +17,33 @@ class ViewIndex extends Component {
 		super(props)
 
 		this.setData({
-			bannerIndex: 0
+			bannerIndex: 0,
+			loading: false,
+			errorInfo: '',
 		})
 	}
 
 	shouldComponentUpdate(nProps, nState) {
 		return this.props !== nProps || this.state !== nState
+	}
+
+	componentDidMount() {
+		this.fetch()
+	}
+
+	async fetch() {
+		this.data.loading = true
+		try {
+			await Promise.all([
+				this.props.$quick.fetchList(),
+				this.props.$banner.fetchList(),
+				this.props.$goods.fetchRecommendList(),
+			])
+		} catch(e) {
+			console.error(e)
+			this.data.errorInfo = e.msg
+		}
+		this.data.loading = false
 	}
 
 	// 滚动banner滑动结束事件
@@ -29,6 +53,9 @@ class ViewIndex extends Component {
 	
 	// 顶部
 	renderTop() {
+		const quickList = this.props.$$quick.list
+		const bannerList = this.props.$$banner.list
+
 		return (
 			<div className="top">
 
@@ -41,45 +68,45 @@ class ViewIndex extends Component {
 						<ReactSwipe className="inner" swipeOptions={{
 							transitionEnd: this.bannerScrollEnd
 						}}>
-							<div className="item" style={{backgroundImage:`url(${require('../../assets/3.jpg')})`}}>
-								<h1>新鲜到家 闪速送达</h1>
-								<p>即日起至活动结束期间全场8折</p>
-							</div>
-							<div className="item" style={{backgroundImage:`url(${require('../../assets/4.jpg')})`}} />
-							<div className="item" style={{backgroundImage:`url(${require('../../assets/4.jpg')})`}} />
+							{
+								bannerList.map((res, i) => {
+									return (
+										<div key={i}
+											className="item"
+											style={{backgroundImage:`url(${CDN+res.uri})`}} />
+									)
+								})
+							}
 						</ReactSwipe>
 					</div>
-					<div className="dots">
 					{
-						[0,1,2].map((e, index) => (
-							<span key={index} className={index == this.data.bannerIndex ? 'active' : ''} />
-						))
+						bannerList.length > 1 ?
+						<div className="dots">
+						{
+							bannerList.map((res, i) => (
+								<span key={i} className={i == this.data.bannerIndex ? 'active' : ''} />
+							))
+						}
+						</div> :
+						null
 					}
-					</div>
 				</div>
 
 				<div className="top_quick">
 					<div className="row">
-						<a href="javascript:;" className="item">
-							<i></i>
-							<p>新鲜到家</p>
-						</a>
-						<a href="javascript:;" className="item">
-							<i></i>
-							<p>当季热品</p>
-						</a>
-						<a href="javascript:;" className="item">
-							<i></i>
-							<p>超值午餐</p>
-						</a>
-						<a href="javascript:;" className="item">
-							<i></i>
-							<p>新品推荐</p>
-						</a>
-						<a href="javascript:;" className="item">
-							<i></i>
-							<p>新店特惠</p>
-						</a>
+						{
+							quickList.map((res, i) => {
+								return (
+									<a key={i}
+										href="javascript:;"
+										onClick={e => this.props.history.push(res.link)}
+										className="item">
+										<i style={{backgroundImage: `url(${CDN+res.uri})`}} />
+										<p>{res.name}</p>
+									</a>
+								)
+							})
+						}
 					</div>
 				</div>
 				
@@ -88,13 +115,56 @@ class ViewIndex extends Component {
 		)
 	}
 
+	renderRecommendGoods() {
+		const list = this.props.$$goods.recommendList
+		
+		if (list.length == 0) {
+			return null
+		}
+
+		return (
+			<div className="recommend-list">
+				<h1>当季推荐</h1>
+				<div className="goods">
+					{
+						list.map(res => (
+							<GoodsItem key={res.id} source={res} />
+						))
+					}
+				</div>
+				<hr className="body-line" />
+			</div>
+		)
+	}
+
+	renderGuestLoved() {
+		return (
+			<div className="loved-list">
+				<h1>吃货最爱</h1>
+				<div className="goods">
+					{
+						[1,2,3,4,5,6,7,8].map(res => (
+							<TopGoodsItem key={res} />
+						))
+					}
+				</div>
+			</div>
+		)
+	}
+
 	render() {
 		return (
 			<Layout className="view-index">
-				<Layout.Body>
+				<Layout.Body
+					errorInfo={this.data.errorInfo}
+					loading={this.data.loading}>
 				
 					{this.renderTop()}
 
+					{this.renderRecommendGoods()}
+
+					{this.renderGuestLoved()}
+					
 				</Layout.Body>
 
 				<AppFooter />

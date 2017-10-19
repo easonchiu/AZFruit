@@ -111,6 +111,11 @@ class ViewProductSpec extends Component {
 							label: '规格描述',
 							prop: 'desc',
 						}, {
+							label: '销量',
+							width: 100,
+							align: 'center',
+							prop: 'sellCount',
+						}, {
 							label: '库存',
 							width: 100,
 							align: 'center',

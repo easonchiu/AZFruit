@@ -50,6 +50,11 @@ var ProductSpecSchema = Schema({
 		type: Boolean,
 		default: false
 	},
+	// 销量
+	sellCount: {
+		type: Number,
+		default: 0
+	},
 	// 创建时间
 	createTime: {
 		type: Date,

@@ -76,6 +76,26 @@ var ProductSchema = Schema({
 		type: Number,
 		default: 0
 	},
+	// 规格中价格最低的存入
+	price: {
+		type: Number,
+		default: 0
+	},
+	// 规格中价格最低的存入
+	prePrice: {
+		type: Number,
+		default: 0
+	},
+	// 规格中价格最低的存入
+	unit: {
+		type: String,
+		default: ''
+	},
+	// 销量，这里的销量即所有规格的总和
+	sellCount: {
+		type: Number,
+		default: 0
+	},
 	// 创建时间
 	createTime: {
 		type: Date,

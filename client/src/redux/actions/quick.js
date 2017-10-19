@@ -1,19 +1,19 @@
 import { createAction } from 'redux-actions'
 import http from 'src/assets/libs/http'
 
-const _fetchList = createAction('CATEGORY_FETCH_LIST');
+const _fetchList = createAction('QUICK_FETCH_LIST');
 
 
 const fetchList = payload => async (dispatch, getState) => {
 	const state = getState()
 
-	if (state.$$category.list && state.$$category.list.length > 0) {
+	if (state.$$quick.list && state.$$quick.list.length > 0) {
 		return false
 	}
 
 	const res = await http.request({
 		method: 'get',
-        url: `/category/list`,
+        url: `/quick/list`,
         params: {}
 	})
 	dispatch(_fetchList(res))

@@ -5,6 +5,7 @@ import reactStateData from 'react-state-data'
 
 import Layout from 'src/auto/layout'
 import AppFooter from 'src/components/appFooter'
+import GoodsItem from 'src/components/goodsItem'
 
 @connect
 @reactStateData
@@ -15,7 +16,7 @@ class ViewCategory extends Component {
 		this.setData({
 			loading: false,
 			errorInfo: '',
-			active: 3
+			active: 0
 		})
 	}
 
@@ -72,7 +73,13 @@ class ViewCategory extends Component {
 						}
 					</nav>
 					<div className="list">
-						list
+						<div className="goods">
+							{
+								[1,2,3,4,5,6,7,8,9,0].map(res => (
+									<GoodsItem key={res} />
+								))
+							}
+						</div>
 					</div>
 				</Layout.Body>
 

@@ -119,7 +119,46 @@ class product {
 		} catch(e) {
 			return ctx.error()
 		}
+	}
 
+	// 用户获取首页推荐列表
+	static async appFetchRecommendList(ctx, next) {
+		try {
+			const list = await Product
+				.aggregate([{
+					$match: {
+						online: true,
+						atIndex: true,
+						specCount: {
+							'$gt': 0
+						}
+					}
+				}, {
+					$sort: {
+						index: 1,
+					}
+				}, {
+					$project: {
+						_id: 0,
+						name: 1,
+						desc: 1,
+						isImport: 1,
+						origin: 1,
+						badge: 1,
+						price: 1,
+						prePrice: 1,
+						unit: 1,
+						badgeColor: 1,
+						id: '$_id'
+					}
+				}])
+
+			return ctx.success({
+				data: list
+			})
+		} catch(e) {
+			return ctx.error()
+		}
 	}
 	
 	// 获取详情

@@ -23,6 +23,9 @@ router
 	.patch(`${prefix.api}/product/spec/detail/:id`, productSpec.update)
 	// 删除规格
 	.delete(`${prefix.api}/product/spec/detail/:id`, productSpec.remove)
+
+	// 用户端获取列表
+	.get(`${prefix.app}/product/recommend_list`, product.appFetchRecommendList)
 	
 
 module.exports = router

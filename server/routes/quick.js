@@ -13,5 +13,8 @@ router
 	.get(`${prefix.api}/quick/list`, quick.fetchList)
 	// 获取快捷详情
 	.get(`${prefix.api}/quick/detail/:id`, quick.fetchDetail)
+
+	// 用户端获取列表
+	.get(`${prefix.app}/quick/list`, quick.appFetchList)
 	
 module.exports = router

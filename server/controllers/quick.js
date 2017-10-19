@@ -165,6 +165,35 @@ class quick {
 		}
 	}
 
+	// 客户端获取列表
+	static async appFetchList(ctx, next) {
+		try {
+			const list = await Quick
+				.aggregate([{
+					$match: {
+						online: true
+					}
+				}, {
+					$sort: {
+						index: 1
+					}
+				}, {
+					$project: {
+						_id: 0,
+						uri: 1,
+						link: 1,
+						name: 1,
+					}
+				}])
+
+			return ctx.success({
+				data: list
+			})
+		} catch(e) {
+			return ctx.error()
+		}
+	}
+
 	// 获取分类详情
 	static async fetchDetail(ctx, next) {
 		try {

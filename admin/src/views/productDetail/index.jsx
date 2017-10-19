@@ -65,7 +65,7 @@ class ViewProductDetail extends Component {
 			this.data.online = res.online
 			this.data.classNames = res.classes.map(res => res.id)
 
-			await this.props.$class.fetchOnlineList()
+			await this.props.$category.fetchOnlineList()
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)
@@ -111,7 +111,7 @@ class ViewProductDetail extends Component {
 	}
 
 	changeClass = e => {
-		const onlineList = this.props.$$class.onlineList
+		const onlineList = this.props.$$category.onlineList
 
 		const res = e.map(res => {
 			for (let i = 0; i < onlineList.length; i++) {
@@ -127,7 +127,7 @@ class ViewProductDetail extends Component {
 	render() {
 		const data = this.data
 
-		const onlineList = this.props.$$class.onlineList
+		const onlineList = this.props.$$category.onlineList
 
 		return (
 			<div className="view-productDetail">

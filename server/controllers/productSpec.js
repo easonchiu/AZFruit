@@ -104,6 +104,7 @@ class productSpec {
 							weight: 1,
 							price: 1,
 							prePrice: 1,
+							sellCount: 1,
 							online: 1,
 							id: '$_id'
 						}
@@ -228,20 +229,51 @@ class productSpec {
 
 	// 修改产品的有库存并上架中的规格数量
 	static async updateProductSpecCount(pid) {
-		// 获取相关产品，在线，库存大于0的数量
-		const count = await ProductSpec.count({
-			pid: pid,
-			online: true,
-			stock: {
-				'$gt': 0
-			}
-		})
+		// 获取相关产品，在线，库存大于0的
+		const res = await ProductSpec
+			.aggregate([{
+				$match: {
+					pid: pid,
+					online: true,
+					stock: {
+						'$gt': 0
+					}
+				}
+			},{
+				$sort: {
+					price: 1,
+				}
+			}, {
+				$project: {
+					_id: 0,
+					unit: 1,
+					price: 1,
+					prePrice: 1,
+				}
+			}])
+		
+		// 初始化
+		const obj = {
+			specCount: 0,
+			price: 0,
+			prePrice: 0,
+			unit: ''
+		}
+		
+		// 如果有数据
+		if (res[0]) {
+			obj.specCount = res.length
+			obj.price = res[0].price || 0
+			obj.prePrice = res[0].prePrice || 0
+			obj.unit = res[0].unit || ''
+		}
+
+		console.log(obj)
+
 		// 更新到产品的数据库中
 		await Product.update({
 			_id: pid
-		}, {
-			specCount: count
-		}, {
+		}, obj, {
 			upsert: true
 		})
 	}
