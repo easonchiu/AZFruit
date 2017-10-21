@@ -5,6 +5,7 @@ import reactStateData from 'react-state-data'
 import cn from 'classnames'
 import qs from 'qs'
 
+import CDN from 'src/assets/libs/cdn'
 import { Button, Table, Pagination, Loading } from 'element-react'
 import { Link } from 'react-router-dom'
 
@@ -79,29 +80,34 @@ class ViewProduct extends Component {
 							width: 80,
 							align: 'center'
 						}, {
-							label: '名称',
-							prop: 'name',
+							label: '封面',
 							width: 200,
+							render: data => {
+								return <img src={CDN+data.cover} />
+							}
 						}, {
-							label: '描述',
-							prop: 'desc',
-							width: 250,
+							label: '名称/描述',
+							render: data => {
+								return <p>{data.name}<br/>{data.desc}</p>
+							}
 						}, {
-							label: '是否进口',
-							width: 100,
+							label: '优质产区/产地',
+							width: 140,
 							align: 'center',
 							render: data => {
 								return (
 									<div className="status">
 									{
-										data.isImport ?
+										data.origin && data.isImport ?
 										<i className="online" /> :
 										<i className="offline" />
 									}
 									{
 										data.isImport ?
-										'是' :
-										'否'
+										data.origin :
+										data.origin ?
+										data.origin :
+										'-'
 									}
 									</div>
 								)
@@ -150,14 +156,15 @@ class ViewProduct extends Component {
 							}
 						}, {
 							label: '所属分类',
+							width: 120,
 							render: data => {
-								let str = []
-								data.classes.forEach(res => {
-									if (res.name) {
-										str.push(res.name)
+								return <div>
+									{
+										data.category && data.category.map((res, i) => (
+											<p key={i}>{res.name}</p>
+										))
 									}
-								})
-								return str.join(' / ')
+								</div>
 							}
 						}, {
 							label: '标签',

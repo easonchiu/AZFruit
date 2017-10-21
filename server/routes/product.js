@@ -24,8 +24,10 @@ router
 	// 删除规格
 	.delete(`${prefix.api}/product/spec/detail/:id`, productSpec.remove)
 
-	// 用户端获取列表
-	.get(`${prefix.app}/product/recommend_list`, product.appFetchRecommendList)
+	// 用户端获取首页推荐列表
+	.get(`${prefix.app}/product/recommend/list`, product.appFetchRecommendList)
+	// 用户端获取全部产品列表
+	.get(`${prefix.app}/product/list`, product.appFetchList)
 	
 
 module.exports = router

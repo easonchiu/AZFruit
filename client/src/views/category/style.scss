@@ -17,7 +17,7 @@
 			color: #333;
 			height: 1rem;
 			overflow: hidden;
-			padding-left: 0.4rem;
+			padding-left: 0.3rem;
 			border-bottom: 1px solid #f2f4f9 - 20;
 			&.active {
 				background: #fff;
@@ -40,12 +40,24 @@
 	.list {
 		-webkit-box-flex: 1;
 		background: #fff;
-		padding: 0.3rem;
+		padding: 0.2rem;
+		.row {
+			display: -webkit-box;
+		}
 	}
 
-	.goods {
-		overflow: hidden;
+	.empty-list {
+		-webkit-box-flex: 1;
+		background: #fff;
+		display: -webkit-box;
+		-webkit-box-pack: center;
+		-webkit-box-align: center;
+		.empty {
+			color: #ccc;
+			font-size: 0.26rem;
+		}
 	}
+
 }
 
 

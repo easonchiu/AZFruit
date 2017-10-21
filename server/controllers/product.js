@@ -8,9 +8,10 @@ class product {
 	 * !@name 产品名称
 	 * !@index 排序
 	 * @desc 产品描述
+	 * @parameter[{name, value}] 产品参数
 	 * @isImport 是否进口
 	 * @origin 产地
-	 * @classes 所属分类
+	 * @category 所属分类
 	 * @badge 标签
 	 * @badgeColor 标签底色
 	 * @imgs 产品轮播图
@@ -28,6 +29,12 @@ class product {
 				msg: '商品名称不能为空'
 			})
 		}
+
+		if (!body.cover) {
+			return ctx.error({
+				msg: '商品封面图不能为空'
+			})
+		}
 		
 		if (!(/^[0-9]*$/g).test(body.index)) {
 			return ctx.error({
@@ -38,11 +45,13 @@ class product {
 		try {
 			const res = await Product.create({
 				name: body.name,
+				cover: body.cover,
 				index: body.index,
 				desc: body.desc,
+				parameter: body.parameter,
 				isImport: body.isImport,
 				origin: body.origin,
-				classes: body.classes,
+				category: body.category,
 				badge: body.badge,
 				badgeColor: body.badgeColor,
 				imgs: body.imgs,
@@ -84,11 +93,12 @@ class product {
 						$project: {
 							_id: 0,
 							name: 1,
+							cover: 1,
 							index: 1,
 							desc: 1,
 							isImport: 1,
 							origin: 1,
-							classes: {
+							category: {
 								id: 1,
 								name: 1,
 							},
@@ -141,6 +151,54 @@ class product {
 					$project: {
 						_id: 0,
 						name: 1,
+						cover: 1,
+						desc: 1,
+						isImport: 1,
+						origin: 1,
+						badge: 1,
+						price: 1,
+						prePrice: 1,
+						unit: 1,
+						badgeColor: 1,
+						id: '$_id'
+					}
+				}])
+
+			return ctx.success({
+				data: list
+			})
+		} catch(e) {
+			return ctx.error()
+		}
+	}
+
+	// 用户获取全部列表
+	static async appFetchList(ctx, next) {
+		const match = {
+			online: true,
+			specCount: {
+				'$gt': 0
+			}
+		}
+		
+		// 如果需要按分类查询
+		if (ctx.query.category) {
+			match['category.id'] = ctx.query.category
+		}
+
+		try {
+			const list = await Product
+				.aggregate([{
+					$match: match
+				}, {
+					$sort: {
+						index: 1,
+					}
+				}, {
+					$project: {
+						_id: 0,
+						name: 1,
+						cover: 1,
 						desc: 1,
 						isImport: 1,
 						origin: 1,
@@ -173,11 +231,13 @@ class product {
 			return ctx.success({
 				data: {
 					name: res.name,
+					cover: res.cover,
 					index: res.index,
 					desc: res.desc,
+					parameter: res.parameter,
 					isImport: res.isImport,
 					origin: res.origin,
-					classes: res.classes,
+					category: res.category,
 					badge: res.badge,
 					badgeColor: res.badgeColor,
 					imgs: res.imgs,
@@ -214,6 +274,12 @@ class product {
 			if (!body.name) {
 				return ctx.error({
 					msg: '商品名称不能为空'
+				})
+			}
+
+			if (!body.cover) {
+				return ctx.error({
+					msg: '商品封面图不能为空'
 				})
 			}
 			

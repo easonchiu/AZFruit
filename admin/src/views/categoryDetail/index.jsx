@@ -41,12 +41,18 @@ class ViewCategoryDetail extends Component {
 			const res = await this.props.$category.fetchDetail({
 				id
 			})
-			this.data.id = id
-			this.data.index = res.index
-			this.data.online = res.online
-			this.data.badge = res.badge
-			this.data.badgeColor = res.badgeColor
-			this.data.name = res.name
+			const data = {}
+
+			data.id = id
+			data.index = res.index
+			data.online = res.online
+			data.badge = res.badge
+			data.badgeColor = res.badgeColor
+			data.name = res.name
+
+			this.setState({
+				...data
+			})
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)

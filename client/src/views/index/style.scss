@@ -6,7 +6,7 @@
 	.top {
 		background: #fff;
 		position: relative;
-		margin-top: -0.4rem;
+		margin-top: -0.3rem;
 	}
 
 	.top_header {
@@ -80,7 +80,7 @@
 	}
 
 	.top_quick {
-		padding: 0.4rem 0 0.1rem 0;
+		padding: 0.2rem 0.1rem 0 0.1rem;
 		.row {
 			display: -webkit-box;
 			-webkit-box-pack: justify;
@@ -97,7 +97,6 @@
 				height: 1rem;
 				background-position: center center;
 				background-size: cover;
-				border-radius: 50%;
 				margin-bottom: 0.2rem;
 			}
 			p {
@@ -116,12 +115,38 @@
 	.recommend-list {
 		.goods {
 			overflow: hidden;
+			margin-left: -0.1rem;
+			margin-right: -0.1rem;
+			padding-bottom: 0.2rem;
+		}
+		.row {
+			display: -webkit-box;
+		}
+		> h1 {
+			display: block;
+			line-height: 1rem;
+			padding-top: 0.1rem;
+			color: #333;
+			font-size: 0.3rem;
+			span {
+				color: #ff9900;
+			}
 		}
 	}
 
 	.loved-list {
 		.goods {
 			overflow: hidden;
+		}
+		> h1 {
+			display: block;
+			line-height: 1rem;
+			padding-top: 0.1rem;
+			color: #333;
+			font-size: 0.3rem;
+			span {
+				color: #ff9900;
+			}
 		}
 	}
 

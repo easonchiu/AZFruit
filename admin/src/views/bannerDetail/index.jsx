@@ -41,12 +41,18 @@ class ViewBannerDetail extends Component {
 			const res = await this.props.$banner.fetchDetail({
 				id
 			})
-			this.data.id = id
-			this.data.index = res.index
-			this.data.link = res.link
-			this.data.online = res.online
-			this.data.uri = res.uri
-			this.data.desc = res.desc
+			const data = {}
+
+			data.id = id
+			data.index = res.index
+			data.link = res.link
+			data.online = res.online
+			data.uri = res.uri
+			data.desc = res.desc
+
+			this.setState({
+				...data
+			})
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)

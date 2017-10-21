@@ -20,6 +20,22 @@ var ProductSchema = Schema({
 		type: String,
 		default: ''
 	},
+	// 封面图
+	cover: {
+		type: String,
+		default: ''
+	},
+	// 参数
+	parameter: [{
+		name: {
+			type: String,
+			default: ''
+		},
+		value: {
+			type: String,
+			default: ''
+		}
+	}],
 	// 是否进口
 	isImport: {
 		type: Boolean,
@@ -31,7 +47,7 @@ var ProductSchema = Schema({
 		default: ''
 	},
 	// 所属分类
-	classes: [{
+	category: [{
 		name: {
 			type: String,
 			default: ''

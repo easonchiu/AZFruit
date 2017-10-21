@@ -41,12 +41,18 @@ class ViewQuickDetail extends Component {
 			const res = await this.props.$quick.fetchDetail({
 				id
 			})
-			this.data.id = id
-			this.data.index = res.index
-			this.data.link = res.link
-			this.data.online = res.online
-			this.data.uri = res.uri
-			this.data.name = res.name
+			const data = {}
+
+			data.id = id
+			data.index = res.index
+			data.link = res.link
+			data.online = res.online
+			data.uri = res.uri
+			data.name = res.name
+
+			this.setState({
+				...data
+			})
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)
@@ -101,18 +107,18 @@ class ViewQuickDetail extends Component {
 							onChange={this.valueChange.bind(this, 'index')} />
 					</Form.Item>
 
-					<Form.Item label="名称">
-						<Input
-							value={this.data.name}
-							onChange={this.valueChange.bind(this, 'name')} />
-					</Form.Item>
-
 					<Form.Item label="图标">
 						<Upload
 							maxWidth={200}
 							classes="quick"
 							value={this.data.uri}
 							onChange={this.valueChange.bind(this, 'uri')} />
+					</Form.Item>
+
+					<Form.Item label="名称">
+						<Input
+							value={this.data.name}
+							onChange={this.valueChange.bind(this, 'name')} />
 					</Form.Item>
 
 					<Form.Item label="链接">

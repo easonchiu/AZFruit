@@ -122,13 +122,29 @@ class ViewIndex extends Component {
 			return null
 		}
 
+		const wrapper = []
+		for (let i = 0; i < Math.ceil(list.length / 2); i++) {
+			wrapper.push(i * 2)
+		}
+
 		return (
 			<div className="recommend-list">
-				<h1>当季推荐</h1>
+				<h1><span>当季</span>推荐</h1>
 				<div className="goods">
 					{
-						list.map(res => (
-							<GoodsItem key={res.id} source={res} />
+						wrapper.map(res => (
+							<div className="row" key={res}>
+								{
+									list[res] ?
+									<GoodsItem source={list[res]} /> :
+									null
+								}
+								{
+									list[res + 1] ?
+									<GoodsItem source={list[res + 1]} /> :
+									null
+								}
+							</div>
 						))
 					}
 				</div>
@@ -140,7 +156,7 @@ class ViewIndex extends Component {
 	renderGuestLoved() {
 		return (
 			<div className="loved-list">
-				<h1>吃货最爱</h1>
+				<h1><span>吃货</span>最爱</h1>
 				<div className="goods">
 					{
 						[1,2,3,4,5,6,7,8].map(res => (

@@ -91,17 +91,17 @@ class ViewQuick extends Component {
 							width: 80,
 							align: 'center'
 						}, {
-							label: '名称',
-							prop: 'name',
-							width: 200,
-							align: 'center'
-						}, {
 							label: '图标',
 							width: 200,
 							align: 'center',
 							render: data => {
 								return <img src={CDN+data.uri} />
 							}
+						}, {
+							label: '名称',
+							prop: 'name',
+							width: 200,
+							align: 'center'
 						}, {
 							label: '链接',
 							prop: 'link'

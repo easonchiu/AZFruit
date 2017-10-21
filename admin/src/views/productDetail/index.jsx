@@ -3,8 +3,10 @@ import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 
-import { Button, Form, Input, InputNumber, Switch, Loading, Message, Select, Toast } from 'element-react'
+import { Button, Form, Input, InputNumber, Switch, Loading, Message, Select, Toast, Table } from 'element-react'
 import Colors from 'src/components/colors'
+import Upload from 'src/components/upload'
+import CDN from 'src/assets/libs/cdn'
 
 @connect
 @reactStateData
@@ -17,11 +19,12 @@ class ViewProductDetail extends Component {
 			loading: true,
 
 			name: '',
+			cover: '',
 			index: 0,
 			desc: '',
 			isImport: false,
 			origin: '',
-			classes: [],
+			category: [],
 			classNames: [],
 			badge: '',
 			badgeColor: '',
@@ -29,6 +32,10 @@ class ViewProductDetail extends Component {
 			detail: '',
 			atIndex: false,
 			online: false,
+			parameter: [],
+			parameterEdit: null,
+			parameterEditName: '',
+			parameterEditValue: ''
 		})
 	}
 
@@ -50,20 +57,29 @@ class ViewProductDetail extends Component {
 			const res = await this.props.$product.fetchDetail({
 				id
 			})
-			this.data.id = id
-			this.data.name = res.name
-			this.data.index = res.index
-			this.data.desc = res.desc
-			this.data.isImport = res.isImport
-			this.data.origin = res.origin
-			this.data.classes = res.classes
-			this.data.badge = res.badge
-			this.data.badgeColor = res.badgeColor
-			this.data.imgs = res.imgs
-			this.data.detail = res.detail
-			this.data.atIndex = res.atIndex
-			this.data.online = res.online
-			this.data.classNames = res.classes.map(res => res.id)
+
+			const data = {}
+
+			data.id = id
+			data.name = res.name
+			data.cover = res.cover
+			data.index = res.index
+			data.desc = res.desc
+			data.parameter = res.parameter || []
+			data.isImport = res.isImport
+			data.origin = res.origin
+			data.category = res.category
+			data.badge = res.badge
+			data.badgeColor = res.badgeColor
+			data.imgs = res.imgs
+			data.detail = res.detail
+			data.atIndex = res.atIndex
+			data.online = res.online
+			data.classNames = res.category.map(res => res.id)
+
+			this.setState({
+				...data
+			})
 
 			await this.props.$category.fetchOnlineList()
 		} catch(e) {
@@ -82,11 +98,13 @@ class ViewProductDetail extends Component {
 		try {
 			const data = {
 				name: this.data.name,
+				cover: this.data.cover,
 				index: this.data.index,
 				desc: this.data.desc,
+				parameter: this.data.parameter,
 				isImport: this.data.isImport,
 				origin: this.data.origin,
-				classes: this.data.classes,
+				category: this.data.category,
 				badge: this.data.badge,
 				badgeColor: this.data.badgeColor,
 				imgs: this.data.imgs,
@@ -121,7 +139,113 @@ class ViewProductDetail extends Component {
 			}
 		})
 
-		this.data.classes = res
+		this.data.category = res
+	}
+
+	appendParameter = e => {
+		if (this.data.parameterEdit != null) {
+			Message.error('请先保存正在编辑中的参数')
+			return false
+		}
+		const newPar = {
+			name: '',
+			value: '',
+		}
+		this.data.parameter.push(newPar)
+		this.data.parameterEdit = newPar
+	}
+
+	deleteParameter = e => {
+		this.data.parameter.forEach((res, i) => {
+			if (res == e) {
+				this.data.parameter.splice(i, 1)
+			}
+		})
+		this.setState({
+			parameterEditValue: '',
+			parameterEditName: '',
+			parameterEdit: null
+		})
+	}
+
+	saveParameter = e => {
+		const name = this.data.parameterEditName.trim()
+		const value = this.data.parameterEditValue.trim()
+		
+		if (name == '') {
+			Message.error('键不能为空')
+			return false
+		} else if (value == '') {
+			Message.error('值不能为空')
+			return false
+		}
+		
+		this.data.parameterEdit.name = name
+		this.data.parameterEdit.value = value
+
+		this.setState({
+			parameterEditValue: '',
+			parameterEditName: '',
+			parameterEdit: null
+		})
+	}
+
+	editParameter = e => {
+		if (this.data.parameterEdit != null) {
+			Message.error('请先保存正在编辑中的参数')
+			return false
+		}
+		this.setState({
+			parameterEditValue: e.value,
+			parameterEditName: e.name,
+			parameterEdit: e
+		})
+	}
+
+	moveParameter = e => {
+		this.data.parameter.forEach((res, i) => {
+			if (res == e) {
+				this.data.parameter.splice(i, 1)
+				this.data.parameter.splice(i-1, 0, e)
+			}
+		})
+		this.setState({})
+	}
+
+	editParameterChange = (m, v) => {
+		if (m === 'name') {
+			this.data.parameterEditName = v
+		} else {
+			this.data.parameterEditValue = v
+		}
+	}
+
+	appendSwipeImgs = e => {
+		if (this.data.imgs.includes(e)) {
+			Message.error('已存在相同图片')
+			return false
+		}
+		this.data.imgs.push(e)
+		this.setState({})
+	}
+
+	moveSwipeImgs = e => {
+		this.data.imgs.forEach((res, i) => {
+			if (res == e) {
+				this.data.imgs.splice(i, 1)
+				this.data.imgs.splice(i-1, 0, e)
+			}
+		})
+		this.setState({})
+	}
+
+	deleteSwipeImgs = e => {
+		this.data.imgs.forEach((res, i) => {
+			if (res == e) {
+				this.data.imgs.splice(i, 1)
+			}
+		})
+		this.setState({})
 	}
 
 	render() {
@@ -143,6 +267,54 @@ class ViewProductDetail extends Component {
 							onChange={this.valueChange.bind(this, 'index')} />
 					</Form.Item>
 
+					<Form.Item label="封面图">
+						<Upload
+							maxWidth={350}
+							classes="cover"
+							value={this.data.cover}
+							onChange={this.valueChange.bind(this, 'cover')} />
+					</Form.Item>
+
+					<Form.Item label="轮播图">
+						<Table
+							className="swipeimgsTable"
+							style={{width:'600px', marginBottom:'10px'}}
+							border
+							columns={[{
+								type: 'index'
+							}, {
+								label: '图片',
+								render: e => {
+									return <img src={CDN + e} />
+								}
+							}, {
+								label: '',
+								width: 160,
+								align: 'center',
+								render: e => {
+									return <p className="console">
+										{
+											e != this.data.imgs[0] ?
+											<a href="javascript:;" onClick={this.moveSwipeImgs.bind(this, e)}>
+												上移
+											</a> :
+											null
+										}
+										<a href="javascript:;" onClick={this.deleteSwipeImgs.bind(this, e)}>
+											删除
+										</a>
+									</p>
+								}
+							}]}
+							data={this.data.imgs} />
+						<Upload
+							className="swipeimgs"
+							maxWidth={700}
+							category="goods"
+							value=""
+							onChange={this.appendSwipeImgs} />
+					</Form.Item>
+
 					<Form.Item label="产品名称">
 						<Input
 							value={this.data.name}
@@ -155,7 +327,72 @@ class ViewProductDetail extends Component {
 							onChange={this.valueChange.bind(this, 'desc')} />
 					</Form.Item>
 
-					<Form.Item label="是否进口">
+					<Form.Item label="产品参数">
+						<Table
+							style={{width:'600px',marginBottom:'10px'}}
+							border
+							columns={[{
+								type: 'index'
+							}, {
+								label: '名称',
+								width: 120,
+								render: e => {
+									if (e == this.data.parameterEdit) {
+										return <Input onChange={this.editParameterChange.bind(this, 'name')}
+											size="small" value={this.data.parameterEditName} />
+									}
+									return e.name
+								}
+							}, {
+								label: '值',
+								render: e => {
+									if (e == this.data.parameterEdit) {
+										return <Input onChange={this.editParameterChange.bind(this, 'value')}
+											size="small" value={this.data.parameterEditValue} />
+									}
+									return e.value
+								}
+							}, {
+								label: '',
+								width: 160,
+								align: 'center',
+								render: e => {
+									return <p className="console">
+										{
+											e == this.data.parameterEdit ?
+											<a href="javascript:;" onClick={this.saveParameter.bind(this, e)}>保存</a> :
+											<a href="javascript:;" onClick={this.editParameter.bind(this, e)}>编辑</a>
+										}
+										{
+											e != this.data.parameter[0] ?
+											<a href="javascript:;" onClick={this.moveParameter.bind(this, e)}>
+												上移
+											</a> :
+											null
+										}
+										<a href="javascript:;" onClick={this.deleteParameter.bind(this, e)}>
+											删除
+										</a>
+									</p>
+								}
+							}]}
+							data={this.data.parameter} />
+						<Button onClick={this.appendParameter}>添加</Button>
+					</Form.Item>
+
+					<Form.Item label="详情">
+						<Input
+							value={this.data.detail}
+							onChange={this.valueChange.bind(this, 'detail')} />
+					</Form.Item>
+
+					<Form.Item label="产地">
+						<Input
+							value={this.data.origin}
+							onChange={this.valueChange.bind(this, 'origin')} />
+					</Form.Item>
+
+					<Form.Item label="优质产区">
 						<Switch
 							value={this.data.isImport}
 							onText=""
@@ -163,12 +400,6 @@ class ViewProductDetail extends Component {
 							onColor="#13ce66"
 							offColor="#ff4949"
 							onChange={this.valueChange.bind(this, 'isImport')} />
-					</Form.Item>
-
-					<Form.Item label="产地">
-						<Input
-							value={this.data.origin}
-							onChange={this.valueChange.bind(this, 'origin')} />
 					</Form.Item>
 
 					<Form.Item label="所属分类">
@@ -196,16 +427,6 @@ class ViewProductDetail extends Component {
 						<Colors
 							value={this.data.badgeColor}
 							onChange={this.valueChange.bind(this, 'badgeColor')} />
-					</Form.Item>
-
-					<Form.Item label="产品轮播图">
-						imgs array
-					</Form.Item>
-
-					<Form.Item label="详情">
-						<Input
-							value={this.data.detail}
-							onChange={this.valueChange.bind(this, 'detail')} />
 					</Form.Item>
 
 					<Form.Item label="是否首页推荐">

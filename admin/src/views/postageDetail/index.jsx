@@ -45,14 +45,21 @@ class ViewPostageDetail extends Component {
 			const res = await this.props.$postage.fetchDetail({
 				id
 			})
-			this.data.id = id
-			this.data.km = res.km
-			this.data.weight = res.weight
-			this.data.postage = res.postage
-			this.data.eachWeight = res.eachWeight
-			this.data.eachPostage = res.eachPostage
-			this.data.freePostage = res.freePostage
-			this.data.online = res.online
+
+			const data = {}
+
+			data.id = id
+			data.km = res.km
+			data.weight = res.weight
+			data.postage = res.postage
+			data.eachWeight = res.eachWeight
+			data.eachPostage = res.eachPostage
+			data.freePostage = res.freePostage
+			data.online = res.online
+
+			this.setState({
+				...data
+			})
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)

@@ -103,11 +103,6 @@ class ViewProductSpec extends Component {
 					className="table"
 					columns={[
 						{
-							label: '排序',
-							prop: 'index',
-							width: 80,
-							align: 'center'
-						}, {
 							label: '规格描述',
 							prop: 'desc',
 						}, {

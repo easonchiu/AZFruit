@@ -18,7 +18,6 @@ class ViewProductSpecDetail extends Component {
 			id: '',
 			loading: true,
 
-			index: 0,
 			sid: '',
 			desc: '',
 			stock: 0,
@@ -48,15 +47,20 @@ class ViewProductSpecDetail extends Component {
 			const res = await this.props.$productSpec.fetchDetail({
 				sid
 			})
-			this.data.sid = sid
-			this.data.index = res.index
-			this.data.desc = res.desc
-			this.data.stock = res.stock
-			this.data.unit = res.unit
-			this.data.weight = res.weight
-			this.data.price = res.price
-			this.data.prePrice = res.prePrice
-			this.data.online = res.online
+			const data = {}
+
+			data.sid = sid
+			data.desc = res.desc
+			data.stock = res.stock
+			data.unit = res.unit
+			data.weight = res.weight
+			data.price = res.price
+			data.prePrice = res.prePrice
+			data.online = res.online
+
+			this.setState({
+				...data
+			})
 		} catch(e) {
 			Message.error(e.msg)
 			console.error(e)
@@ -73,7 +77,6 @@ class ViewProductSpecDetail extends Component {
 		try {
 			const data = {
 				pid: this.pid,
-				index: this.data.index,
 				desc: this.data.desc,
 				stock: this.data.stock,
 				unit: this.data.unit,
@@ -107,13 +110,6 @@ class ViewProductSpecDetail extends Component {
 				<Loading loading={this.data.loading}>
 				
 				<Form labelWidth={120}>
-					<Form.Item label="排序">
-						<InputNumber
-							defaultValue={this.data.index}
-							value={this.data.index}
-							onChange={this.valueChange.bind(this, 'index')} />
-					</Form.Item>
-
 					<Form.Item label="规格描述">
 						<Input
 							value={this.data.desc}

@@ -125,9 +125,14 @@ class Upload extends Component {
 	}
 
 	render() {
+		const style = {}
+		if (this.props.value) {
+			style.backgroundImage = `url(${CDN+this.props.value})`
+		}
+		
 		return (
-			<div className="img-upload">
-				<div className="box" style={{backgroundImage: `url(${CDN+this.props.value})`}}>
+			<div className={cn('img-upload', this.props.className)}>
+				<div className="box" style={style}>
 					{
 						!this.props.value ?
 						'无图片' :
