@@ -37,7 +37,7 @@ class Popup extends Component {
 		}
 		let hasScrollChildren = false
 		children.forEach(res => {
-			if (res.type == Scroller && !hasScrollChildren) {
+			if (res && res.type == Scroller && !hasScrollChildren) {
 				hasScrollChildren = true
 			}
 		})

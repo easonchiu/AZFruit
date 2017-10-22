@@ -13,21 +13,36 @@
 .x-app-header {
 	position: relative;
 	z-index: 2;
-	background: #fff;
 	box-shadow: 0 0 0.2rem rgba(0,0,0,0.08);
+	&:after {
+		content: "";
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		background: #fff;
+		-webkit-transition: opacity 0.3s ease-out;
+	}
 	&__inner {
 		position: relative;
+		z-index: 1;
 		display: -webkit-box;
 		-webkit-box-align: center;
-		min-height: 1.1rem;
+		min-height: 1.18rem;
 		height: 100%;
 	}
 	&__title {
 		display: block;
 		text-align: center;
 		width: 100%;
+		padding: 0 1rem;
 		font-size: 0.32rem;
 		color: #333;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
 	}
 	&__addon-before, &__addon-after {
 		position: absolute;
@@ -39,13 +54,26 @@
 		display: -webkit-box;
 		-webkit-box-align: center;
 		z-index: 2;
-		padding: 0 0.3rem;
+		padding: 0 0.4rem;
 		* {
 			pointer-events: auto;
 		}
 	}
 	&__addon-after {
 		-webkit-box-pack: end;
+	}
+	&__addon-bottom {
+		position: relative;
+		z-index: 2;
+	}
+	&--ghost {
+		box-shadow: none;
+		&:after {
+			opacity: 0;
+		}
+		.x-app-header__title {
+			color: #fff;
+		}
 	}
 }
 
@@ -54,6 +82,7 @@
 	height: 100%;
 	-webkit-box-flex: 1;
 	overflow: auto;
+	overflow-x: hidden;
 	-webkit-overflow-scrolling: touch;
 	position: relative;
 	padding: 0.3rem;
@@ -142,7 +171,7 @@
 .x-app-footer {
 	background: #fff;
 	min-height: 0.88rem;
-	box-shadow: 0 0 0.2rem rgba(0,0,0,0.08);
 	position: relative;
 	z-index: 2;
+	box-shadow: 0 0 0.2rem rgba(0,0,0,0.08);
 }

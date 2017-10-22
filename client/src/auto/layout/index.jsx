@@ -61,6 +61,9 @@ const LayoutFooter = props => {
 const LayoutHeader = props => {
 	const css = classnames(
 		'x-app-header',
+		{
+			'x-app-header--ghost': props.ghost
+		},
 		props.className,
 	)
 	const inner = classnames(

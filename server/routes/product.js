@@ -28,6 +28,11 @@ router
 	.get(`${prefix.app}/product/recommend/list`, product.appFetchRecommendList)
 	// 用户端获取全部产品列表
 	.get(`${prefix.app}/product/list`, product.appFetchList)
-	
+	// 用户端获取销量排行产品列表
+	.get(`${prefix.app}/product/top10/list`, product.appFetchTop10List)
+	// 用户端获取产品详情
+	.get(`${prefix.app}/product/detail/:id`, product.appFetchDetail)
+	// 用户端获取产品规格
+	.get(`${prefix.app}/product/spec/:id`, productSpec.appFetchSpec)
 
 module.exports = router

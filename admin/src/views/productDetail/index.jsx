@@ -335,7 +335,7 @@ class ViewProductDetail extends Component {
 								type: 'index'
 							}, {
 								label: '名称',
-								width: 120,
+								width: 180,
 								render: e => {
 									if (e == this.data.parameterEdit) {
 										return <Input onChange={this.editParameterChange.bind(this, 'name')}

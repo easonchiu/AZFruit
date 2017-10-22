@@ -2,11 +2,12 @@ import './style'
 import React from 'react'
 import cn from 'classnames'
 import CDN from 'src/assets/libs/cdn'
+import { Link } from 'react-router-dom'
 
 const GoodsItem = props => {
 	const data = props.source || {}
 	return (
-		<div className={cn('goods-item', props.className)}>
+		<Link to={`/detail/${data.id}`} className={cn('goods-item', props.className)}>
 			<div className="thumb">
 				{
 					data.origin && data.isImport ?
@@ -35,7 +36,7 @@ const GoodsItem = props => {
 				<del>市场价 {data.prePrice}元</del> :
 				null
 			}
-		</div>
+		</Link>
 	)
 }
 

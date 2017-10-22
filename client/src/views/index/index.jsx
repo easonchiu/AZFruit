@@ -38,6 +38,7 @@ class ViewIndex extends Component {
 				this.props.$quick.fetchList(),
 				this.props.$banner.fetchList(),
 				this.props.$goods.fetchRecommendList(),
+				this.props.$goods.fetchTop10List(),
 			])
 		} catch(e) {
 			console.error(e)
@@ -154,13 +155,15 @@ class ViewIndex extends Component {
 	}
 
 	renderGuestLoved() {
+		const list = this.props.$$goods.top10List
+
 		return (
 			<div className="loved-list">
 				<h1><span>吃货</span>最爱</h1>
 				<div className="goods">
 					{
-						[1,2,3,4,5,6,7,8].map(res => (
-							<TopGoodsItem key={res} />
+						list.map((res, i) => (
+							<TopGoodsItem key={res.id} source={res} top={i} />
 						))
 					}
 				</div>

@@ -218,6 +218,48 @@ class product {
 			return ctx.error()
 		}
 	}
+
+	// 用户获取top10列表
+	static async appFetchTop10List(ctx, next) {
+		try {
+			const list = await Product
+				.aggregate([{
+					$match: {
+						online: true,
+						specCount: {
+							'$gt': 0
+						}
+					}
+				}, {
+					$sort: {
+						index: 1,
+					}
+				}, {
+					$project: {
+						_id: 0,
+						name: 1,
+						cover: 1,
+						desc: 1,
+						isImport: 1,
+						origin: 1,
+						badge: 1,
+						price: 1,
+						prePrice: 1,
+						unit: 1,
+						badgeColor: 1,
+						id: '$_id'
+					}
+				}, {
+					$limit: 10
+				}])
+
+			return ctx.success({
+				data: list
+			})
+		} catch(e) {
+			return ctx.error()
+		}
+	}
 	
 	// 获取详情
 	static async fetchDetail(ctx, next) {
@@ -246,6 +288,41 @@ class product {
 					online: res.online,
 					specCount: res.specCount,
 					createTime: res.createTime,
+					id: id
+				}
+			})
+		} catch(e) {
+			return ctx.error()
+		}
+	}
+
+	// 用户获取产品详情
+	static async appFetchDetail(ctx, next) {
+		try {
+			const { id } = ctx.params
+
+			const res = await Product.findOne({
+				_id: id
+			})
+
+			return ctx.success({
+				data: {
+					name: res.name,
+					cover: res.cover,
+					desc: res.desc,
+					parameter: res.parameter,
+					isImport: res.isImport,
+					origin: res.origin,
+					badge: res.badge,
+					badgeColor: res.badgeColor,
+					imgs: res.imgs,
+					detail: res.detail,
+					price: res.price,
+					prePrice: res.prePrice,
+					unit: res.unit,
+					parameter: res.parameter,
+					online: res.online,
+					specCount: res.specCount,
 					id: id
 				}
 			})

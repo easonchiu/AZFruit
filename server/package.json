@@ -13,7 +13,8 @@
   "main": "index.js",
   "devDependencies": {},
   "scripts": {
-    "dev": "nodemon index.js --exec babel-node"
+    "dev": "nodemon index.js --exec babel-node",
+    "build": "pm2 start index.js --name azfruit"
   },
   "author": "",
   "license": "ISC",

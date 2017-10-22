@@ -1,9 +1,9 @@
 @charset "utf-8";
 
 .x-popup {
-	-webkit-box-align: end;
+	-webkit-box-align: end !important;
 	&--top {
-		-webkit-box-align: start;
+		-webkit-box-align: start !important;
 	}
 	&__inner {
 		overflow: auto;

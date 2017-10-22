@@ -136,7 +136,8 @@
 
 	.loved-list {
 		.goods {
-			overflow: hidden;
+			padding-top: 0.1rem;
+			// margin-top: -0.2rem;
 		}
 		> h1 {
 			display: block;

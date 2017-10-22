@@ -2,11 +2,36 @@
 
 .top-goods-item {
 	display: -webkit-box;
+	padding: 0.2rem 0;
+	background: #fff;
+	border-top: 1px solid #e2e2e2;
+	position: relative;
+	&:active {
+		opacity: 0.7;
+	}
+	> sup {
+		display: block;
+		position: absolute;
+		left: 0.2rem;
+		top: 0;
+		width: 0.37rem;
+		height: 0.42rem;
+		background-size: 100% 100%;
+		z-index: 9;
+	}
+	&__no-1 {
+		background-image: url('../../assets/imgs/icon-no-1.png');
+	}
+	&__no-2 {
+		background-image: url('../../assets/imgs/icon-no-2.png');
+	}
+	&__no-3 {
+		background-image: url('../../assets/imgs/icon-no-3.png');
+	}
 	.thumb {
 		width: 2rem;
 		overflow: hidden;
 		position: relative;
-		margin-bottom: 0.1rem;
 		&:after {
 			content: "";
 			display: block;
@@ -24,32 +49,95 @@
 	.import {
 		position: absolute;
 		right: 0;
-		top: 0;
-		padding: 0.1rem;
-		line-height: 1;
+		top: -0.2rem;
+		z-index: 9;
+		padding: 0.1rem 0.1rem 0.1rem 0.38rem;
+		line-height: 0.2rem;
 		font-size: 0.2rem;
 		color: #fff;
-		background: #00bb44;
+		display: -webkit-box;
+		-webkit-box-align: center;
+		background-image: -webkit-linear-gradient(0,rgb(101,105,231) 0%,rgb(139,100,231) 100%);
+		border-bottom-left-radius: 0.1rem;
+		i {
+			position: absolute;
+			left: 0.05rem;
+			top: 0.03rem;
+			display: block;
+			width: 0.3rem;
+			height: 0.3rem;
+			background: url('../../assets/imgs/icon-nb.png') center center no-repeat;
+			background-size: 90% 90%;
+		}
 	}
 	.info {
 		-webkit-box-flex: 1;
+		padding: 0.2rem 0.1rem 0.1rem 0.1rem;
+		position: relative;
 		> h1 {
-			font-size: 0.28rem;
+			font-size: 0.32rem;
+			line-height: 0.4rem;
 			font-weight: normal;
-		}
-		.badge {
-			display: inline-block;
-			font-size: 0.28rem;
-			color: #fff;
-			background: #00bb44;
+			color: #333;
+			margin-bottom: 0.05rem;
 		}
 		> p {
-			font-size: 0.26rem;
+			font-size: 0.28rem;
 			font-weight: normal;
+			color: #999;
+			margin-bottom: 0.05rem;
+		}
+		.badge {
+			display: inline;
+			padding-left: 1.5em;
+			position: relative;
+			overflow: hidden;
+			em {
+				display: block;
+				height: 0.32rem;
+				line-height: 0.32rem;
+				overflow: hidden;
+				position: absolute;
+				left: 0.1rem;
+				top: 0.04rem;
+				font-style: normal;
+				padding: 0 0.08rem;
+				font-size: 0.2rem;
+				color: #fff;
+				border-radius: 0.05rem;
+			}
 		}
 		> .price {
 			color: rgb(255, 73, 73);
-			font-size: 0.26rem;
+			display: -webkit-box;
+			-webkit-box-align: baseline;
+			font-weight: normal;
+			margin-bottom: 0.05rem;
+			margin-left: -0.03rem;
+			span {
+				display: block;
+				font-size: 0.24rem;
+				line-height: 0.34rem;
+			}
+			em {
+				display: block;
+				font-style: normal;
+				font-size: 0.34rem;
+				line-height: 0.34rem;
+				margin-right: 0.05rem;
+				position: relative;
+				top: 0.02rem;
+			}
+		}
+		> del {
+			text-decoration: none;
+			font-weight: normal;
+			color: #ccc;
+			display: block;
+			font-size: 0.24rem;
+			span {
+				font-size: 0.24rem;
+			}
 		}
 	}
 }

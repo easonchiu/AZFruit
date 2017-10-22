@@ -29,10 +29,12 @@
 			span {
 				display: block;
 				color: #fff;
+				line-height: 0.32rem;
+				padding: 0 0.08rem;
 				font-size: 0.2rem;
-				padding: 0.05rem 0.08rem;
+				color: #fff;
+				border-radius: 0.05rem;
 				margin-left: 0.1rem;
-				border-radius: 0.1rem;
 			}
 		}
 	}
@@ -54,7 +56,7 @@
 		-webkit-box-align: center;
 		.empty {
 			color: #ccc;
-			font-size: 0.26rem;
+			font-size: 0.24rem;
 		}
 	}
 
