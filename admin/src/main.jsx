@@ -10,14 +10,15 @@ import { HashRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 import configureStore from 'src/redux/store'
 const store = configureStore()
 
-// index
 import ViewIndex from 'src/views/index'
+import ViewLogin from 'src/views/login'
 
 // render to #root
 render(
 	<Provider store={store}>
 		<Router>
 			<Switch>
+				<Route path="/login"  component={ ViewLogin } />
 				<Route component={ ViewIndex } />
 			</Switch>
 		</Router>
