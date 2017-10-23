@@ -7,6 +7,12 @@
 	background: url('../../assets/imgs/bg2.jpeg') center center no-repeat;
 	background-size: cover;
 	position: relative;
+	.mask {
+		width: 100%;
+		height: 100%;
+		background: #000;
+		opacity: 0.3;
+	}
 	.login-box {
 		padding: 30px;
 		background: #fff;

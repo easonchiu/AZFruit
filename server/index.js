@@ -18,6 +18,7 @@ var categoryRoute = require('./routes/category')
 var quickRoute = require('./routes/quick')
 var postageRoute = require('./routes/postage')
 var uploadRoute = require('./routes/upload')
+var adminUserRoute = require('./routes/adminuser')
 
 // 创建实例
 var app = new Koa()
@@ -42,6 +43,7 @@ app
 	.use(quickRoute.routes(), quickRoute.allowedMethods())
 	.use(postageRoute.routes(), postageRoute.allowedMethods())
 	.use(uploadRoute.routes(), uploadRoute.allowedMethods())
+	.use(adminUserRoute.routes(), adminUserRoute.allowedMethods())
 
 // 起一个服务
 const server = http.createServer(app.callback())

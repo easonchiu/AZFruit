@@ -6,6 +6,7 @@ import $category from './category'
 import $quick from './quick'
 import $postage from './postage'
 import $upload from './upload'
+import $user from './user'
 
 
 export {
@@ -17,4 +18,5 @@ export {
 	$quick,
 	$postage,
 	$upload,
+	$user,
 }
