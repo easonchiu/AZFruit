@@ -35,12 +35,12 @@ app
 	.use(helmet())
 	.use(response())
 	// 除登录接口，其他接口都要jwt验证
-	.use((ctx, next) => {
-		if (ctx.request.url.indexOf('/adminuser') >= 0) {
-			return next()
-		}
-		return jwt(ctx, next)
-	})
+	// .use((ctx, next) => {
+	// 	if (ctx.request.url.indexOf('/adminuser') >= 0) {
+	// 		return next()
+	// 	}
+	// 	return jwt(ctx, next)
+	// })
 
 // 加载路由
 app
