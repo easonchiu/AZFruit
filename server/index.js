@@ -36,7 +36,7 @@ app
 	.use(response())
 	// 除登录接口，其他接口都要jwt验证
 	.use((ctx, next) => {
-		if (ctx.request.url.indexOf('/login') >= 0) {
+		if (ctx.request.url.indexOf('/adminuser') >= 0) {
 			return next()
 		}
 		return jwt(ctx, next)
