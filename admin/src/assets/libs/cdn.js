@@ -1,1 +1,1 @@
-export default 'http://localhost:8888/'
+export default process.env.ENV_NAME === 'production' ? '/azfruitUpload/' : 'http://localhost:8888/'
