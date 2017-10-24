@@ -15,6 +15,8 @@ class adminuser {
 
 		const name = 'admin'
 		const pwd = 'a123456'
+
+		console.log('create user')
 		
 		const find = await AdminUser.findOne({
 			username: name
