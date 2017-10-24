@@ -1,4 +1,4 @@
 module.exports = {
-	api: '/api',
-	app: '/app'
+	api: '/azfruitServer/api',
+	app: '/azfruitServer/app'
 }
