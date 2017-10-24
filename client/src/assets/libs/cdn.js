@@ -1,1 +1,1 @@
-export default 'http://localhost:8888/'
+export default '/azfruitUpload/'

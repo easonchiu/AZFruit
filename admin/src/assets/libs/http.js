@@ -1,13 +1,14 @@
 import axios from 'axios'
+import { getToken, setToken, clearToken} from './token'
 
 const config = {
-	production: '/autowebgateway',
+	production: '/azfruitServer/api',
 	develop: 'api',
-	test1: '/autowebgateway',
-	test2: '/autowebgateway',
-	test3: '/autowebgateway',
-	test4: '/autowebgateway',
-	test5: '/autowebgateway',
+	test1: '/azfruitServer/api',
+	test2: '/azfruitServer/api',
+	test3: '/azfruitServer/api',
+	test4: '/azfruitServer/api',
+	test5: '/azfruitServer/api',
 }
 
 const baseUrl = config[process.env.ENV_NAME] || config['develop']
@@ -21,7 +22,7 @@ const http = axios.create({
 })
 
 http.interceptors.request.use(config => {
-	const token = sessionStorage.getItem('token')
+	const token = getToken('token')
 	if (token) {
 		config.headers.Authorization = 'Bearer ' + token
 	}
@@ -36,6 +37,11 @@ http.interceptors.response.use(config => {
 		msg: config.data.msg
 	})
 }, error => {
+	if (error.response.status) {
+		clearToken()
+		window.location.href = '/#/login'
+		return false
+	}
 	return Promise.reject({
 		msg: '系统错误'
 	})

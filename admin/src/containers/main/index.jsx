@@ -1,6 +1,6 @@
 import './style'
 import React from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 
 // banner管理
 import ViewBanner from 'src/views/banner'
@@ -61,8 +61,6 @@ const Main = ({children}) => {
 
 				<Route exact path="/comment/list" component={ ViewComment } />
 				
-
-
 				<Route exact path="/user/list" component={ ViewUser } />
 			</div>
 		</div>

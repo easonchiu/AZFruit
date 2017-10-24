@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const config = {
-	production: '/',
+	production: '/azfruitServer/app',
 	develop: 'proxy',
 }
 

@@ -42,6 +42,7 @@ class ViewLogin extends Component {
 					username: this.data.username,
 					password: this.data.password,
 				})
+				this.props.history.push('/banner/list')
 			} catch(e) {
 				Message.error(e.msg || '系统错误')
 			}

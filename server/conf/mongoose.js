@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
-var dburl = 'mongodb://localhost:27017/azfruit'
+// var dburl = 'mongodb://localhost:27017/azfruit'
+var dburl = 'mongodb://develop:123456@127.0.0.1:24135/azfruit'
 
 // 配置
 var config = {
