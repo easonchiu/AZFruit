@@ -2,27 +2,28 @@ var router = require('koa-router')()
 var prefix = require('../conf/prefix')
 var product = require('../controllers/product')
 var productSpec = require('../controllers/productSpec')
+var jwt = require('../middlewares/jwt')
 
 router
 	// 创建产品
-	.post(`${prefix.api}/product`, product.create)
+	.post(`${prefix.api}/product`, jwt, product.create)
 	// 获取列表
-	.get(`${prefix.api}/product/list`, product.fetchList)
+	.get(`${prefix.api}/product/list`, jwt, product.fetchList)
 	// 获取详情
-	.get(`${prefix.api}/product/detail/:id`, product.fetchDetail)
+	.get(`${prefix.api}/product/detail/:id`, jwt, product.fetchDetail)
 	// 修改详情
-	.patch(`${prefix.api}/product/detail/:id`, product.update)
+	.patch(`${prefix.api}/product/detail/:id`, jwt, product.update)
 
 	// 创建产品规格
-	.post(`${prefix.api}/product/spec`, productSpec.create)
+	.post(`${prefix.api}/product/spec`, jwt, productSpec.create)
 	// 获取规格列表
-	.get(`${prefix.api}/product/spec/list`, productSpec.fetchList)
+	.get(`${prefix.api}/product/spec/list`, jwt, productSpec.fetchList)
 	// 获取规格详情
-	.get(`${prefix.api}/product/spec/detail/:id`, productSpec.fetchDetail)
+	.get(`${prefix.api}/product/spec/detail/:id`, jwt, productSpec.fetchDetail)
 	// 修改规格详情
-	.patch(`${prefix.api}/product/spec/detail/:id`, productSpec.update)
+	.patch(`${prefix.api}/product/spec/detail/:id`, jwt, productSpec.update)
 	// 删除规格
-	.delete(`${prefix.api}/product/spec/detail/:id`, productSpec.remove)
+	.delete(`${prefix.api}/product/spec/detail/:id`, jwt, productSpec.remove)
 
 	// 用户端获取首页推荐列表
 	.get(`${prefix.app}/product/recommend/list`, product.appFetchRecommendList)

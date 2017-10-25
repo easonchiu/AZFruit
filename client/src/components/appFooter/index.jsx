@@ -6,10 +6,22 @@ import { Link } from 'react-router-dom'
 const AppFooter = props => {
 	return (
 		<Layout.Footer className="app-footer">
-			<Link to="/">首页</Link>
-			<Link to="/category">全部</Link>
-			<Link to="/order">订单</Link>
-			<Link to="/profile">我的</Link>
+			<Link to="/">
+				<i className="icon-home" />
+				<p>首页</p>
+			</Link>
+			<Link to="/category">
+				<i className="icon-category" />
+				<p>全部</p>
+			</Link>
+			<Link to="/order">
+				<i className="icon-order" />
+				<p>订单</p>
+			</Link>
+			<Link to="/profile">
+				<i className="icon-profile" />
+				<p>我的</p>
+			</Link>
 		</Layout.Footer>
 	)
 }

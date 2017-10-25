@@ -5,11 +5,6 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var ProductSpecSchema = Schema({
-	// 排序
-	index: {
-		type: Number,
-		default: 0
-	},
 	// 所属产品
 	pid: {
 		type: String,

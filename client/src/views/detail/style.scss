@@ -188,6 +188,7 @@
 			display: block;
 			margin-right: 0.1rem;
 			color: #999;
+			min-width: 6em;
 		}
 		p {
 			font-size: 0.26rem;
@@ -198,5 +199,28 @@
 
 	.footer {
 		padding: 0.2rem 0.3rem;
+	}
+}
+
+.add-to-cart-popup {
+	.x-popup__inner {
+		overflow: visible;
+		position: relative;
+		padding-top: 1.8rem;
+	}
+	.thumb {
+		position: absolute;
+		left: 0.3rem;
+		top: -0.5rem;
+		width: 2rem;
+		height: 2rem;
+		box-shadow: 0 0 0.2rem rgba(0,0,0,0.08);
+		border-radius: 0.1rem;
+		overflow: hidden;
+		img {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
 	}
 }

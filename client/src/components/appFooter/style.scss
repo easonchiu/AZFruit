@@ -2,11 +2,40 @@
 
 .app-footer {
 	display: -webkit-box;
+	height: 1.1rem;
 	a {
-		display: block;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-box-pack: center;
+		-webkit-box-align: center;
 		width: 100%;
-		height: 1rem;
+		height: 1.1rem;
 		-webkit-box-flex: 1;
 		text-align: center;
+	}
+	i {
+		display: block;
+		width: 0.46rem;
+		height: 0.46rem;
+		background-size: 100% 100%;
+		margin-bottom: 0.05rem;
+	}
+	.icon-home {
+		background-image: url('../../assets/imgs/nav-home.png');
+	}
+	.icon-category {
+		background-image: url('../../assets/imgs/nav-category.png');
+	}
+	.icon-order {
+		background-image: url('../../assets/imgs/nav-order.png');
+	}
+	.icon-profile {
+		background-image: url('../../assets/imgs/nav-profile.png');
+	}
+	p {
+		display: block;
+		font-size: 0.22rem;
+		color: #666;
+		line-height: 1;
 	}
 }

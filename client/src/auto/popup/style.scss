@@ -61,7 +61,7 @@
 
 @-webkit-keyframes '__x_popup_slideup_enter' {
 	0%{
-		-webkit-transform: translateY(100%)
+		-webkit-transform: translateY(110%)
 	}
     100% {
        	-webkit-transform: translateY(0)
@@ -72,12 +72,12 @@
 		-webkit-transform: translateY(0)
 	}
     100% {
-       	-webkit-transform: translateY(100%) 
+       	-webkit-transform: translateY(110%) 
     }
 }
 @-webkit-keyframes '__x_popup_slidedown_enter' {
 	0%{
-		-webkit-transform: translateY(-100%)
+		-webkit-transform: translateY(-110%)
 	}
     100% {
        	-webkit-transform: translateY(0) 
@@ -88,6 +88,6 @@
 		-webkit-transform: translateY(0)
 	}
     100% {
-       	-webkit-transform: translateY(-100%) 
+       	-webkit-transform: translateY(-110%) 
     }
 }

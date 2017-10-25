@@ -158,7 +158,10 @@ class ViewDetail extends Component {
 					<Button onClick={this.addToCart}>加入购物车</Button>
 				</Layout.Footer>
 				
-				<Popup visible={this.data.popupVisible} onBgClick={e => this.data.popupVisible = false}>
+				<Popup
+					className="add-to-cart-popup"
+					visible={this.data.popupVisible}
+					onBgClick={e => this.data.popupVisible = false}>
 					{
 						data.cover ?
 						<div className="thumb">
@@ -177,6 +180,9 @@ class ViewDetail extends Component {
 							)
 						})
 					}
+					<div className="buttons">
+						<Button>加入购物车</Button>
+					</div>
 				</Popup>
 
 			</Layout>

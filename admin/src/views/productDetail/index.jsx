@@ -275,6 +275,7 @@ class ViewProductDetail extends Component {
 							classes="cover"
 							value={this.data.cover}
 							onChange={this.valueChange.bind(this, 'cover')} />
+							<span>封面图片尺寸：350 x 350 像素</span>
 					</Form.Item>
 
 					<Form.Item label="轮播图">
@@ -312,9 +313,10 @@ class ViewProductDetail extends Component {
 						<Upload
 							className="swipeimgs"
 							maxWidth={700}
-							category="goods"
+							classes="goods"
 							value=""
 							onChange={this.appendSwipeImgs} />
+						<span>轮播图片尺寸：700 x 700 像素</span>
 					</Form.Item>
 
 					<Form.Item label="产品名称">

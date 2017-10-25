@@ -113,6 +113,7 @@ class ViewQuickDetail extends Component {
 							classes="quick"
 							value={this.data.uri}
 							onChange={this.valueChange.bind(this, 'uri')} />
+						<span>图标尺寸：200 x 200 像素</span>
 					</Form.Item>
 
 					<Form.Item label="名称">

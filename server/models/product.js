@@ -92,11 +92,6 @@ var ProductSchema = Schema({
 		type: Number,
 		default: 0
 	},
-	// 销量，所有规格销量相加
-	sellCount: {
-		type: Number,
-		default: 0
-	},
 	// 规格中价格最低的存入
 	price: {
 		type: Number,

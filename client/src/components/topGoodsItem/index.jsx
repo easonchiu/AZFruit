@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 const TopGoodsItem = props => {
 	const data = props.source || {}
 	const top = props.top + 1
+
 	return (
 		<Link to={`/detail/${data.id}`} className={cn('top-goods-item', props.className)}>
 			{

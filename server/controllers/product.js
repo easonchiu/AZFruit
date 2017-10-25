@@ -160,6 +160,7 @@ class product {
 						prePrice: 1,
 						unit: 1,
 						badgeColor: 1,
+						sellCount: 1,
 						id: '$_id'
 					}
 				}])
@@ -207,6 +208,7 @@ class product {
 						prePrice: 1,
 						unit: 1,
 						badgeColor: 1,
+						sellCount: 1,
 						id: '$_id'
 					}
 				}])
@@ -232,7 +234,7 @@ class product {
 					}
 				}, {
 					$sort: {
-						index: 1,
+						sellCount: -1,
 					}
 				}, {
 					$project: {
@@ -247,6 +249,7 @@ class product {
 						prePrice: 1,
 						unit: 1,
 						badgeColor: 1,
+						sellCount: 1,
 						id: '$_id'
 					}
 				}, {

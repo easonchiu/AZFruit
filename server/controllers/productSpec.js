@@ -6,7 +6,6 @@ class productSpec {
 	/* 
 	 * 创建商品规格
 	 *
-	 * @index 排序
 	 * !@pid 所属产品
 	 * @desc 规格描述
 	 * @stock 库存
@@ -31,16 +30,9 @@ class productSpec {
 				msg: '计量单位不能为空'
 			})
 		}
-		
-		if (!(/^[0-9]*$/g).test(body.index)) {
-			return ctx.error({
-				msg: '排序编号不能为空且必须为数字'
-			})
-		}
 
 		try {
 			const res = await ProductSpec.create({
-				index: body.index,
 				pid: body.pid,
 				desc: body.desc,
 				stock: body.stock,
@@ -91,12 +83,10 @@ class productSpec {
 					},{
 						$sort: {
 							online: -1,
-							index: 1,
 						}
 					}, {
 						$project: {
 							_id: 0,
-							index: 1,
 							pid: 1,
 							desc: 1,
 							stock: 1,
@@ -181,7 +171,6 @@ class productSpec {
 
 			return ctx.success({
 				data: {
-					index: res.index,
 					pid: res.pid,
 					desc: res.desc,
 					stock: res.stock,
@@ -225,12 +214,6 @@ class productSpec {
 			if (!body.unit) {
 				return ctx.error({
 					msg: '计量单位不能为空'
-				})
-			}
-			
-			if (!(/^[0-9]*$/g).test(body.index)) {
-				return ctx.error({
-					msg: '排序编号不能为空且必须为数字'
 				})
 			}
 
@@ -308,8 +291,6 @@ class productSpec {
 			obj.prePrice = res[0].prePrice || 0
 			obj.unit = res[0].unit || ''
 		}
-
-		console.log(obj)
 
 		// 更新到产品的数据库中
 		await Product.update({

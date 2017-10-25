@@ -20,8 +20,6 @@ var postageRoute = require('./routes/postage')
 var uploadRoute = require('./routes/upload')
 var adminUserRoute = require('./routes/adminuser')
 
-var jwt = require('./middlewares/jwt')
-
 // 创建实例
 var app = new Koa()
 
@@ -34,13 +32,6 @@ app
 	.use(bodyParser())
 	.use(helmet())
 	.use(response())
-	// 除登录接口，其他接口都要jwt验证
-	.use((ctx, next) => {
-		if (ctx.request.url.indexOf('/adminuser') >= 0) {
-			return next()
-		}
-		return jwt(ctx, next)
-	})
 
 // 加载路由
 app

@@ -37,7 +37,7 @@ http.interceptors.response.use(config => {
 		msg: config.data.msg
 	})
 }, error => {
-	if (error.response.status) {
+	if (error.response.status === '401') {
 		clearToken()
 		window.location.href = process.env.ENV_NAME === 'production' ? '/azfruitAdmin/#/login' : '/#/login'
 		return false

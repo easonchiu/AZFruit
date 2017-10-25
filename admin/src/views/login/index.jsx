@@ -46,8 +46,14 @@ class ViewLogin extends Component {
 			} catch(e) {
 				Message.error(e.msg || '系统错误')
 			}
-			this.data.loading = false
+			setTimeout(e => {
+				this.data.loading = false
+			})
 		}
+	}
+
+	keydown = e => {
+		e.keyCode === 13 && this.submit()
 	}
 
 	render() {
@@ -66,6 +72,7 @@ class ViewLogin extends Component {
 							type="password"
 							autoComplete="new-password"
 							value={this.data.password}
+							onKeyDown={this.keydown}
 							onChange={this.valueChange.bind(this, 'password')}
 							placeholder="密码" />
 						<Button type="primary" onClick={this.submit} size="large">登录</Button>
