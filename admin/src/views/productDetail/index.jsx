@@ -48,38 +48,40 @@ class ViewProductDetail extends Component {
 		if (id) {
 			this.fetch(id)
 		} else {
-			this.data.loading = false
+			this.fetch(false)
 		}
 	}
 
 	async fetch(id) {
 		try {
-			const res = await this.props.$product.fetchDetail({
-				id
-			})
+			if (id) {
+				const res = await this.props.$product.fetchDetail({
+					id
+				})
 
-			const data = {}
+				const data = {}
 
-			data.id = id
-			data.name = res.name
-			data.cover = res.cover
-			data.index = res.index
-			data.desc = res.desc
-			data.parameter = res.parameter || []
-			data.isImport = res.isImport
-			data.origin = res.origin
-			data.category = res.category
-			data.badge = res.badge
-			data.badgeColor = res.badgeColor
-			data.imgs = res.imgs
-			data.detail = res.detail
-			data.atIndex = res.atIndex
-			data.online = res.online
-			data.classNames = res.category.map(res => res.id)
+				data.id = id
+				data.name = res.name
+				data.cover = res.cover
+				data.index = res.index
+				data.desc = res.desc
+				data.parameter = res.parameter || []
+				data.isImport = res.isImport
+				data.origin = res.origin
+				data.category = res.category
+				data.badge = res.badge
+				data.badgeColor = res.badgeColor
+				data.imgs = res.imgs
+				data.detail = res.detail
+				data.atIndex = res.atIndex
+				data.online = res.online
+				data.classNames = res.category.map(res => res.id)
 
-			this.setState({
-				...data
-			})
+				this.setState({
+					...data
+				})
+			}
 
 			await this.props.$category.fetchOnlineList()
 		} catch(e) {

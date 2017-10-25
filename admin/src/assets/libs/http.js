@@ -39,7 +39,7 @@ http.interceptors.response.use(config => {
 }, error => {
 	if (error.response.status) {
 		clearToken()
-		window.location.href = '/azfruitAdmin/#/login'
+		window.location.href = process.env.ENV_NAME === 'production' ? '/azfruitAdmin/#/login' : '/#/login'
 		return false
 	}
 	return Promise.reject({
