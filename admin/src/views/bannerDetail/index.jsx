@@ -115,10 +115,11 @@ class ViewBannerDetail extends Component {
 
 					<Form.Item label="图片">
 						<Upload
-							maxWidth={300}
+							maxWidth={700}
 							classes="banner"
 							value={this.data.uri}
 							onChange={this.valueChange.bind(this, 'uri')} />
+						<span>图片尺寸：700 x 350 像素</span>
 					</Form.Item>
 
 					<Form.Item label="跳转链接">

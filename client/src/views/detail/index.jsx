@@ -4,6 +4,7 @@ import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 import CDN from 'src/assets/libs/cdn'
 import ReactSwipe from 'react-swipe'
+import cn from 'classnames'
 
 import Layout from 'src/auto/layout'
 import Button from 'src/auto/button'
@@ -20,6 +21,7 @@ class ViewDetail extends Component {
 			loading: false,
 			errorInfo: '',
 			imgsIndex: 0,
+			activeSpec: 0,
 			popupVisible: false
 		})
 	}
@@ -58,9 +60,161 @@ class ViewDetail extends Component {
 		this.data.popupVisible = true
 	}
 
-	render() {
+	renderCover() {
+		const data = this.props.$$goods.detail || {}
+
+		return (
+			<div className="cover">
+				<div className="cover-imgs">
+					<ReactSwipe className="imgs" swipeOptions={{
+						transitionEnd: this.bannerScrollEnd
+					}}>
+						{
+							data.imgs && data.imgs.map((res, i) => {
+								return (
+									<div key={i}
+										className="item"
+										style={{backgroundImage:`url(${CDN+res})`}} />
+								)
+							})
+						}
+					</ReactSwipe>
+				</div>
+				{
+					data.imgs && data.imgs.length > 1 ?
+					<div className="dots">
+					{
+						data.imgs.map((res, i) => (
+							<span key={i} className={i == this.data.imgsIndex ? 'active' : ''} />
+						))
+					}
+					</div> :
+					null
+				}
+			</div>
+		)
+	}
+
+	renderBaseInfo() {
+		const data = this.props.$$goods.detail || {}
+
+		return (
+			<div className="info">
+				<div className="title">
+					<h1>
+						{data.name}
+						{
+							data.badge ?
+							<span className="badge">
+								<em style={{backgroundColor:data.badgeColor}}>{data.badge}</em>
+							</span> :
+							null
+						}
+					</h1>
+					{
+						data.origin && data.isImport ?
+						<span className="import"><i />{data.origin}</span> :
+						null
+					}
+				</div>
+				<p>{data.desc}</p>
+				<h6 className="price">
+					<span>￥</span>
+					<em>{data.price}</em>
+					<span>元/{data.unit}</span>
+					{
+						data.prePrice > data.price ?
+						<del>市场价 {data.prePrice}元</del> :
+						null
+					}
+				</h6>
+			</div>	
+		)
+	}
+	
+	// 规格点击
+	specClick = e => {
+		this.data.activeSpec = e
+		console.error(this.props.$$goods.spec[e])
+
+		const shoppingcart = [{
+			pid: '59e10f23e7ad7a40a218d845',
+			sku: [{
+				sid: '59e8def6b800717d01c80c3d',
+				count: 1
+			}, {
+				sid: '59e23b3b2dc2d555f0a6953c',
+				count: 2
+			}]
+		}, {
+			pid: '59e22a22a0858652168e075a',
+			sku: [{
+				sid: '59e8d3d1db07dc74945e411d',
+				count: 2
+			}]
+		}]
+	}
+
+	renderAddtoCartPopup() {
 		const data = this.props.$$goods.detail || {}
 		const spec = this.props.$$goods.spec || []
+
+		return (
+			<Popup
+				className="add-to-cart-popup"
+				visible={this.data.popupVisible}
+				onBgClick={e => this.data.popupVisible = false}>
+				<div className="thumb">
+					<img src={CDN + data.cover} />
+				</div>
+				<div className="base-info">
+					<h1>
+						{data.name}
+						{
+							data.badge ?
+							<span className="badge">
+								<em style={{backgroundColor:data.badgeColor}}>{data.badge}</em>
+							</span> :
+							null
+						}
+					</h1>
+					<p>{data.desc}</p>
+				</div>
+				<div className="list">
+				{
+					spec && spec.map((res, i) => {
+						const css = cn('list-item', {
+							active: this.data.activeSpec == i
+						})
+						return (
+							<a href="javascript:;"
+								className={css} key={i}
+								onClick={this.specClick.bind(this,i)}>
+								<label>{res.desc}</label>
+								<p>{res.price}元/{res.unit}</p>
+								{
+									res.prePrice > res.price ?
+									<span>
+										市场价{res.prePrice}元
+									</span> :
+									null
+								}
+							</a>
+						)
+					})
+				}
+				</div>
+				<hr className="body-line" />
+				<div className="buttons">
+					<Button type="default" onClick={e => this.data.popupVisible = false}>取消</Button>
+					<Button>确定</Button>
+				</div>
+			</Popup>
+		)
+	}
+
+	render() {
+		const data = this.props.$$goods.detail || {}
 
 		return (
 			<Layout className="view-detail">
@@ -74,65 +228,9 @@ class ViewDetail extends Component {
 					errorInfo={this.data.errorInfo}
 					loading={this.data.loading}>
 
-					<div className="cover">
-						<div className="cover-imgs">
-							<ReactSwipe className="imgs" swipeOptions={{
-								transitionEnd: this.bannerScrollEnd
-							}}>
-								{
-									data.imgs && data.imgs.map((res, i) => {
-										return (
-											<div key={i}
-												className="item"
-												style={{backgroundImage:`url(${CDN+res})`}} />
-										)
-									})
-								}
-							</ReactSwipe>
-						</div>
-						{
-							data.imgs && data.imgs.length > 1 ?
-							<div className="dots">
-							{
-								data.imgs.map((res, i) => (
-									<span key={i} className={i == this.data.imgsIndex ? 'active' : ''} />
-								))
-							}
-							</div> :
-							null
-						}
-					</div>
+					{this.renderCover()}
 
-					<div className="info">
-						<div className="title">
-							<h1>
-								{data.name}
-								{
-									data.badge ?
-									<span className="badge">
-										<em style={{backgroundColor:data.badgeColor}}>{data.badge}</em>
-									</span> :
-									null
-								}
-							</h1>
-							{
-								data.origin && data.isImport ?
-								<span className="import"><i />{data.origin}</span> :
-								null
-							}
-						</div>
-						<p>{data.desc}</p>
-						<h6 className="price">
-							<span>￥</span>
-							<em>{data.price}</em>
-							<span>元/{data.unit}</span>
-							{
-								data.prePrice > data.price ?
-								<del>市场价 {data.prePrice}元</del> :
-								null
-							}
-						</h6>
-					</div>
+					{this.renderBaseInfo()}
 
 					<hr className="body-line" />
 
@@ -158,32 +256,7 @@ class ViewDetail extends Component {
 					<Button onClick={this.addToCart}>加入购物车</Button>
 				</Layout.Footer>
 				
-				<Popup
-					className="add-to-cart-popup"
-					visible={this.data.popupVisible}
-					onBgClick={e => this.data.popupVisible = false}>
-					{
-						data.cover ?
-						<div className="thumb">
-							<img src={CDN + data.cover} />
-						</div> :
-						null
-					}
-					{
-						spec && spec.map((res, i) => {
-							return (
-								<div key={i}>
-									{res.desc}/
-									{res.price}元/{res.unit}
-									原价{res.prePrice}
-								</div>
-							)
-						})
-					}
-					<div className="buttons">
-						<Button>加入购物车</Button>
-					</div>
-				</Popup>
+				{this.renderAddtoCartPopup()}
 
 			</Layout>
 		)

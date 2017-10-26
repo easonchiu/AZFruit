@@ -138,7 +138,7 @@ class productSpec {
 					}
 				},{
 					$sort: {
-						price: -1,
+						price: 1,
 					}
 				}, {
 					$project: {

@@ -30,7 +30,7 @@ class Modal extends Component {
     _enter() {
 		this.setState({
 			visible: true,
-			ani: 'enter',
+            ani: 'enter',
 		})
         
         const focusdom = document.querySelector(':focus')
