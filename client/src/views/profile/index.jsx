@@ -5,6 +5,7 @@ import mass from 'mass'
 
 import Layout from 'src/auto/layout'
 import AppFooter from 'src/components/appFooter'
+import NavSpct from 'src/components/navSpct'
 
 @connect
 @mass(style)
@@ -16,7 +17,10 @@ class ViewProfile extends Component {
 	render() {
 		return (
 			<Layout styleName="view-profile">
-				<Layout.Header title="我的" />
+				
+				<Layout.Header
+					title="我的"
+					addonAfter={<NavSpct />} />
 
 				<Layout.Body>
 				

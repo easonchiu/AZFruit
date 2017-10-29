@@ -12,5 +12,7 @@ router
 	.patch(`${prefix.app}/shoppingcart`, shoppingcart.update)
 	// 删除某个商品的数量
 	.delete(`${prefix.app}/shoppingcart`, shoppingcart.remove)
+	// 获取购物车商品的数量
+	.get(`${prefix.app}/shoppingcart/count`, shoppingcart.fetchCount)
 	
 module.exports = router

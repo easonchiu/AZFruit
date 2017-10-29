@@ -54,7 +54,7 @@
 		display: -webkit-box;
 		-webkit-box-align: center;
 		z-index: 2;
-		padding: 0 0.4rem;
+		padding: 0 0.3rem;
 		* {
 			pointer-events: auto;
 		}
@@ -68,12 +68,9 @@
 	}
 	&--ghost {
 		box-shadow: none;
-		background: -webkit-gradient(linear, 0 0, 0 bottom, from(rgba(0,0,0,0.3)), to(rgba(0,0,0,0)));  
+		background: rgba(255,255,255,0.4);  
 		&:after {
 			opacity: 0;
-		}
-		.x-app-header__title {
-			color: #fff;
 		}
 	}
 }

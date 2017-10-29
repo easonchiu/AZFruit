@@ -4,7 +4,6 @@ import connect from 'src/redux/connect'
 import mass from 'mass'
 
 import Layout from 'src/auto/layout'
-import AppFooter from 'src/components/appFooter'
 
 @connect
 @mass(style)
@@ -23,8 +22,6 @@ class ViewLogin extends Component {
 					body
 
 				</Layout.Body>
-
-				<AppFooter />
 			</Layout>
 		)
 	}

@@ -10,6 +10,7 @@ import Layout from 'src/auto/layout'
 import Loading from 'src/auto/loading'
 import Toast from 'src/auto/toast'
 import Alert from 'src/auto/alert'
+import Button from 'src/auto/button'
 import AppFooter from 'src/components/appFooter'
 
 @connect
@@ -108,6 +109,7 @@ class ViewShoppingcart extends Component {
 					await this.props.$shoppingcart.remove({
 						id: res.id
 					})
+					await this.props.$shoppingcart.count()
 					this.fetchData(true)
 				} catch(e) {
 					Toast.show(e.msg)
@@ -116,96 +118,142 @@ class ViewShoppingcart extends Component {
 		})
 	}
 
+	renderAddress() {
+		// return (
+		// 	<div styleName="address empty">
+		// 		<p>您还没有收货地址哦~</p>
+		// 		<Button>创建地址</Button>
+		// 	</div>
+		// )
+		return (
+			<div styleName="address">
+				<h6>收货人：赵志达<span>18201938590</span></h6>
+				<a href="javascript:;" styleName="change">更换地址</a>
+				<div styleName="location">
+					<p>上海市宝山区虎林路800弄2号201室</p>
+					<em>16.5公里</em>
+				</div>
+			</div>
+		)
+	}
+
 	renderList() {
 		const list = this.props.$$shoppingcart.list
 		
-		return list.map(res => {
-			return (
-				<div key={res.id} styleName={cn('item', {
-					error: (!res.online || res.stock < res.count) && this.data.edited != res.id
-				})}>
-					<div styleName="thumb">
-						<img src={CDN+res.cover} />
-					</div>
-					<div styleName="info">
-						{
-							this.data.edited == res.id ?
-							<div styleName="tools">
-								<a href="javascript:;"
-									styleName={this.data.count <= 1 ? 'disabled' : ''}
-									onClick={this.minus}>﹣</a>
-								<span>{this.data.count}</span>
-								<a href="javascript:;"
-									styleName={this.data.count >= this.data.maxCount ? 'disabled' : ''}
-									onClick={this.add}>﹢</a>
-								<a href="javascript:;" styleName="delete"
-									onClick={this.delete.bind(this, res)}>删除</a>
-							</div> :
-							null
-						}
-						<h1>{res.name}<br />{res.specName}</h1>
-						<strong>
-							￥{res.price / 100}元/{res.unit}
-						</strong>
-					</div>
-					{
-						res.online ?
-						<div styleName="item-total">
+		return (
+			<div styleName="list">
+			{
+				list.map(res => {
+					return (
+						<div key={res.id} styleName={cn('item', {
+							error: (!res.online || res.stock < res.count) && this.data.edited != res.id
+						})}>
+							<div styleName="thumb">
+								<img src={CDN+res.cover} />
+							</div>
+							<div styleName="info">
+								{
+									this.data.edited == res.id ?
+									<div styleName="tools">
+										<a href="javascript:;"
+											styleName={this.data.count <= 1 ? 'disabled' : ''}
+											onClick={this.minus}>﹣</a>
+										<span>{this.data.count}</span>
+										<a href="javascript:;"
+											styleName={this.data.count >= this.data.maxCount ? 'disabled' : ''}
+											onClick={this.add}>﹢</a>
+										<a href="javascript:;" styleName="delete"
+											onClick={this.delete.bind(this, res)}>删除</a>
+									</div> :
+									null
+								}
+								<h1>{res.name}<br />{res.specName}</h1>
+								<strong>
+									￥{res.price / 100}元/{res.unit}
+								</strong>
+							</div>
 							{
-								res.stock < res.count ?
-								<p>库存仅{res.stock}件</p> :
-								<p>￥{res.totalPrice / 100}元</p>
-							}
-							<span>×{res.count}份</span>
-							{
-								this.data.edited == '' ?
-								<a href="javascript:;"
-									styleName={res.stock < res.count ? '' : 'normal'}
-									onClick={this.edit.bind(this, res)}>
+								res.online ?
+								<div styleName="item-total">
 									{
 										res.stock < res.count ?
-										'修改数量' :
-										'编辑'
+										<p>库存仅{res.stock}件</p> :
+										<p>￥{res.totalPrice / 100}元</p>
 									}
-								</a> :
-								this.data.edited == res.id ?
-								<a href="javascript:;"
-									styleName="save"
-									onClick={this.save.bind(this, res)}>保存</a> :
-								null
+									<span>×{res.count}份</span>
+									{
+										this.data.edited == '' ?
+										<a href="javascript:;"
+											styleName={res.stock < res.count ? '' : 'normal'}
+											onClick={this.edit.bind(this, res)}>
+											{
+												res.stock < res.count ?
+												'修改数量' :
+												'编辑'
+											}
+										</a> :
+										this.data.edited == res.id ?
+										<a href="javascript:;"
+											styleName="save"
+											onClick={this.save.bind(this, res)}>保存</a> :
+										null
+									}
+								</div> :
+								<div styleName="item-status">
+									<p>已下架</p>
+									{
+										this.data.edited == '' ?
+										<a href="javascript:;"
+											onClick={this.delete.bind(this, res)}>删除</a> :
+										null
+									}
+								</div>
 							}
-						</div> :
-						<div styleName="item-status">
-							<p>已下架</p>
-							{
-								this.data.edited == '' ?
-								<a href="javascript:;"
-									onClick={this.delete.bind(this, res)}>删除</a> :
-								null
-							}
+							
 						</div>
-					}
-					
-				</div>
-			)
-		})
+					)
+				})
+			}
+			</div>
+		)
+	}
+
+	backClick = e => {
+		this.props.history.goBack()
+	}
+
+	payment = e => {
+		alert('生成订单')
 	}
 
 	render() {
 		return (
 			<Layout styleName="view-shoppingcart">
-				<Layout.Header title="购物车" />
+				<Layout.Header title="购物车"
+					addonBefore={<a href="javascript:;" className="back" onClick={this.backClick} />} />
 
 				<Layout.Body
 					styleName="body"
 					errorInfo={this.data.errorInfo}
 					loading={this.data.loading}>
 					
+					{this.renderAddress()}
+					
 					{this.renderList()}
 					
-					总计：{this.props.$$shoppingcart.totalPrice / 100}元
 				</Layout.Body>
 
+				<Layout.Footer styleName="footer">
+					<div styleName="total">
+						<p>
+							<span>总计：￥</span>
+							<strong>{this.props.$$shoppingcart.totalPrice / 100}</strong>
+							<span>元</span>
+						</p>
+						<em>含运费￥20元</em>
+					</div>
+					<Button onClick={this.payment}>结算</Button>
+				</Layout.Footer>
 			</Layout>
 		)
 	}

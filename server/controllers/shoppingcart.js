@@ -25,7 +25,7 @@ class shoppingcart {
 
 		if (!body.count) {
 			return ctx.error({
-				msg: '购买商品数量正确'
+				msg: '购买商品数量不正确'
 			})
 		}
 		
@@ -118,17 +118,8 @@ class shoppingcart {
 					msg: '不好意思，该商品已经下架了哟'
 				})
 			}
-
-			// 计算我的购物车产品规格数量
-			const count = await Shoppingcart.count({
-				uid: body.uid
-			})
 			
-			return ctx.success({
-				data: {
-					count: count
-				}
-			})
+			return ctx.success()
 		} catch(e) {
 			return ctx.error()
 		}
@@ -274,12 +265,51 @@ class shoppingcart {
 
 		try {
 			await Shoppingcart.update({
-				_id: body.id
+				_id: body.id,
+				uid: 'test'
 			}, {
 				count: body.count
 			})
 
 			return ctx.success()
+		} catch(e) {
+			return ctx.error()
+		}
+	}
+
+	// 获取购物车商品的数量
+	static async fetchCount(ctx, next) {
+
+		try {
+			// 先获取购物车中的所以商品
+			const find = await Shoppingcart.find({
+				uid: 'test'
+			}, {
+				pid: 1,
+				specId: 1,
+				count: 1,
+				_id: 1
+			})
+			
+			let count = 0
+			for (let i = 0; i < find.length; i++) {
+				// 先获取商品的信息
+				const info = await shoppingcart.getProductInfo({
+					pid: find[i].pid,
+					specId: find[i].specId
+				})
+				
+				// 如果商品存在
+				if (info) {
+					count ++
+				}
+			}
+
+			return ctx.success({
+				data: {
+					count
+				}
+			})
 		} catch(e) {
 			return ctx.error()
 		}
@@ -319,7 +349,11 @@ class shoppingcart {
 		return res
 	}
 	
-	
+	// 这里针对全部用户的数据
+	// 如果商品在购物车中停留超过72小时，删除购物车商品
+	static async deleteData() {
+
+	}
 	
 }
 

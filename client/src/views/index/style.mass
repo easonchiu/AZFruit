@@ -10,10 +10,16 @@
 	}
 
 	.top_header {
-		height: 1.1rem;
-		line-height: 1.1rem;
+		height: 1.18rem;
+		line-height: 1.18rem;
+		position: relative;
 		h1 {
 			text-align: center;
+		}
+		:global(.nav-top-spct) {
+			position: absolute;
+			right: -0.2rem;
+			top: 0.04rem;
 		}
 	}
 

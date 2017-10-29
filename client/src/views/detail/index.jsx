@@ -7,10 +7,13 @@ import stateData from 'react-state-data'
 import CDN from 'src/assets/libs/cdn'
 import ReactSwipe from 'react-swipe'
 import cn from 'classnames'
+import NavSpct from 'src/components/navSpct'
 
 import Layout from 'src/auto/layout'
 import Button from 'src/auto/button'
 import Popup from 'src/auto/popup'
+import Toast from 'src/auto/toast'
+import Loading from 'src/auto/loading'
 
 
 @connect
@@ -119,11 +122,11 @@ class ViewDetail extends Component {
 				<p>{data.desc}</p>
 				<h6 styleName="price">
 					<span>￥</span>
-					<em>{data.price / 100}</em>
+					<em>{data.price && data.price / 100}</em>
 					<span>元/{data.unit}</span>
 					{
 						data.prePrice > data.price ?
-						<del>市场价 {data.prePrice / 100}元</del> :
+						<del>市场价 {data.prePrice && data.prePrice / 100}元</del> :
 						null
 					}
 				</h6>
@@ -134,9 +137,38 @@ class ViewDetail extends Component {
 	// 规格点击
 	specClick = e => {
 		this.data.activeSpec = e
-		console.error(this.props.$$goods.spec[e])
 	}
 
+	// 确定加入购物车
+	addToCartOk = async e => {
+		const spec = this.props.$$goods.spec || []
+		const data = spec[this.data.activeSpec]
+
+		if (data) {
+			Loading.show()
+			try {
+				const pid = this.props.match.params.id
+				const specId = data.id
+				
+				await this.props.$shoppingcart.create({
+					pid,
+					specId,
+					count: 1,
+					uid: 'test'
+				})
+				await this.props.$shoppingcart.count()
+				this.data.popupVisible = false
+				Toast.show('在购物中等你哟')
+			} catch(e) {
+				Toast.show(e.msg)
+			}
+			Loading.hide()
+		} else {
+			Toast.show('系统错误')
+		}
+	}
+	
+	// 购物车弹层
 	renderAddtoCartPopup() {
 		const data = this.props.$$goods.detail || {}
 		const spec = this.props.$$goods.spec || []
@@ -170,7 +202,7 @@ class ViewDetail extends Component {
 						})
 						return (
 							<a href="javascript:;"
-								styleName={css} key={i}
+								styleName={css} key={res.id}
 								onClick={this.specClick.bind(this,i)}>
 								<label>{res.desc}</label>
 								<p>{res.price / 100}元/{res.unit}</p>
@@ -189,7 +221,7 @@ class ViewDetail extends Component {
 				<hr className="body-line" />
 				<div styleName="buttons">
 					<Button type="default" onClick={e => this.data.popupVisible = false}>取消</Button>
-					<Button>确定</Button>
+					<Button onClick={this.addToCartOk}>确定</Button>
 				</div>
 			</Popup>
 		)
@@ -203,7 +235,8 @@ class ViewDetail extends Component {
 				<Layout.Header
 					ghost
 					title={data.name}
-					addonBefore={<a href="javascript:;" className="back" onClick={this.backClick} />} />
+					addonBefore={<a href="javascript:;" className="back" onClick={this.backClick} />}
+					addonAfter={<NavSpct />} />
 
 				<Layout.Body
 					styleName="body"

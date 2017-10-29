@@ -5,6 +5,7 @@ import mass from 'mass'
 
 import Layout from 'src/auto/layout'
 import AppFooter from 'src/components/appFooter'
+import NavSpct from 'src/components/navSpct'
 
 @connect
 @mass(style)
@@ -16,7 +17,10 @@ class ViewOrder extends Component {
 	render() {
 		return (
 			<Layout styleName="view-order">
-				<Layout.Header title="订单" />
+				
+				<Layout.Header
+					title="我的订单"
+					addonAfter={<NavSpct />} />
 
 				<Layout.Body>
 				
