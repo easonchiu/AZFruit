@@ -28,12 +28,12 @@ const GoodsItem = props => {
 			</h1>
 			<h6 className="price">
 				<span>￥</span>
-				<em>{data.price}</em>
+				<em>{data.price / 100}</em>
 				<span>元/{data.unit}</span>
 			</h6>
 			{
 				data.prePrice > data.price ?
-				<del>市场价 {data.prePrice}元</del> :
+				<del>市场价 {data.prePrice / 100}元</del> :
 				null
 			}
 		</Link>

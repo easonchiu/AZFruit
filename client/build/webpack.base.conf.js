@@ -61,11 +61,6 @@ const webpackConfig = {
         	use: ExtractTextPlugin.extract({
         		use: ['css-loader', 'sass-loader'],
         	})
-        }, {
-        	test: /\.less$/,
-        	use: ExtractTextPlugin.extract({
-        		use: ['css-loader', `less-loader?{"modifyVars":${JSON.stringify({"primary-color": "#00bb55"})}}`],
-        	})
         }]
 	},
 

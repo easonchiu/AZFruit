@@ -7,6 +7,7 @@ import ViewDetail from 'src/views/detail'
 import ViewLogin from 'src/views/login'
 import ViewOrder from 'src/views/order'
 import ViewProfile from 'src/views/profile'
+import ViewShoppingcart from 'src/views/shoppingcart'
 
 const Routes = () => {
 	return (
@@ -18,6 +19,7 @@ const Routes = () => {
 				<Route exact path="/login" component={ ViewLogin }/>
 				<Route exact path="/order" component={ ViewOrder }/>
 				<Route exact path="/profile" component={ ViewProfile }/>
+				<Route exact path="/shoppingcart" component={ ViewShoppingcart }/>
 				<Redirect from="*" to="/" />
 			</Switch>
 		</Router>

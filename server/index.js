@@ -10,6 +10,8 @@ var response = require('./middlewares/response')
 var port = 8080
 
 // 导入路由
+var adminUserRoute = require('./routes/adminuser')
+
 var userRoute = require('./routes/user')
 var bannerRoute = require('./routes/banner')
 var orderRoute = require('./routes/order')
@@ -18,7 +20,8 @@ var categoryRoute = require('./routes/category')
 var quickRoute = require('./routes/quick')
 var postageRoute = require('./routes/postage')
 var uploadRoute = require('./routes/upload')
-var adminUserRoute = require('./routes/adminuser')
+var shoppingcartRoute = require('./routes/shoppingcart')
+
 
 // 创建实例
 var app = new Koa()
@@ -35,6 +38,7 @@ app
 
 // 加载路由
 app
+	.use(adminUserRoute.routes(), adminUserRoute.allowedMethods())
 	.use(userRoute.routes(), userRoute.allowedMethods())
 	.use(bannerRoute.routes(), bannerRoute.allowedMethods())
 	.use(orderRoute.routes(), orderRoute.allowedMethods())
@@ -43,7 +47,8 @@ app
 	.use(quickRoute.routes(), quickRoute.allowedMethods())
 	.use(postageRoute.routes(), postageRoute.allowedMethods())
 	.use(uploadRoute.routes(), uploadRoute.allowedMethods())
-	.use(adminUserRoute.routes(), adminUserRoute.allowedMethods())
+	.use(shoppingcartRoute.routes(), shoppingcartRoute.allowedMethods())
+	
 
 // 起一个服务
 const server = http.createServer(app.callback())

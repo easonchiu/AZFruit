@@ -14,7 +14,7 @@
 module.exports = e => async (ctx, next) => {
     ctx.error = (res = {}) => {
     	const SERVER_ERROR = 'server error'
-    	let { msg = SERVER_ERROR, code } = res
+    	let { data, msg = SERVER_ERROR, code } = res
     	if (code === undefined) {
     		if (msg != SERVER_ERROR) {
 				code = 1
@@ -22,7 +22,7 @@ module.exports = e => async (ctx, next) => {
     			code = 500
     		}
     	}
-       	ctx.body = { code, msg }
+       	ctx.body = { code, msg, data }
     }
 
     ctx.success = (res = {}) => {

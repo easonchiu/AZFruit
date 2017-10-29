@@ -1,25 +1,31 @@
-import './style'
-import React, { Component } from 'react'
+import style from './style'
+import React, { PureComponent as Component } from 'react'
 import connect from 'src/redux/connect'
-import reactStateData from 'react-state-data'
+import mass from 'mass'
 
+import Layout from 'src/auto/layout'
+import AppFooter from 'src/components/appFooter'
 
 @connect
-@reactStateData
+@mass(style)
 class ViewLogin extends Component {
 	constructor(props) {
 		super(props)
 	}
 
-	shouldComponentUpdate(nProps, nState) {
-		return this.props !== nProps || this.state !== nState
-	}
-
 	render() {
 		return (
-			<div className="view-login">
-				<h1>login (view)</h1>
-			</div>
+			<Layout styleName="view-login">
+				<Layout.Header title="登录" />
+
+				<Layout.Body>
+				
+					body
+
+				</Layout.Body>
+
+				<AppFooter />
+			</Layout>
 		)
 	}
 }

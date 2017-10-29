@@ -203,11 +203,11 @@
 }
 
 .add-to-cart-popup {
-	.x-modal__inner {
+	:global(.x-modal__inner) {
 		min-height: 40%;
 		height: auto !important;
 	}
-	.x-popup__inner {
+	:global(.x-popup__inner) {
 		overflow: visible;
 		position: relative;
 		// padding-top: 1.8rem;
@@ -332,7 +332,7 @@
 	.buttons {
 		display: -webkit-box;
 		padding-top: 0.3rem;
-		.x-button {
+		:global(.x-button) {
 			-webkit-box-flex: 1;
 			&:first-child {
 				margin-right: 0.2rem;

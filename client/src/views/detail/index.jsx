@@ -1,7 +1,9 @@
-import './style'
-import React, { Component } from 'react'
+import style from './style'
+import React, { PureComponent as Component } from 'react'
 import connect from 'src/redux/connect'
-import reactStateData from 'react-state-data'
+import mass from 'mass'
+import stateData from 'react-state-data'
+
 import CDN from 'src/assets/libs/cdn'
 import ReactSwipe from 'react-swipe'
 import cn from 'classnames'
@@ -12,7 +14,8 @@ import Popup from 'src/auto/popup'
 
 
 @connect
-@reactStateData
+@mass(style)
+@stateData
 class ViewDetail extends Component {
 	constructor(props) {
 		super(props)
@@ -24,10 +27,6 @@ class ViewDetail extends Component {
 			activeSpec: 0,
 			popupVisible: false
 		})
-	}
-
-	shouldComponentUpdate(nProps, nState) {
-		return this.props !== nProps || this.state !== nState
 	}
 
 	componentDidMount() {
@@ -64,16 +63,16 @@ class ViewDetail extends Component {
 		const data = this.props.$$goods.detail || {}
 
 		return (
-			<div className="cover">
-				<div className="cover-imgs">
-					<ReactSwipe className="imgs" swipeOptions={{
+			<div styleName="cover">
+				<div styleName="cover-imgs">
+					<ReactSwipe styleName="imgs" swipeOptions={{
 						transitionEnd: this.bannerScrollEnd
 					}}>
 						{
 							data.imgs && data.imgs.map((res, i) => {
 								return (
 									<div key={i}
-										className="item"
+										styleName="item"
 										style={{backgroundImage:`url(${CDN+res})`}} />
 								)
 							})
@@ -82,10 +81,10 @@ class ViewDetail extends Component {
 				</div>
 				{
 					data.imgs && data.imgs.length > 1 ?
-					<div className="dots">
+					<div styleName="dots">
 					{
 						data.imgs.map((res, i) => (
-							<span key={i} className={i == this.data.imgsIndex ? 'active' : ''} />
+							<span key={i} styleName={i == this.data.imgsIndex ? 'active' : ''} />
 						))
 					}
 					</div> :
@@ -99,13 +98,13 @@ class ViewDetail extends Component {
 		const data = this.props.$$goods.detail || {}
 
 		return (
-			<div className="info">
-				<div className="title">
+			<div styleName="info">
+				<div styleName="title">
 					<h1>
 						{data.name}
 						{
 							data.badge ?
-							<span className="badge">
+							<span styleName="badge">
 								<em style={{backgroundColor:data.badgeColor}}>{data.badge}</em>
 							</span> :
 							null
@@ -113,18 +112,18 @@ class ViewDetail extends Component {
 					</h1>
 					{
 						data.origin && data.isImport ?
-						<span className="import"><i />{data.origin}</span> :
+						<span styleName="import"><i />{data.origin}</span> :
 						null
 					}
 				</div>
 				<p>{data.desc}</p>
-				<h6 className="price">
+				<h6 styleName="price">
 					<span>￥</span>
-					<em>{data.price}</em>
+					<em>{data.price / 100}</em>
 					<span>元/{data.unit}</span>
 					{
 						data.prePrice > data.price ?
-						<del>市场价 {data.prePrice}元</del> :
+						<del>市场价 {data.prePrice / 100}元</del> :
 						null
 					}
 				</h6>
@@ -136,23 +135,6 @@ class ViewDetail extends Component {
 	specClick = e => {
 		this.data.activeSpec = e
 		console.error(this.props.$$goods.spec[e])
-
-		const shoppingcart = [{
-			pid: '59e10f23e7ad7a40a218d845',
-			sku: [{
-				sid: '59e8def6b800717d01c80c3d',
-				count: 1
-			}, {
-				sid: '59e23b3b2dc2d555f0a6953c',
-				count: 2
-			}]
-		}, {
-			pid: '59e22a22a0858652168e075a',
-			sku: [{
-				sid: '59e8d3d1db07dc74945e411d',
-				count: 2
-			}]
-		}]
 	}
 
 	renderAddtoCartPopup() {
@@ -161,18 +143,18 @@ class ViewDetail extends Component {
 
 		return (
 			<Popup
-				className="add-to-cart-popup"
+				styleName="add-to-cart-popup"
 				visible={this.data.popupVisible}
 				onBgClick={e => this.data.popupVisible = false}>
-				<div className="thumb">
+				<div styleName="thumb">
 					<img src={CDN + data.cover} />
 				</div>
-				<div className="base-info">
+				<div styleName="base-info">
 					<h1>
 						{data.name}
 						{
 							data.badge ?
-							<span className="badge">
+							<span styleName="badge">
 								<em style={{backgroundColor:data.badgeColor}}>{data.badge}</em>
 							</span> :
 							null
@@ -180,7 +162,7 @@ class ViewDetail extends Component {
 					</h1>
 					<p>{data.desc}</p>
 				</div>
-				<div className="list">
+				<div styleName="list">
 				{
 					spec && spec.map((res, i) => {
 						const css = cn('list-item', {
@@ -188,14 +170,14 @@ class ViewDetail extends Component {
 						})
 						return (
 							<a href="javascript:;"
-								className={css} key={i}
+								styleName={css} key={i}
 								onClick={this.specClick.bind(this,i)}>
 								<label>{res.desc}</label>
-								<p>{res.price}元/{res.unit}</p>
+								<p>{res.price / 100}元/{res.unit}</p>
 								{
 									res.prePrice > res.price ?
 									<span>
-										市场价{res.prePrice}元
+										市场价{res.prePrice / 100}元
 									</span> :
 									null
 								}
@@ -205,7 +187,7 @@ class ViewDetail extends Component {
 				}
 				</div>
 				<hr className="body-line" />
-				<div className="buttons">
+				<div styleName="buttons">
 					<Button type="default" onClick={e => this.data.popupVisible = false}>取消</Button>
 					<Button>确定</Button>
 				</div>
@@ -217,14 +199,14 @@ class ViewDetail extends Component {
 		const data = this.props.$$goods.detail || {}
 
 		return (
-			<Layout className="view-detail">
+			<Layout styleName="view-detail">
 				<Layout.Header
 					ghost
 					title={data.name}
 					addonBefore={<a href="javascript:;" className="back" onClick={this.backClick} />} />
 
 				<Layout.Body
-					className="body"
+					styleName="body"
 					errorInfo={this.data.errorInfo}
 					loading={this.data.loading}>
 
@@ -234,8 +216,8 @@ class ViewDetail extends Component {
 
 					<hr className="body-line" />
 
-					<div className="detail">
-						<ul className="parameter">
+					<div styleName="detail">
+						<ul styleName="parameter">
 							{
 								data.parameter && data.parameter.map((res, i) => (
 									<li key={i}>
@@ -252,7 +234,7 @@ class ViewDetail extends Component {
 
 				</Layout.Body>
 
-				<Layout.Footer className="footer">
+				<Layout.Footer styleName="footer">
 					<Button onClick={this.addToCart}>加入购物车</Button>
 				</Layout.Footer>
 				

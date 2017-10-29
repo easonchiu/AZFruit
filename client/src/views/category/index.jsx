@@ -1,7 +1,8 @@
-import './style'
-import React, { Component } from 'react'
+import style from './style'
+import React, { PureComponent as Component } from 'react'
 import connect from 'src/redux/connect'
-import reactStateData from 'react-state-data'
+import mass from 'mass'
+import stateData from 'react-state-data'
 
 import Layout from 'src/auto/layout'
 import Toast from 'src/auto/toast'
@@ -10,7 +11,8 @@ import AppFooter from 'src/components/appFooter'
 import GoodsItem from 'src/components/goodsItem'
 
 @connect
-@reactStateData
+@mass(style)
+@stateData
 class ViewCategory extends Component {
 	constructor(props) {
 		super(props)
@@ -20,10 +22,6 @@ class ViewCategory extends Component {
 			errorInfo: '',
 			active: 0
 		})
-	}
-
-	shouldComponentUpdate(nProps, nState) {
-		return this.props !== nProps || this.state !== nState
 	}
 
 	componentDidMount() {
@@ -65,12 +63,12 @@ class ViewCategory extends Component {
 		const categoryList = this.props.$$category.list
 
 		return (
-			<nav className="category">
+			<nav styleName="category">
 				{
 					categoryList.map((res, i) => (
 						<a href="javascript:;" key={res.id}
 							onClick={this.categoryClick.bind(this, {...res,i})}
-							className={i == this.data.active ? 'active' : ''}>
+							styleName={i == this.data.active ? 'active' : ''}>
 							<p>{res.name}</p>
 							{
 								res.badge ?
@@ -95,11 +93,11 @@ class ViewCategory extends Component {
 		}
 
 		return (
-			<div className={goodsList.length > 0 ? 'list' : 'empty-list'}>
+			<div styleName={goodsList.length > 0 ? 'list' : 'empty-list'}>
 				{
 					goodsList.length > 0 ?
 					wrapper.map(res => (
-						<div className="row" key={res}>
+						<div styleName="row" key={res}>
 							{
 								goodsList[res] ?
 								<GoodsItem source={goodsList[res]} /> :
@@ -112,7 +110,7 @@ class ViewCategory extends Component {
 							}
 						</div>
 					)) :
-					<p className="empty">该分类下暂无商品</p>
+					<p styleName="empty">该分类下暂无商品</p>
 				}
 			</div>
 		)
@@ -120,11 +118,11 @@ class ViewCategory extends Component {
 
 	render() {
 		return (
-			<Layout className="view-category">
+			<Layout styleName="view-category">
 				<Layout.Header title="全部" />
 
 				<Layout.Body
-					className="body"
+					styleName="body"
 					errorInfo={this.data.errorInfo}
 					loading={this.data.loading}>
 

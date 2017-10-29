@@ -1,7 +1,9 @@
-import './style'
-import React, { Component } from 'react'
+import style from './style'
+import React, { PureComponent as Component } from 'react'
 import connect from 'src/redux/connect'
-import reactStateData from 'react-state-data'
+import mass from 'mass'
+import stateData from 'react-state-data'
+
 import ReactSwipe from 'react-swipe'
 import CDN from 'src/assets/libs/cdn'
 
@@ -11,7 +13,8 @@ import GoodsItem from 'src/components/goodsItem'
 import TopGoodsItem from 'src/components/topGoodsItem'
 
 @connect
-@reactStateData
+@mass(style)
+@stateData
 class ViewIndex extends Component {
 	constructor(props) {
 		super(props)
@@ -21,10 +24,6 @@ class ViewIndex extends Component {
 			loading: false,
 			errorInfo: '',
 		})
-	}
-
-	shouldComponentUpdate(nProps, nState) {
-		return this.props !== nProps || this.state !== nState
 	}
 
 	componentDidMount() {
@@ -58,22 +57,22 @@ class ViewIndex extends Component {
 		const bannerList = this.props.$$banner.list
 
 		return (
-			<div className="top">
+			<div styleName="top">
 
-				<div className="top_header">
+				<div styleName="top_header">
 					<h1>爱泽阳光</h1>
 				</div>
 
-				<div className="top_banners">
-					<div className="banners">
-						<ReactSwipe className="inner" swipeOptions={{
+				<div styleName="top_banners">
+					<div styleName="banners">
+						<ReactSwipe styleName="inner" swipeOptions={{
 							transitionEnd: this.bannerScrollEnd
 						}}>
 							{
 								bannerList.map((res, i) => {
 									return (
 										<div key={i}
-											className="item"
+											styleName="item"
 											style={{backgroundImage:`url(${CDN+res.uri})`}} />
 									)
 								})
@@ -82,10 +81,10 @@ class ViewIndex extends Component {
 					</div>
 					{
 						bannerList.length > 1 ?
-						<div className="dots">
+						<div styleName="dots">
 						{
 							bannerList.map((res, i) => (
-								<span key={i} className={i == this.data.bannerIndex ? 'active' : ''} />
+								<span key={i} styleName={i == this.data.bannerIndex ? 'active' : ''} />
 							))
 						}
 						</div> :
@@ -93,15 +92,15 @@ class ViewIndex extends Component {
 					}
 				</div>
 
-				<div className="top_quick">
-					<div className="row">
+				<div styleName="top_quick">
+					<div styleName="row">
 						{
 							quickList.map((res, i) => {
 								return (
 									<a key={i}
 										href="javascript:;"
 										onClick={e => this.props.history.push(res.link)}
-										className="item">
+										styleName="item">
 										<i style={{backgroundImage: `url(${CDN+res.uri})`}} />
 										<p>{res.name}</p>
 									</a>
@@ -129,12 +128,12 @@ class ViewIndex extends Component {
 		}
 
 		return (
-			<div className="recommend-list">
+			<div styleName="recommend-list">
 				<h1><span>当季</span>推荐</h1>
-				<div className="goods">
+				<div styleName="goods">
 					{
 						wrapper.map(res => (
-							<div className="row" key={res}>
+							<div styleName="row" key={res}>
 								{
 									list[res] ?
 									<GoodsItem source={list[res]} /> :
@@ -158,9 +157,9 @@ class ViewIndex extends Component {
 		const list = this.props.$$goods.top10List
 
 		return (
-			<div className="loved-list">
+			<div styleName="loved-list">
 				<h1><span>吃货</span>最爱</h1>
-				<div className="goods">
+				<div styleName="goods">
 					{
 						list.map((res, i) => (
 							<TopGoodsItem key={res.id} source={res} top={i} />
@@ -173,7 +172,7 @@ class ViewIndex extends Component {
 
 	render() {
 		return (
-			<Layout className="view-index">
+			<Layout styleName="view-index">
 				<Layout.Body
 					errorInfo={this.data.errorInfo}
 					loading={this.data.loading}>

@@ -1,0 +1,160 @@
+@charset "utf-8";
+
+.view-shoppingcart {
+	.body {
+		padding: 0;
+	}
+
+	.item {
+		background: #fff;
+		border-bottom: 1px solid #e2e2e2;
+		padding: 0.3rem;
+		display: -webkit-box;
+		&.error {
+			.thumb, .info {
+				opacity: 0.5;
+			}
+		}
+	}
+
+	.info {
+		margin-right: 0.2rem;
+		-webkit-box-flex: 1;
+		position: relative;
+		h1 {
+			font-size: 0.3rem;
+			font-weight: normal;
+			color: #333;
+			margin-bottom: 0.05rem;
+		}
+		strong {
+			font-size: 0.28rem;
+			font-weight: normal;
+			color: #999;
+			margin-bottom: 0.05rem;
+		}
+	}
+
+	.tools {
+		display: -webkit-box;
+		-webkit-box-align: center;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: #fff;
+		z-index: 2;
+		a {
+			display: -webkit-box;
+			-webkit-box-pack: center;
+			-webkit-box-align: center;
+			width: 0.7rem;
+			height: 0.7rem;
+			font-size: 0.3rem;
+			background: #00bb55;
+			border-radius: 50%;
+			color: #fff;
+			margin: 0 0.1rem;
+			&:active {
+				opacity: 0.7;
+			}
+			&.disabled {
+				opacity: 0.3;
+				background: #00bb55;
+				pointer-events: none;
+			}
+		}
+		.delete {
+			background: #ff4949;
+			font-size: 0.2rem;
+			margin-left: 0.4rem;
+		}
+		span {
+			display: -webkit-box;
+			-webkit-box-pack: center;
+			-webkit-box-align: center;
+			width: 0.7rem;
+			height: 0.7rem;
+			font-size: 0.3rem;
+			background: #fff;
+			border: 2px solid #e2e2e2;
+			border-radius: 50%;
+		}
+	}
+
+	.thumb {
+		width: 1.4rem;
+		height: 1.4rem;
+		overflow: hidden;
+		margin-right: 0.2rem;
+		img {
+			display: block;
+			width: 1.4rem;
+			height: 1.4rem;
+		}
+	}
+
+	.item-total {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-box-align: end;
+		p {
+			display: block;
+			color: #ff4949;
+			font-size: 0.28rem;
+		}
+		span {
+			display: block;
+			color: #999;
+			font-size: 0.24rem;
+			margin-bottom: 0.1rem;
+		}
+		a {
+			display: block;
+			background: #ff4949;
+			color: #fff;
+			font-size: 0.24rem;
+			line-height: 1;
+			padding: 0.1rem;
+			border-radius: 0.05rem;
+			&:active {
+				opacity: 0.7;
+			}
+		}
+		.normal {
+			background: #ff9900;
+		}
+		.save {
+			background: #00bb44;
+		}
+	}
+
+	.item-status {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-box-align: end;
+		p {
+			display: block;
+			color: #ff4949;
+			font-size: 0.28rem;
+			margin-bottom: 0.1rem;
+		}
+		a {
+			display: block;
+			background: #ff4949;
+			color: #fff;
+			font-size: 0.24rem;
+			line-height: 1;
+			padding: 0.1rem;
+			border-radius: 0.05rem;
+			&:active {
+				opacity: 0.7;
+			}
+		}
+	}
+}
+
+:global(.x-alert.delete .x-alert__btn-y) {
+	color: #ff4949 !important;
+}
