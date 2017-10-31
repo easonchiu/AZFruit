@@ -160,7 +160,7 @@ class ViewShoppingcart extends Component {
 											onClick={this.minus}>﹣</a>
 										<span>{this.data.count}</span>
 										<a href="javascript:;"
-											styleName={this.data.count >= this.data.maxCount ? 'disabled' : ''}
+											styleName={this.data.count >= Math.min(this.data.maxCount, 9) ? 'disabled' : ''}
 											onClick={this.add}>﹢</a>
 										<a href="javascript:;" styleName="delete"
 											onClick={this.delete.bind(this, res)}>删除</a>

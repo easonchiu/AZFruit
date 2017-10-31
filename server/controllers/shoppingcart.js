@@ -23,7 +23,7 @@ class shoppingcart {
 			})
 		}
 
-		if (!body.count) {
+		if (!body.count || body.count < 1) {
 			return ctx.error({
 				msg: '购买商品数量不正确'
 			})
@@ -38,11 +38,16 @@ class shoppingcart {
 				})
 			}
 
-			// 如果产品上架中，累加购买数量
+			// 如果产品上架中，说明可以买
+			// 累加购买数量（如果购物车中没有该产品的话，累加会从0开始加，有的话则在原数量基础上再增加）
 			if (info.online) {
 				info.$inc = {
 					count: body.count
 				}
+			} else {
+				return ctx.error({
+					msg: '不好意思，该商品已经下架了哟'
+				})
 			}
 
 			// 先找购物车中是否有该产品
@@ -54,12 +59,7 @@ class shoppingcart {
 
 			// 有的话取出原来的数量，和这次购买的数量相加
 			if (find) {
-				if (find.count + body.count < 1) {
-					return ctx.error({
-						msg: '购买数量不正确'
-					})
-				}
-				else if (find.count + body.count > info.stock) {
+				if (find.count + body.count > info.stock) {
 					if (body.count == 1) {
 						return ctx.error({
 							msg: '库存不够啦'
@@ -76,12 +76,7 @@ class shoppingcart {
 					})
 				}
 			} else {
-				if (body.count < 1) {
-					return ctx.error({
-						msg: '购买数量不正确'
-					})
-				}
-				else if (body.count > info.stock) {
+				if (body.count > info.stock) {
 					if (body.count == 1) {
 						return ctx.error({
 							msg: '库存不够啦'
@@ -100,24 +95,16 @@ class shoppingcart {
 			}
 
 			// 添加新的产品到购物车数据
-			// 如果产品上架中，购物车中没有的话会添加
-			// 如果已经下架，只会做更新已在购物车中的商品，不会添加
+			// 购物车中没有的话会添加
+			// 有的话叠加数量
 			await Shoppingcart.
 				update({
 					uid: body.uid,
 					pid: body.pid,
-					specId: body.specId
+					specId: body.specId,
 				}, info, {
-					upsert: info.online
+					upsert: true
 				})
-			
-			// 如果产品下架了，也是需要更新购物车的，这时不更新购买数量，只更新产品信息
-			// 然后提示用户已下架
-			if (!info.online) {
-				return ctx.error({
-					msg: '不好意思，该商品已经下架了哟'
-				})
-			}
 			
 			return ctx.success()
 		} catch(e) {
@@ -157,21 +144,12 @@ class shoppingcart {
 
 				// 如果购物车里的商品存在，更新
 				if (info) {
+					info.weight = info.weight * data.count
+					info.totalPrice = info.price * data.count
+
 					await Shoppingcart.update({
 						_id: data._id
-					}, {
-						name: info.name,
-						specName: info.specName,
-						pid: info.pid,
-						specId: info.specId,
-						cover: info.cover,
-						weight: info.weight * data.count,
-						online: info.online,
-						price: info.price,
-						totalPrice: info.price * data.count,
-						unit: info.unit,
-						stock: info.stock
-					})
+					}, info)
 				}
 				// 如果不存在了，删除
 				else {
@@ -183,28 +161,28 @@ class shoppingcart {
 
 			// 再次查找所有数据
 			const refind = await Shoppingcart
-				.aggregate([{
+				.aggregate({
 					$match: {
 						uid: 'test'
 					}
 				}, {
 					$project: {
-						_id: 0,
 						id: '$_id',
+						_id: 0,
+						cover: 1,
 						name: 1,
 						specName: 1,
-						pid: 1,
-						specId: 1,
+						unit: 1,
 						count: 1,
-						cover: 1,
-						weight: 1,
-						online: 1,
 						price: 1,
 						totalPrice: 1,
-						unit: 1,
-						stock: 1
+						weight: 1,
+						online: 1,
+						stock: 1,
+						specId: 1,
+						pid: 1,
 					}
-				}])
+				})
 
 			// 计算总价
 			let totalPrice = 0
@@ -319,7 +297,6 @@ class shoppingcart {
 	static async getProductInfo({pid = '', specId = ''}) {
 		const specInfo = await ProductSpec
 			.findOne({
-				pid: pid,
 				_id: specId
 			})
 

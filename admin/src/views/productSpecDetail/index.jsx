@@ -81,8 +81,8 @@ class ViewProductSpecDetail extends Component {
 				stock: this.data.stock,
 				unit: this.data.unit,
 				weight: this.data.weight,
-				price: this.data.price,
-				prePrice: this.data.prePrice,
+				price: this.data.price * 100, // 转为分，数据库中用分为单位
+				prePrice: this.data.prePrice * 100, // 转为分，数据库中用分为单位
 				online: this.data.online,
 			}
 			if (this.data.sid) {
@@ -142,7 +142,7 @@ class ViewProductSpecDetail extends Component {
 							defaultValue={this.data.price}
 							value={this.data.price}
 							onChange={this.valueChange.bind(this, 'price')} />
-						<em>单位：分</em>
+						<em>单位：元</em>
 					</Form.Item>
 
 					<Form.Item label="原价">
@@ -150,7 +150,7 @@ class ViewProductSpecDetail extends Component {
 							defaultValue={this.data.prePrice}
 							value={this.data.prePrice}
 							onChange={this.valueChange.bind(this, 'prePrice')} />
-						<em>单位：分</em>
+						<em>单位：元</em>
 					</Form.Item>
 
 					<Form.Item label="上下架">

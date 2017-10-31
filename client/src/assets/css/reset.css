@@ -104,7 +104,7 @@ input:focus { outline: none;}
 
 /* Webkit browsers add a 2px margin outside the chrome of form elements */
 button, input, select, textarea {margin: 0; padding: 0; background:rgba(0,0,0,0);}
-input:not([type=radio]):not([type=checkbox]) { -webkit-appearance: none; border: none; background: rgba(0,0,0,0.3); border-radius: 0;}
+input:not([type=radio]):not([type=checkbox]) { -webkit-appearance: none;}
 textarea { border: none; background: rgba(0,0,0,0.3); border-radius: 0;}
 input[type="file"] { display: none;}
 

@@ -129,12 +129,12 @@ class ViewProductSpec extends Component {
 							label: '价格',
 							width: 150,
 							align: 'center',
-							prop: 'price'
+							render: data => data.price / 100 + '元'
 						}, {
 							label: '原价',
 							width: 150,
 							align: 'center',
-							prop: 'prePrice'
+							render: data => data.prePrice / 100 + '元'
 						}, {
 							label: '上下架',
 							width: 100,

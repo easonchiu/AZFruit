@@ -13,12 +13,14 @@ var ShoppingcartSchema = Schema({
 	// 产品规格id
 	specId: {
 		type: String,
-		required: true
+		required: true,
+		ref: 'ProductSpec'
 	},
 	// 产品id
 	pid: {
 		type: String,
-		required: true
+		required: true,
+		ref: 'Product'
 	},
 	// 产品名称
 	name: {
