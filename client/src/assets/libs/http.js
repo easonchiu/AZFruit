@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getToken, setToken, clearToken} from './token'
 
 const config = {
 	production: '/azfruitServer/app',
@@ -16,6 +17,10 @@ const http = axios.create({
 })
 
 http.interceptors.request.use(config => {
+	const token = getToken('token')
+	if (token) {
+		config.headers.Authorization = 'Bearer ' + token
+	}
 	return config
 })
 
@@ -27,6 +32,11 @@ http.interceptors.response.use(config => {
 		msg: config.data.msg
 	})
 }, error => {
+	if (error.response.status === '401') {
+		clearToken()
+		window.location.href = process.env.ENV_NAME === 'production' ? '/azfruit/#/login' : '/#/login'
+		return false
+	}
 	return Promise.reject({
 		msg: '系统错误'
 	})

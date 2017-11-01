@@ -1,6 +1,7 @@
 var Shoppingcart = require('../models/shoppingcart')
 var Product = require('../models/product')
 var ProductSpec = require('../models/productSpec')
+var jwtInfo = require('../utils/jwt')
 
 class shoppingcart {
 	
@@ -9,6 +10,14 @@ class shoppingcart {
 	 * 需要注意的是这里仅做添加数据，并没有重新计算总价和总重量之类的
 	 */
 	static async add(ctx, next) {
+		
+		const {uid} = jwtInfo(ctx)
+		if (!uid) {
+			return ctx.error({
+				msg: '无效用户信息'
+			})
+		}
+
 		const body = ctx.request.body
 
 		if (!body.pid) {
@@ -52,7 +61,7 @@ class shoppingcart {
 
 			// 先找购物车中是否有该产品
 			const find = await Shoppingcart.findOne({
-				uid: body.uid,
+				uid: uid,
 				pid: body.pid,
 				specId: body.specId
 			}, 'count')
@@ -99,12 +108,15 @@ class shoppingcart {
 			// 有的话叠加数量
 			await Shoppingcart.
 				update({
-					uid: body.uid,
+					uid: uid,
 					pid: body.pid,
 					specId: body.specId,
 				}, info, {
 					upsert: true
 				})
+
+			// 顺便做一个操作，删除所有在购物车中超过3天未更新的产品
+			await shoppingcart.deleteData()
 			
 			return ctx.success()
 		} catch(e) {
@@ -115,10 +127,16 @@ class shoppingcart {
 	// 刷新并获取购物车中的商品
 	static async fetch(ctx, next) {
 		try {
+			const {uid} = jwtInfo(ctx)
+			if (!uid) {
+				return ctx.error({
+					msg: '无效用户信息'
+				})
+			}
 
 			// 先获取购物车中的所以商品
 			const find = await Shoppingcart.find({
-				uid: 'test'
+				uid: uid
 			}, {
 				pid: 1,
 				specId: 1,
@@ -163,7 +181,7 @@ class shoppingcart {
 			const refind = await Shoppingcart
 				.aggregate({
 					$match: {
-						uid: 'test'
+						uid: uid
 					}
 				}, {
 					$project: {
@@ -206,6 +224,13 @@ class shoppingcart {
 
 	// 从购物车中移除商品
 	static async remove(ctx, next) {
+		const {uid} = jwtInfo(ctx)
+		if (!uid) {
+			return ctx.error({
+				msg: '无效用户信息'
+			})
+		}
+
 		const body = ctx.request.body
 
 		if (!body.id) {
@@ -216,7 +241,8 @@ class shoppingcart {
 
 		try {
 			await Shoppingcart.remove({
-				_id: body.id
+				_id: body.id,
+				uid: uid
 			})
 
 			return ctx.success()
@@ -227,6 +253,14 @@ class shoppingcart {
 
 	// 更新某个商品的购买数量
 	static async update(ctx, next) {
+
+		const {uid} = jwtInfo(ctx)
+		if (!uid) {
+			return ctx.error({
+				msg: '无效用户信息'
+			})
+		}
+
 		const body = ctx.request.body
 
 		if (!body.id) {
@@ -244,7 +278,7 @@ class shoppingcart {
 		try {
 			await Shoppingcart.update({
 				_id: body.id,
-				uid: 'test'
+				uid: uid
 			}, {
 				count: body.count
 			})
@@ -257,11 +291,16 @@ class shoppingcart {
 
 	// 获取购物车商品的数量
 	static async fetchCount(ctx, next) {
-
+		const {uid} = jwtInfo(ctx)
+		if (!uid) {
+			return ctx.error({
+				msg: '无效用户信息'
+			})
+		}
 		try {
 			// 先获取购物车中的所以商品
 			const find = await Shoppingcart.find({
-				uid: 'test'
+				uid
 			}, {
 				pid: 1,
 				specId: 1,
@@ -329,7 +368,15 @@ class shoppingcart {
 	// 这里针对全部用户的数据
 	// 如果商品在购物车中停留超过72小时，删除购物车商品
 	static async deleteData() {
+		const now = new Date().getTime()
+		const age72h = now - 60 * 60 * 1000 * 72
 
+		const res = await Shoppingcart.remove({
+		    updateTime: {
+		        '$lte': new Date(age72h)
+		    }
+		})
+		return res
 	}
 	
 }

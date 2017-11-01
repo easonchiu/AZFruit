@@ -17,7 +17,7 @@ const prodPath = 'dist'
 module.exports = {
 	develop: {
 		env: require('./dev.env'),
-        port: 3333,
+        port: 1234,
         srcRoot: path.resolve(__dirname, '../src'),
         assetsRoot: path.resolve(__dirname, '../' + prodPath),
         assetsPublicPath: './',

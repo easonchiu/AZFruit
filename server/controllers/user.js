@@ -1,3 +1,6 @@
+var jwt = require('jsonwebtoken')
+var jwtKey = require('../conf/clientJwtKey')
+
 var mongoose = require('../conf/mongoose')
 var User = require('../models/user')
 var Reg = require('../utils/reg')
@@ -29,20 +32,29 @@ class user {
 					msg: '请输入正确的手机手机号码'
 				})
 			}
+
+			if (!body.vercode) {
+				return ctx.error({
+					msg: '请输入验证码'
+				})
+			}
 			
 			// 先找该用户
-			let find = await User.findOne({
+			const find = await User.findOne({
 				mobile: body.mobile
 			})
 			
 			// 找到了说明已有用户
 			if (find) {
+				const token = jwt.sign({
+			        mobile: body.mobile,
+			        uid: find._id
+			    }, jwtKey)
+
 				return ctx.success({
-					msg: '登录成功',
 					data: {
-						id: find._id,
-						header: find.header,
-						name: find.name,
+						mobile: find.mobile,
+						token
 					}
 				})
 			}
@@ -52,12 +64,17 @@ class user {
 				mobile: body.mobile
 			})
 
+			console.log(res)
+
+			const token = jwt.sign({
+		        mobile: body.mobile,
+		        uid: res._id
+		    }, jwtKey)
+
 			return ctx.success({
-				msg: '注册成功',
 				data: {
-					id: res._id,
-					header: res.header,
-					name: res.name,
+					mobile,
+					token
 				}
 			})
 		} catch(e) {
