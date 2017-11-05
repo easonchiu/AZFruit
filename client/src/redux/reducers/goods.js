@@ -9,7 +9,7 @@ const initialState = Immutable({
 	detail: {}
 })
 
-const goods = handleActions({
+const reducer = handleActions({
 	GOODS_FETCH_RECOMMEND_LIST(state, action) {
 		return Immutable.merge(state, {
 			recommendList: action.payload
@@ -42,4 +42,4 @@ const goods = handleActions({
 	}
 }, initialState)
 
-export default goods
+export default reducer

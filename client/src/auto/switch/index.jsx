@@ -5,11 +5,11 @@ import classnames from 'classnames'
 const Switch = props => {
 	const io = props.i !== undefined && props.o !== undefined
 	const css = classnames('x-switch', {
-		'x-switch--active': props.active,
+		'x-switch--active': props.value,
 		'x-switch--io': io
 	}, props.className)
 	return (
-		<a href="javascript:;" className={css} onClick={props.onClick}>
+		<a href="javascript:;" className={css} onClick={props.onChange}>
 			{
 				io ? <i>{props.i}</i> : null
 			}

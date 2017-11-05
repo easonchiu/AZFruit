@@ -1,7 +1,7 @@
 var ProductSpec = require('../models/productSpec')
 var Product = require('../models/product')
 
-class productSpec {
+class Control {
 	
 	/* 
 	 * 创建商品规格
@@ -43,7 +43,7 @@ class productSpec {
 				online: body.online,
 			})
 
-			await productSpec.updateProductSpecCount(body.pid)
+			await Control.updateProductSpecCount(body.pid)
 
 			if (res) {
 				return ctx.success()
@@ -221,7 +221,7 @@ class productSpec {
 				_id: id
 			}, body)
 
-			await productSpec.updateProductSpecCount(body.pid)
+			await Control.updateProductSpecCount(body.pid)
 			
 			return ctx.success()
 		} catch(e) {
@@ -244,7 +244,7 @@ class productSpec {
 			await ProductSpec.remove({
 				_id: id
 			})
-			await productSpec.updateProductSpecCount(body.pid)
+			await Control.updateProductSpecCount(body.pid)
 			return ctx.success()
 		} catch(e) {
 			return ctx.error()
@@ -302,4 +302,4 @@ class productSpec {
 
 }
 
-module.exports = productSpec
+module.exports = Control

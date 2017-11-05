@@ -3,7 +3,7 @@ var fs = require('fs')
 var mongoose = require('../conf/mongoose')
 
 
-class upload {
+class Control {
 	
 	/* 
 	 * 创建
@@ -126,4 +126,4 @@ class upload {
 	
 }
 
-module.exports = upload
+module.exports = Control

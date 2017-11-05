@@ -1,6 +1,6 @@
 var Category = require('../models/category')
 
-class category {
+class Control {
 	
 	/* 
 	 * 创建分类
@@ -227,4 +227,4 @@ class category {
 	
 }
 
-module.exports = category
+module.exports = Control

@@ -1,6 +1,6 @@
 var Banner = require('../models/banner')
 
-class banner {
+class Control {
 	
 	/* 
 	 * 创建banner
@@ -196,4 +196,4 @@ class banner {
 	}
 }
 
-module.exports = banner
+module.exports = Control

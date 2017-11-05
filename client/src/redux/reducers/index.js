@@ -5,6 +5,7 @@ import $$quick from './quick'
 import $$banner from './banner'
 import $$goods from './goods'
 import $$shoppingcart from './shoppingcart'
+import $$address from './address'
 
 const reducers = {
 	$$category,
@@ -12,6 +13,7 @@ const reducers = {
 	$$banner,
 	$$goods,
 	$$shoppingcart,
+	$$address,
 }
 
 export default combineReducers({

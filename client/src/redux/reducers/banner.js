@@ -5,7 +5,7 @@ const initialState = Immutable({
 	list: []
 })
 
-const banner = handleActions({
+const reducer = handleActions({
 	BANNER_FETCH_LIST(state, action) {
 		return Immutable.merge(state, {
 			list: action.payload
@@ -13,4 +13,4 @@ const banner = handleActions({
 	}
 }, initialState)
 
-export default banner
+export default reducer

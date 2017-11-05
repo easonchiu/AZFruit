@@ -4,6 +4,7 @@ import $banner from './banner'
 import $goods from './goods'
 import $shoppingcart from './shoppingcart'
 import $user from './user'
+import $address from './address'
 
 export {
 	$category,
@@ -12,4 +13,5 @@ export {
 	$goods,
 	$shoppingcart,
 	$user,
+	$address,
 }

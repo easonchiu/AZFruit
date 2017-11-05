@@ -11,7 +11,8 @@ router
 	
 	// 前端登录（没有则注册）
 	.post(`${prefix.app}/user/login`, user.login)
-	// 前端添加地址
-	.post(`${prefix.app}/user/address`, user.createAddress)
+	// 前端获取验证码
+	.post(`${prefix.app}/user/verifcode`, user.getVerifcode)
+
 
 module.exports = router

@@ -5,7 +5,7 @@ const initialState = Immutable({
 	list: []
 })
 
-const category = handleActions({
+const reducer = handleActions({
 	CATEGORY_FETCH_LIST(state, action) {
 		return Immutable.merge(state, {
 			list: action.payload
@@ -13,4 +13,4 @@ const category = handleActions({
 	}
 }, initialState)
 
-export default category
+export default reducer

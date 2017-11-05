@@ -1,6 +1,6 @@
 var Quick = require('../models/quick')
 
-class quick {
+class Control {
 	
 	/* 
 	 * 创建快捷链接
@@ -222,4 +222,4 @@ class quick {
 	
 }
 
-module.exports = quick
+module.exports = Control

@@ -1,6 +1,6 @@
 var Product = require('../models/product')
 
-class product {
+class Control {
 	
 	/* 
 	 * 创建商品
@@ -381,4 +381,4 @@ class product {
 
 }
 
-module.exports = product
+module.exports = Control

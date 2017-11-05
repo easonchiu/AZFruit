@@ -10,6 +10,8 @@ import ViewLogin from 'src/views/login'
 import ViewOrder from 'src/views/order'
 import ViewProfile from 'src/views/profile'
 import ViewShoppingcart from 'src/views/shoppingcart'
+import ViewAddress from 'src/views/address'
+import ViewAddressDetail from 'src/views/addressDetail'
 
 const LoginIfNeeded = View => need => props => {
 	const token = getToken()
@@ -36,6 +38,9 @@ const Routes = () => {
 				<Route exact path="/order" component={ ViewOrder }/>
 				<Route exact path="/profile" component={ ViewProfile }/>
 				<Route exact path="/shoppingcart" component={ LoginIfNeeded(ViewShoppingcart)(true) }/>
+				<Route exact path="/address" component={ LoginIfNeeded(ViewAddress)(true) }/>
+				<Route exact path="/address/edit/:id" component={ LoginIfNeeded(ViewAddressDetail)(true) }/>
+				<Route exact path="/address/create/:first?" component={ LoginIfNeeded(ViewAddressDetail)(true) }/>
 				<Redirect from="*" to="/" />
 			</Switch>
 		</Router>

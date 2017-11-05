@@ -1,6 +1,6 @@
 var Order = require('../models/order')
 
-class order {
+class Control {
 	
 	// 获取订单列表
 	static async fetchList(ctx, next) {
@@ -30,4 +30,4 @@ class order {
 	}
 }
 
-module.exports = order
+module.exports = Control

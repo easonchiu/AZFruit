@@ -21,6 +21,7 @@ var quickRoute = require('./routes/quick')
 var postageRoute = require('./routes/postage')
 var uploadRoute = require('./routes/upload')
 var shoppingcartRoute = require('./routes/shoppingcart')
+var addressRoute = require('./routes/address')
 
 
 // 创建实例
@@ -48,6 +49,7 @@ app
 	.use(postageRoute.routes(), postageRoute.allowedMethods())
 	.use(uploadRoute.routes(), uploadRoute.allowedMethods())
 	.use(shoppingcartRoute.routes(), shoppingcartRoute.allowedMethods())
+	.use(addressRoute.routes(), addressRoute.allowedMethods())
 	
 
 // 起一个服务

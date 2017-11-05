@@ -1,6 +1,6 @@
 var Postage = require('../models/postage')
 
-class control {
+class Control {
 	
 	/* 
 	 * 创建运费
@@ -187,4 +187,4 @@ class control {
 	
 }
 
-module.exports = control
+module.exports = Control

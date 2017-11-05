@@ -13,6 +13,16 @@ const login = payload => async (dispatch, getState) => {
 	return getToken()
 }
 
+const verifcode = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'post',
+        url: `/user/verifcode`,
+        data: payload
+	})
+	return res
+}
+
 export default {
 	login,
+	verifcode,
 }

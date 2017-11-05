@@ -13,16 +13,25 @@
 
 module.exports = e => async (ctx, next) => {
     ctx.error = (res = {}) => {
-    	const SERVER_ERROR = 'server error'
-    	let { data, msg = SERVER_ERROR, code } = res
-    	if (code === undefined) {
-    		if (msg != SERVER_ERROR) {
-				code = 1
-    		} else {
-    			code = 500
-    		}
-    	}
-       	ctx.body = { code, msg, data }
+        if (res === 401) {
+            ctx.status = 401
+            ctx.body = {
+                code: 401,
+                msg: '请重新登录',
+            }
+        }
+        else {
+            const SERVER_ERROR = 'server error'
+            let { data, msg = SERVER_ERROR, code } = res
+            if (code === undefined) {
+                if (msg != SERVER_ERROR) {
+                    code = 1
+                } else {
+                    code = 500
+                }
+            }
+            ctx.body = { code, msg, data }
+        }
     }
 
     ctx.success = (res = {}) => {

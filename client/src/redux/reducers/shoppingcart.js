@@ -7,7 +7,7 @@ const initialState = Immutable({
 	count: ''
 })
 
-const shoppingcart = handleActions({
+const reducer = handleActions({
 	SHOPPINGCART_FETCH_LIST(state, action) {
 		return Immutable.merge(state, {
 			list: action.payload.list,
@@ -21,4 +21,4 @@ const shoppingcart = handleActions({
 	}
 }, initialState)
 
-export default shoppingcart
+export default reducer

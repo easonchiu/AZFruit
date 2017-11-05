@@ -2,7 +2,7 @@ var jwt = require('jsonwebtoken')
 var jwtKey = require('../conf/jwtKey')
 var AdminUser = require('../models/adminuser')
 
-class adminuser {
+class Control {
 	
 	/* 
 	 * 创建
@@ -81,4 +81,4 @@ class adminuser {
 	
 }
 
-module.exports = adminuser
+module.exports = Control

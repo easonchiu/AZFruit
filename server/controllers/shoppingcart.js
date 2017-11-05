@@ -1,9 +1,8 @@
 var Shoppingcart = require('../models/shoppingcart')
 var Product = require('../models/product')
 var ProductSpec = require('../models/productSpec')
-var jwtInfo = require('../utils/jwt')
 
-class shoppingcart {
+class Control {
 	
 	/* 
 	 * 添加商品到购物车
@@ -11,13 +10,6 @@ class shoppingcart {
 	 */
 	static async add(ctx, next) {
 		
-		const {uid} = jwtInfo(ctx)
-		if (!uid) {
-			return ctx.error({
-				msg: '无效用户信息'
-			})
-		}
-
 		const body = ctx.request.body
 
 		if (!body.pid) {
@@ -39,8 +31,9 @@ class shoppingcart {
 		}
 		
 		try {
+
 			// 查询信息
-			const info = await shoppingcart.getProductInfo(body)
+			const info = await Control.getProductInfo(body)
 			if (!info) {
 				return ctx.error({
 					msg: '没有找到该产品'
@@ -60,6 +53,8 @@ class shoppingcart {
 			}
 
 			// 先找购物车中是否有该产品
+			const {uid} = ctx.state.jwt
+
 			const find = await Shoppingcart.findOne({
 				uid: uid,
 				pid: body.pid,
@@ -116,7 +111,7 @@ class shoppingcart {
 				})
 
 			// 顺便做一个操作，删除所有在购物车中超过3天未更新的产品
-			await shoppingcart.deleteData()
+			await Control.deleteData()
 			
 			return ctx.success()
 		} catch(e) {
@@ -125,14 +120,9 @@ class shoppingcart {
 	}
 
 	// 刷新并获取购物车中的商品
-	static async fetch(ctx, next) {
+	static async fetchList(ctx, next) {
 		try {
-			const {uid} = jwtInfo(ctx)
-			if (!uid) {
-				return ctx.error({
-					msg: '无效用户信息'
-				})
-			}
+			const {uid} = ctx.state.jwt
 
 			// 先获取购物车中的所以商品
 			const find = await Shoppingcart.find({
@@ -155,7 +145,7 @@ class shoppingcart {
 				const data = find[i]
 
 				// 先获取商品的信息
-				const info = await shoppingcart.getProductInfo({
+				const info = await Control.getProductInfo({
 					pid: data.pid,
 					specId: data.specId
 				})
@@ -224,12 +214,6 @@ class shoppingcart {
 
 	// 从购物车中移除商品
 	static async remove(ctx, next) {
-		const {uid} = jwtInfo(ctx)
-		if (!uid) {
-			return ctx.error({
-				msg: '无效用户信息'
-			})
-		}
 
 		const body = ctx.request.body
 
@@ -240,6 +224,8 @@ class shoppingcart {
 		}
 
 		try {
+			const {uid} = ctx.state.jwt
+
 			await Shoppingcart.remove({
 				_id: body.id,
 				uid: uid
@@ -253,13 +239,6 @@ class shoppingcart {
 
 	// 更新某个商品的购买数量
 	static async update(ctx, next) {
-
-		const {uid} = jwtInfo(ctx)
-		if (!uid) {
-			return ctx.error({
-				msg: '无效用户信息'
-			})
-		}
 
 		const body = ctx.request.body
 
@@ -276,6 +255,8 @@ class shoppingcart {
 		}
 
 		try {
+			const {uid} = ctx.state.jwt
+
 			await Shoppingcart.update({
 				_id: body.id,
 				uid: uid
@@ -291,13 +272,10 @@ class shoppingcart {
 
 	// 获取购物车商品的数量
 	static async fetchCount(ctx, next) {
-		const {uid} = jwtInfo(ctx)
-		if (!uid) {
-			return ctx.error({
-				msg: '无效用户信息'
-			})
-		}
+
 		try {
+			const {uid} = ctx.state.jwt
+			
 			// 先获取购物车中的所以商品
 			const find = await Shoppingcart.find({
 				uid
@@ -311,7 +289,7 @@ class shoppingcart {
 			let count = 0
 			for (let i = 0; i < find.length; i++) {
 				// 先获取商品的信息
-				const info = await shoppingcart.getProductInfo({
+				const info = await Control.getProductInfo({
 					pid: find[i].pid,
 					specId: find[i].specId
 				})
@@ -381,4 +359,4 @@ class shoppingcart {
 	
 }
 
-module.exports = shoppingcart
+module.exports = Control
