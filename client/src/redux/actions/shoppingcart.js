@@ -2,13 +2,13 @@ import { createAction } from 'redux-actions'
 import http from 'src/assets/libs/http'
 
 const _fetchList = createAction('SHOPPINGCART_FETCH_LIST');
-const _count = createAction('SHOPPINGCART_SET_COUNT');
+const _amount = createAction('SHOPPINGCART_SET_AMOUNT');
 
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
         url: `/shoppingcart/list`,
-        params: {}
+        params: payload
 	})
 	dispatch(_fetchList(res))
 }
@@ -40,13 +40,13 @@ const create = payload => async (dispatch, getState) => {
 	return res
 }
 
-const count = payload => async (dispatch, getState) => {
+const fetchAmount = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/shoppingcart/count`,
+        url: `/shoppingcart/amount`,
         data: payload
 	})
-	dispatch(_count(res))
+	dispatch(_amount(res))
 }
 
 export default {
@@ -54,5 +54,5 @@ export default {
 	update,
 	remove,
 	create,
-	count,
+	fetchAmount,
 }

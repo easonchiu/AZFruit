@@ -13,6 +13,6 @@ router
 	// 删除某个商品的数量
 	.delete(`${prefix.app}/shoppingcart`, checkJWT, shoppingcart.remove)
 	// 获取购物车商品的数量
-	.get(`${prefix.app}/shoppingcart/count`, checkJWT, shoppingcart.fetchCount)
+	.get(`${prefix.app}/shoppingcart/amount`, checkJWT, shoppingcart.fetchAmount)
 	
 module.exports = router

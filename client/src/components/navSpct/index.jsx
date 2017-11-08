@@ -11,8 +11,8 @@ class NavSpct extends PureComponent {
 	}
 
 	componentDidMount() {
-		if (this.props.$$shoppingcart.count === '') {
-			this.props.$shoppingcart.count()
+		if (this.props.$$shoppingcart.amount === '') {
+			this.props.$shoppingcart.fetchAmount()
 		}
 	}
 
@@ -20,9 +20,9 @@ class NavSpct extends PureComponent {
 		return (
 			<Link className="nav-top-spct" to="/shoppingcart">
 				{
-					this.props.$$shoppingcart.count !== '' &&
-					this.props.$$shoppingcart.count > 0 ?
-					<span>{this.props.$$shoppingcart.count}</span> :
+					this.props.$$shoppingcart.amount !== '' &&
+					this.props.$$shoppingcart.amount > 0 ?
+					<span>{this.props.$$shoppingcart.amount}</span> :
 					null
 				}
 			</Link>

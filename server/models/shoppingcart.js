@@ -38,13 +38,19 @@ var ShoppingcartSchema = Schema({
 		required: true
 	},
 	// 数量
-	count: {
+	amount: {
 		type: Number,
 		default: 0,
 		require: true
 	},
-	// 重量
+	// 重量(单份)
 	weight: {
+		type: Number,
+		default: 0,
+		require: true
+	},
+	// 总重量(数量 x 单份重量)
+	totalWeight: {
 		type: Number,
 		default: 0,
 		require: true
@@ -54,12 +60,12 @@ var ShoppingcartSchema = Schema({
 		type: Boolean,
 		default: true
 	},
-	// 价格
+	// 价格(单价)
 	price: {
 		type: Number,
 		required: true
 	},
-	// 小计
+	// 小计(单价 x 数量)
 	totalPrice: {
 		type: Number,
 		required: true

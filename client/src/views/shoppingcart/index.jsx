@@ -4,6 +4,7 @@ import connect from 'src/redux/connect'
 import mass from 'mass'
 import stateData from 'react-state-data'
 import cn from 'classnames'
+import {Link} from 'react-router-dom'
 
 import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
@@ -24,8 +25,8 @@ class ViewShoppingcart extends Component {
 			loading: false,
 			errorInfo: '',
 			edited: '',
-			count: 0,
-			maxCount: 0
+			amount: 0,
+			maxAmount: 0
 		})
 	}
 
@@ -34,6 +35,7 @@ class ViewShoppingcart extends Component {
 	}
 
 	async fetchData(patchData) {
+		// patchData为更新的产品内容，用于修改购物车内容时，更新完立刻再拉取最新数据
 		if (!patchData) {
 			this.data.loading = true
 		} else {
@@ -43,7 +45,10 @@ class ViewShoppingcart extends Component {
 			if (typeof patchData == 'object') {
 				await this.props.$shoppingcart.update(patchData)
 			}
-			await this.props.$shoppingcart.fetchList()
+			const aid = this.props.match.params.aid
+			await this.props.$shoppingcart.fetchList({
+				addressId: aid
+			})
 		} catch(e) {
 			console.error(e)
 			if (!patchData) {
@@ -63,35 +68,35 @@ class ViewShoppingcart extends Component {
 	edit = res => {
 		this.setState({
 			edited: res.id,
-			count: res.count,
-			maxCount: res.stock
+			amount: res.amount,
+			maxAmount: res.stock
 		})
 	}
 	
 	// 减少购买数量
 	minus = e => {
-		if (this.data.count > 1) {
-			this.data.count--
+		if (this.data.amount > 1) {
+			this.data.amount--
 		}
 	}
 	
 	// 增加购买数量
 	add = e => {
-		if (this.data.count < Math.min(this.data.maxCount, 9)) {
-			this.data.count++
+		if (this.data.amount < Math.min(this.data.maxAmount, 9)) {
+			this.data.amount++
 		}
 	}
 
 	// 保存
 	save = async res => {
-		if (res.stock < this.data.count) {
+		if (res.stock < this.data.amount) {
 			Toast.show('库存不足，您最多可购买' + res.stock + '件')
 			return false
 		}
-		else if (res.count !== this.data.count) {
+		else if (res.amount !== this.data.amount) {
 			this.fetchData({
 				id: res.id,
-				count: this.data.count
+				amount: this.data.amount
 			})
 		}
 		this.data.edited = ''
@@ -109,7 +114,7 @@ class ViewShoppingcart extends Component {
 					await this.props.$shoppingcart.remove({
 						id: res.id
 					})
-					await this.props.$shoppingcart.count()
+					await this.props.$shoppingcart.fetchAmount()
 					this.fetchData(true)
 				} catch(e) {
 					Toast.show(e.msg)
@@ -118,20 +123,38 @@ class ViewShoppingcart extends Component {
 		})
 	}
 
+	// 更换地址
+	changeAddress = e => {
+		const aid = this.props.match.params.aid
+		if (aid) {
+			this.props.history.push('/address/choose/' + aid)
+		} else {
+			this.props.history.push('/address/choose')
+		}
+	}
+
 	renderAddress() {
-		// return (
-		// 	<div styleName="address empty">
-		// 		<p>您还没有收货地址哦~</p>
-		// 		<Button>创建地址</Button>
-		// 	</div>
-		// )
+		const address = this.props.$$shoppingcart.address
+		if (!address) {
+			return (
+				<div styleName="address empty">
+					<p>您还没有收货地址哦~</p>
+					<Button onClick={e => this.props.history.push('/address/create/first')}>创建地址</Button>
+				</div>
+			)
+		}
+
 		return (
 			<div styleName="address">
-				<h6>收货人：赵志达<span>18201938590</span></h6>
-				<a href="javascript:;" styleName="change">更换地址</a>
+				<h6>收货人：{address.name}<span>{address.mobile}</span></h6>
+				<a href="javascript:;"
+					onClick={this.changeAddress}
+					styleName="change">
+					更换地址
+				</a>
 				<div styleName="location">
-					<p>上海市宝山区虎林路800弄2号201室</p>
-					<em>16.5公里</em>
+					<p>{address.area} {address.address}</p>
+					<em>{(address.distance/1000).toFixed(1)}公里</em>
 				</div>
 			</div>
 		)
@@ -146,7 +169,7 @@ class ViewShoppingcart extends Component {
 				list.map(res => {
 					return (
 						<div key={res.id} styleName={cn('item', {
-							error: (!res.online || res.stock < res.count) && this.data.edited != res.id
+							error: (!res.online || res.stock < res.amount) && this.data.edited != res.id
 						})}>
 							<div styleName="thumb">
 								<img src={CDN+res.cover} />
@@ -156,11 +179,11 @@ class ViewShoppingcart extends Component {
 									this.data.edited == res.id ?
 									<div styleName="tools">
 										<a href="javascript:;"
-											styleName={this.data.count <= 1 ? 'disabled' : ''}
+											styleName={this.data.amount <= 1 ? 'disabled' : ''}
 											onClick={this.minus}>﹣</a>
-										<span>{this.data.count}</span>
+										<span>{this.data.amount}</span>
 										<a href="javascript:;"
-											styleName={this.data.count >= Math.min(this.data.maxCount, 9) ? 'disabled' : ''}
+											styleName={this.data.amount >= Math.min(this.data.maxAmount, 9) ? 'disabled' : ''}
 											onClick={this.add}>﹢</a>
 										<a href="javascript:;" styleName="delete"
 											onClick={this.delete.bind(this, res)}>删除</a>
@@ -176,18 +199,18 @@ class ViewShoppingcart extends Component {
 								res.online ?
 								<div styleName="item-total">
 									{
-										res.stock < res.count ?
+										res.stock < res.amount ?
 										<p>库存仅{res.stock}件</p> :
 										<p>￥{res.totalPrice / 100}元</p>
 									}
-									<span>×{res.count}份</span>
+									<span>×{res.amount}份</span>
 									{
 										this.data.edited == '' ?
 										<a href="javascript:;"
-											styleName={res.stock < res.count ? '' : 'normal'}
+											styleName={res.stock < res.amount ? '' : 'normal'}
 											onClick={this.edit.bind(this, res)}>
 											{
-												res.stock < res.count ?
+												res.stock < res.amount ?
 												'修改数量' :
 												'编辑'
 											}
@@ -219,7 +242,7 @@ class ViewShoppingcart extends Component {
 	}
 
 	backClick = e => {
-		this.props.history.goBack()
+		this.props.history.push('/')
 	}
 
 	payment = e => {

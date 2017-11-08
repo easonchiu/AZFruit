@@ -3,20 +3,24 @@ import Immutable from 'seamless-immutable'
 
 const initialState = Immutable({
 	list: [],
+	address: {},
 	totalPrice: 0,
-	count: ''
+	totalWeight: 0,
+	amount: ''
 })
 
 const reducer = handleActions({
 	SHOPPINGCART_FETCH_LIST(state, action) {
 		return Immutable.merge(state, {
 			list: action.payload.list,
+			address: action.payload.address,
 			totalPrice: action.payload.totalPrice,
+			totalWeight: action.payload.totalWeight,
 		})
 	},
-	SHOPPINGCART_SET_COUNT(state, action) {
+	SHOPPINGCART_SET_AMOUNT(state, action) {
 		return Immutable.merge(state, {
-			count: action.payload.count
+			amount: action.payload.amount
 		})
 	}
 }, initialState)

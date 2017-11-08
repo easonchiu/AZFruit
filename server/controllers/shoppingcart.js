@@ -1,6 +1,8 @@
 var Shoppingcart = require('../models/shoppingcart')
 var Product = require('../models/product')
 var ProductSpec = require('../models/productSpec')
+var Address = require('../models/address')
+var qs = require('qs')
 
 class Control {
 	
@@ -24,7 +26,7 @@ class Control {
 			})
 		}
 
-		if (!body.count || body.count < 1) {
+		if (!body.amount || body.amount < 1) {
 			return ctx.error({
 				msg: '购买商品数量不正确'
 			})
@@ -44,7 +46,7 @@ class Control {
 			// 累加购买数量（如果购物车中没有该产品的话，累加会从0开始加，有的话则在原数量基础上再增加）
 			if (info.online) {
 				info.$inc = {
-					count: body.count
+					amount: body.amount
 				}
 			} else {
 				return ctx.error({
@@ -59,29 +61,29 @@ class Control {
 				uid: uid,
 				pid: body.pid,
 				specId: body.specId
-			}, 'count')
+			}, 'amount')
 
 			// 有的话取出原来的数量，和这次购买的数量相加
 			if (find) {
-				if (find.count + body.count > info.stock) {
-					if (body.count == 1) {
+				if (find.amount + body.amount > info.stock) {
+					if (body.amount == 1) {
 						return ctx.error({
 							msg: '库存不够啦'
 						})
 					} else {
 						return ctx.error({
-							msg: '库存不够啦，您最多还能购买' + (info.stock - find.count) + '件~'
+							msg: '库存不够啦，您最多还能购买' + (info.stock - find.amount) + '件~'
 						})
 					}
 				}
-				if (find.count + body.count > 9) {
+				if (find.amount + body.amount > 9) {
 					return ctx.error({
-						msg: '同一件商品最多购买9件哟，您购物车中已经有' + find.count + '件了~'
+						msg: '同一件商品最多购买9件哟，您购物车中已经有' + find.amount + '件了~'
 					})
 				}
 			} else {
-				if (body.count > info.stock) {
-					if (body.count == 1) {
+				if (body.amount > info.stock) {
+					if (body.amount == 1) {
 						return ctx.error({
 							msg: '库存不够啦'
 						})
@@ -91,7 +93,7 @@ class Control {
 						})
 					}
 				}
-				if (body.count > 9) {
+				if (body.amount > 9) {
 					return ctx.error({
 						msg: '同一件商品最多购买9件哟~'
 					})
@@ -123,6 +125,39 @@ class Control {
 	static async fetchList(ctx, next) {
 		try {
 			const {uid} = ctx.state.jwt
+			
+			// 找到请求中的addressId
+			const search = qs.parse(ctx.search.replace(/^\?/, ''))
+			
+			// 查找相应的地址
+			const address = await Address.findOne({
+				uid: uid
+			})
+			
+			let choosedAddress = null, resAddress = null
+			for (let i = 0; i < address.addressList.length; i++) {
+				const d = address.addressList[i]
+				if (search.addressId && d._id == search.addressId) {
+					choosedAddress = d
+				}
+				else if (!search.addressId && d._id == address.defaultAddress) {
+					choosedAddress = d
+				}
+			}
+			
+			// 如果有地址，整理数据
+			if (choosedAddress) {
+				resAddress = {
+					city: choosedAddress.city,
+					cityCode: choosedAddress.cityCode,
+					zipCode: choosedAddress.zipCode,
+					name: choosedAddress.name,
+					mobile: choosedAddress.mobile,
+					area: choosedAddress.area,
+					address: choosedAddress.address,
+					distance: choosedAddress.distance * 1.2 // 因为取的是直线距离，实际距离肯定是大于它的
+				}
+			}
 
 			// 先获取购物车中的所以商品
 			const find = await Shoppingcart.find({
@@ -130,7 +165,7 @@ class Control {
 			}, {
 				pid: 1,
 				specId: 1,
-				count: 1,
+				amount: 1,
 				_id: 1
 			})
 
@@ -152,8 +187,9 @@ class Control {
 
 				// 如果购物车里的商品存在，更新
 				if (info) {
-					info.weight = info.weight * data.count
-					info.totalPrice = info.price * data.count
+					// 分别计算每个规格的总重量和总价
+					info.totalWeight = info.weight * data.amount
+					info.totalPrice = info.price * data.amount
 
 					await Shoppingcart.update({
 						_id: data._id
@@ -181,10 +217,11 @@ class Control {
 						name: 1,
 						specName: 1,
 						unit: 1,
-						count: 1,
+						amount: 1,
 						price: 1,
 						totalPrice: 1,
 						weight: 1,
+						totalWeight: 1,
 						online: 1,
 						stock: 1,
 						specId: 1,
@@ -192,18 +229,21 @@ class Control {
 					}
 				})
 
-			// 计算总价
-			let totalPrice = 0
+			// 计算总价、总重量
+			let totalPrice = 0, totalWeight = 0
 			for (let i = 0; i < refind.length; i++) {
 				if (refind[i].online) {
 					totalPrice += refind[i].totalPrice
+					totalWeight += refind[i].totalWeight
 				}
 			}
 
 			return ctx.success({
 				data: {
 					list: refind,
+					address: resAddress,
 					totalPrice,
+					totalWeight
 				}
 			})
 
@@ -248,7 +288,7 @@ class Control {
 			})
 		}
 
-		if (!body.count) {
+		if (!body.amount) {
 			return ctx.error({
 				msg: '购买商品数量正确'
 			})
@@ -261,7 +301,7 @@ class Control {
 				_id: body.id,
 				uid: uid
 			}, {
-				count: body.count
+				amount: body.amount
 			})
 
 			return ctx.success()
@@ -271,7 +311,7 @@ class Control {
 	}
 
 	// 获取购物车商品的数量
-	static async fetchCount(ctx, next) {
+	static async fetchAmount(ctx, next) {
 
 		try {
 			const {uid} = ctx.state.jwt
@@ -282,11 +322,11 @@ class Control {
 			}, {
 				pid: 1,
 				specId: 1,
-				count: 1,
+				amount: 1,
 				_id: 1
 			})
 			
-			let count = 0
+			let amount = 0
 			for (let i = 0; i < find.length; i++) {
 				// 先获取商品的信息
 				const info = await Control.getProductInfo({
@@ -296,13 +336,13 @@ class Control {
 				
 				// 如果商品存在
 				if (info) {
-					count ++
+					amount ++
 				}
 			}
 
 			return ctx.success({
 				data: {
-					count
+					amount
 				}
 			})
 		} catch(e) {

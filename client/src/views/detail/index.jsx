@@ -153,10 +153,10 @@ class ViewDetail extends Component {
 				await this.props.$shoppingcart.create({
 					pid,
 					specId,
-					count: 1,
+					amount: 1,
 					uid: 'test'
 				})
-				await this.props.$shoppingcart.count()
+				await this.props.$shoppingcart.fetchAmount()
 				this.data.popupVisible = false
 				Toast.show('在购物中等你哟')
 			} catch(e) {

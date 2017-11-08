@@ -1,6 +1,8 @@
 var Address = require('../models/address')
 var Reg = require('../utils/reg')
 var mongoose = require('../conf/mongoose')
+var amapLocation = require('../middlewares/amapLocation')
+var amapDistance = require('../middlewares/amapDistance')
 
 class Control {
 	
@@ -25,9 +27,34 @@ class Control {
 				})
 			}
 
+			if (!body.area) {
+				return ctx.error({
+					msg: '请选择小区'
+				})
+			}
+
 			if (!body.address) {
 				return ctx.error({
-					msg: '请输入收货人地址'
+					msg: '请输入门牌号(例2号楼201室)'
+				})
+			}
+
+			// 获取经纬度
+			const locationInfo = await amapLocation(body.area + body.address)
+
+			if (!locationInfo || !locationInfo.location) {
+				return ctx.error({
+					msg: '小区地址不够详细'
+				})
+			}
+			
+			const location = locationInfo.location.split(',')
+
+			// 获取直线距离
+			const distanceInfo = await amapDistance(location[0], location[1])
+			if (!distanceInfo.distance) {
+				return ctx.error({
+					msg: '距离计算失败'
 				})
 			}
 
@@ -41,6 +68,10 @@ class Control {
 						_id: addressId,
 						name: body.name,
 						mobile: body.mobile,
+						area: body.area,
+						lat: location[0],
+						lon: location[1],
+						distance: distanceInfo.distance,
 						address: body.address,
 					}
 				}
@@ -99,6 +130,7 @@ class Control {
 					name: d.name || '',
 					mobile: d.mobile || '',
 					city: d.city || '',
+					area: d.area || '',
 					address: d.address || '',
 					id: d._id
 				})
@@ -143,6 +175,7 @@ class Control {
 							id,
 							name: d.name || '',
 							mobile: d.mobile || '',
+							area: d.area || '',
 							address: d.address || '',
 							default: find.defaultAddress == id,
 						}
@@ -223,20 +256,47 @@ class Control {
 				})
 			}
 
+			if (!body.area) {
+				return ctx.error({
+					msg: '请选择小区'
+				})
+			}
+
 			if (!body.address) {
 				return ctx.error({
-					msg: '请输入收货人地址'
+					msg: '请输入门牌号(例2号楼201室)'
+				})
+			}
+			
+			// 获取经纬度
+			const locationInfo = await amapLocation(body.area + body.address)
+
+			if (!locationInfo || !locationInfo.location) {
+				return ctx.error({
+					msg: '小区地址不够详细'
+				})
+			}
+
+			const location = locationInfo.location.split(',')
+
+			// 获取直线距离
+			const distanceInfo = await amapDistance(location[0], location[1])
+			if (!distanceInfo.distance) {
+				return ctx.error({
+					msg: '距离计算失败'
 				})
 			}
 			
 			// 更新地址
 			const newaddress = {
 				$set: {
-					'addressList.$': {
-						name: body.name,
-						mobile: body.mobile,
-						address: body.address,
-					}
+					'addressList.$.name': body.name,
+					'addressList.$.mobile': body.mobile,
+					'addressList.$.area': body.area,
+					'addressList.$.lat': location[0],
+					'addressList.$.lon': location[1],
+					'addressList.$.distance': distanceInfo.distance,
+					'addressList.$.address': body.address
 				}
 			}
 

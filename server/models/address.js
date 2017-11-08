@@ -44,7 +44,27 @@ var AddressSchema = Schema({
 			type: String,
 			required: true
 		},
-		// 收货人地址
+		// 小区（地图选的）
+		area: {
+			type: String,
+			required: true
+		},
+		// 经度
+		lat: {
+			type: Number,
+			required: true
+		},
+		// 纬度
+		lon: {
+			type: Number,
+			required: true
+		},
+		// 直线距离
+		distance: {
+			type: Number,
+			required: true
+		},
+		// 收货人地址（门牌号部分）
 		address: {
 			type: String,
 			required: true

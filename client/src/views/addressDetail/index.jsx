@@ -25,6 +25,7 @@ class ViewAddress extends Component {
 			errorInfo: '',
 			name: '',
 			mobile: '',
+			area: '',
 			address: '',
 			default: false
 		})
@@ -82,6 +83,7 @@ class ViewAddress extends Component {
 			this.setState({
 				name: res.name,
 				mobile: res.mobile,
+				area: res.area,
 				address: res.address,
 				default: res.default,
 			})
@@ -100,6 +102,11 @@ class ViewAddress extends Component {
 	changeMobile = e => {
 		const val = e.target.value.trim().substr(0, 11)
 		this.data.mobile = val
+	}
+
+	changeArea = e => {
+		const val = e.target.value.trim().substr(0, 40)
+		this.data.area = val
 	}
 
 	changeAddress = e => {
@@ -123,8 +130,11 @@ class ViewAddress extends Component {
 			else if (!(/^1[0-9]{10}$/).test(this.data.mobile)) {
 				Toast.show('请输入有效的电话号码')
 			}
+			else if (!this.data.area) {
+				Toast.show('请选择小区')
+			}
 			else if (!this.data.address) {
-				Toast.show('请输入收货地址')
+				Toast.show('请输入门牌号(例2号楼201室)')
 			}
 			else {
 				if (this.id) {
@@ -132,6 +142,7 @@ class ViewAddress extends Component {
 						id: this.id,
 						name: this.data.name,
 						mobile: this.data.mobile,
+						area: this.data.area,
 						address: this.data.address,
 						default: this.data.default,
 					})
@@ -140,6 +151,7 @@ class ViewAddress extends Component {
 					await this.props.$address.create({
 						name: this.data.name,
 						mobile: this.data.mobile,
+						area: this.data.area,
 						address: this.data.address,
 						default: this.data.default,
 					})
@@ -191,8 +203,17 @@ class ViewAddress extends Component {
 								onChange={this.changeMobile} />
 						</Cell.Row>
 						<Cell.Row>
-							<label>地址</label>
-							<textarea placeholder="请输入地址"
+							<label>小区</label>
+							<Input ghost
+								type="tel"
+								placeholder="请选择"
+								value={this.data.area}
+								onChange={this.changeArea} />
+						</Cell.Row>
+						<Cell.Row>
+							<label>门牌号</label>
+							<Input ghost
+								placeholder="请输入"
 								value={this.data.address}
 								onChange={this.changeAddress} />
 						</Cell.Row>

@@ -42,6 +42,7 @@ class ViewAddress extends Component {
 
 	createAddress = e => {
 		const data = this.props.$$address.list
+		
 		if (data.length) {
 			this.props.history.push('/address/create')
 		} else {
@@ -80,7 +81,7 @@ class ViewAddress extends Component {
 												{res.name}
 												<span>{res.mobile}</span>
 											</h6>
-											<p>{res.address}</p>
+											<p>{res.area} {res.address}</p>
 										</div>
 										<Link to={`/address/edit/${res.id}`}>编辑</Link>
 									</div>

@@ -11,6 +11,7 @@ import ViewOrder from 'src/views/order'
 import ViewProfile from 'src/views/profile'
 import ViewShoppingcart from 'src/views/shoppingcart'
 import ViewAddress from 'src/views/address'
+import ViewAddressChoose from 'src/views/addressChoose'
 import ViewAddressDetail from 'src/views/addressDetail'
 
 const LoginIfNeeded = View => need => props => {
@@ -37,8 +38,9 @@ const Routes = () => {
 				<Route exact path="/login" component={ ViewLogin }/>
 				<Route exact path="/order" component={ ViewOrder }/>
 				<Route exact path="/profile" component={ ViewProfile }/>
-				<Route exact path="/shoppingcart" component={ LoginIfNeeded(ViewShoppingcart)(true) }/>
+				<Route exact path="/shoppingcart/:aid?" component={ LoginIfNeeded(ViewShoppingcart)(true) }/>
 				<Route exact path="/address" component={ LoginIfNeeded(ViewAddress)(true) }/>
+				<Route exact path="/address/choose/:id?" component={ LoginIfNeeded(ViewAddressChoose)(true) }/>
 				<Route exact path="/address/edit/:id" component={ LoginIfNeeded(ViewAddressDetail)(true) }/>
 				<Route exact path="/address/create/:first?" component={ LoginIfNeeded(ViewAddressDetail)(true) }/>
 				<Redirect from="*" to="/" />
