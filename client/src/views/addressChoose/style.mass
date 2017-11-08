@@ -1,0 +1,17 @@
+@charset "utf-8";
+
+.view-address-choose {
+	display: block;
+	
+	.list {
+		display: block;
+	}
+
+	.item {
+		display: -webkit-box;
+	}
+
+	.txt {
+		display: block;
+	}
+}
