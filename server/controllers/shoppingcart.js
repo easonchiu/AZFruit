@@ -295,18 +295,23 @@ class Control {
 				uid: uid
 			})
 			
+			// 如果用户有地址数据，匹配
 			let choosedAddress = null, resAddress = null
-			for (let i = 0; i < address.addressList.length; i++) {
-				const d = address.addressList[i]
-				if (aid && d._id == aid) {
-					choosedAddress = d
-				}
-				else if (!aid && d._id == address.defaultAddress) {
-					choosedAddress = d
+			if (address && address.addressList) {
+				for (let i = 0; i < address.addressList.length; i++) {
+					const d = address.addressList[i]
+					// 如果有选择地址，返回选择的
+					if (aid && d._id == aid) {
+						choosedAddress = d
+					}
+					// 如果没有选择但有默认地址，返回默认地址
+					else if (!aid && d._id == address.defaultAddress) {
+						choosedAddress = d
+					}
 				}
 			}
 			
-			// 如果有地址，整理数据
+			// 如果匹配中地址，整理数据
 			if (choosedAddress) {
 				resAddress = {
 					city: choosedAddress.city,
@@ -329,11 +334,20 @@ class Control {
 				amount: 1,
 				_id: 1
 			})
-
+			
+			// 如果没有商品，返回空数据
 			if (!find) {
-				return {}
+				return {
+					address: resAddress,
+					list: [],
+					postagePrice: 0,
+					totalPrice: 0,
+					totalWeight: 0,
+				}
 			}
-
+			
+			// 如果有商品的话，继续
+			
 			// 循环更新购物车内的所有产品
 			for (let i = 0; i < find.length; i++) {
 				const data = find[i]
