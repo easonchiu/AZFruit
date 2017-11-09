@@ -102,8 +102,14 @@
 				color: #333;
 				margin-bottom: 0.05rem;
 			}
+			p {
+				font-size: 0.26rem;
+				font-weight: normal;
+				color: #333;
+				margin-bottom: 0.05rem;
+			}
 			strong {
-				font-size: 0.28rem;
+				font-size: 0.26rem;
 				font-weight: normal;
 				color: #999;
 				margin-bottom: 0.05rem;

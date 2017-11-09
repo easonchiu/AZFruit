@@ -163,6 +163,78 @@ class ViewShoppingcart extends Component {
 	renderList() {
 		const list = this.props.$$shoppingcart.list
 		
+		// 产品的信息，以及数量操作功能
+		const renderInfo = res => (
+			<div styleName="info">
+				{
+					this.data.edited == res.id ?
+					<div styleName="tools">
+						<a href="javascript:;"
+							styleName={this.data.amount <= 1 ? 'disabled' : ''}
+							onClick={this.minus}>﹣</a>
+						<span>{this.data.amount}</span>
+						<a href="javascript:;"
+							styleName={this.data.amount >= Math.min(this.data.maxAmount, 9) ? 'disabled' : ''}
+							onClick={this.add}>﹢</a>
+						<a href="javascript:;" styleName="delete"
+							onClick={this.delete.bind(this, res)}>删除</a>
+					</div> :
+					null
+				}
+				<h1>
+					{res.name}
+				</h1>
+				<p>
+					{res.specName} 约{Math.round(res.weight/50)/10}斤
+				</p>
+				<strong>
+					￥{res.price / 100}元/{res.unit}
+				</strong>
+			</div>
+		)
+		
+		// 产品上架中的状态，显示总价，数量之类的
+		const renderOnline = res => (
+			<div styleName="item-total">
+				{
+					res.stock < res.amount ?
+					<p>库存仅{res.stock}件</p> :
+					<p>￥{res.totalPrice / 100}元</p>
+				}
+				<span>×{res.amount}份</span>
+				{
+					this.data.edited == '' ?
+					<a href="javascript:;"
+						styleName={res.stock < res.amount ? '' : 'normal'}
+						onClick={this.edit.bind(this, res)}>
+						{
+							res.stock < res.amount ?
+							'修改数量' :
+							'编辑'
+						}
+					</a> :
+					this.data.edited == res.id ?
+					<a href="javascript:;"
+						styleName="save"
+						onClick={this.save.bind(this, res)}>保存</a> :
+					null
+				}
+			</div>
+		)
+		
+		// 产品下架后，显示删除按钮
+		const renderOffline = res => (
+			<div styleName="item-status">
+				<p>已下架</p>
+				{
+					this.data.edited == '' ?
+					<a href="javascript:;"
+						onClick={this.delete.bind(this, res)}>删除</a> :
+					null
+				}
+			</div>
+		)
+		
 		return (
 			<div styleName="list">
 			{
@@ -174,65 +246,14 @@ class ViewShoppingcart extends Component {
 							<div styleName="thumb">
 								<img src={CDN+res.cover} />
 							</div>
-							<div styleName="info">
-								{
-									this.data.edited == res.id ?
-									<div styleName="tools">
-										<a href="javascript:;"
-											styleName={this.data.amount <= 1 ? 'disabled' : ''}
-											onClick={this.minus}>﹣</a>
-										<span>{this.data.amount}</span>
-										<a href="javascript:;"
-											styleName={this.data.amount >= Math.min(this.data.maxAmount, 9) ? 'disabled' : ''}
-											onClick={this.add}>﹢</a>
-										<a href="javascript:;" styleName="delete"
-											onClick={this.delete.bind(this, res)}>删除</a>
-									</div> :
-									null
-								}
-								<h1>{res.name}<br />{res.specName}</h1>
-								<strong>
-									￥{res.price / 100}元/{res.unit}
-								</strong>
-							</div>
+							{
+								renderInfo(res)
+							}
 							{
 								res.online ?
-								<div styleName="item-total">
-									{
-										res.stock < res.amount ?
-										<p>库存仅{res.stock}件</p> :
-										<p>￥{res.totalPrice / 100}元</p>
-									}
-									<span>×{res.amount}份</span>
-									{
-										this.data.edited == '' ?
-										<a href="javascript:;"
-											styleName={res.stock < res.amount ? '' : 'normal'}
-											onClick={this.edit.bind(this, res)}>
-											{
-												res.stock < res.amount ?
-												'修改数量' :
-												'编辑'
-											}
-										</a> :
-										this.data.edited == res.id ?
-										<a href="javascript:;"
-											styleName="save"
-											onClick={this.save.bind(this, res)}>保存</a> :
-										null
-									}
-								</div> :
-								<div styleName="item-status">
-									<p>已下架</p>
-									{
-										this.data.edited == '' ?
-										<a href="javascript:;"
-											onClick={this.delete.bind(this, res)}>删除</a> :
-										null
-									}
-								</div>
+								renderOnline(res) :
+								renderOffline(res)
 							}
-							
 						</div>
 					)
 				})
@@ -250,6 +271,10 @@ class ViewShoppingcart extends Component {
 	}
 
 	render() {
+		const price = this.props.$$shoppingcart.totalPrice || 0
+		const postage = this.props.$$shoppingcart.postagePrice || 0
+		const weight = this.props.$$shoppingcart.totalWeight || 0
+
 		return (
 			<Layout styleName="view-shoppingcart">
 				<Layout.Header title="购物车"
@@ -266,14 +291,24 @@ class ViewShoppingcart extends Component {
 					
 				</Layout.Body>
 
-				<Layout.Footer styleName="footer">
+				<Layout.Footer
+					styleName="footer"
+					visible={!this.data.loading && !this.data.errorInfo}>
 					<div styleName="total">
+						{
+							postage > 0 ?
+							<em>
+								总重量约{Math.round(weight/50)/10}斤，运费另收￥{postage / 100}元
+							</em> :
+							<em>
+								总重量约{Math.round(weight/50)/10}斤，免运费
+							</em>
+						}
 						<p>
 							<span>总计：￥</span>
-							<strong>{this.props.$$shoppingcart.totalPrice / 100}</strong>
+							<strong>{(price + postage) / 100}</strong>
 							<span>元</span>
 						</p>
-						<em>含运费￥20元</em>
 					</div>
 					<Button onClick={this.payment}>结算</Button>
 				</Layout.Footer>

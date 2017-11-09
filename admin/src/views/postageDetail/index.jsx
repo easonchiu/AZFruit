@@ -16,11 +16,11 @@ class ViewPostageDetail extends Component {
 			id: '',
 			
 			km: 0,
-			weight: 500,
+			weight: 10,
 			postage: 0,
 			eachWeight: 0,
 			eachPostage: 0,
-			freePostage: 999999,
+			freePostage: 0,
 			online: false,
 
 			loading: true
@@ -50,11 +50,11 @@ class ViewPostageDetail extends Component {
 
 			data.id = id
 			data.km = res.km
-			data.weight = res.weight
-			data.postage = res.postage
-			data.eachWeight = res.eachWeight
-			data.eachPostage = res.eachPostage
-			data.freePostage = res.freePostage
+			data.weight = res.weight / 500
+			data.postage = res.postage / 100
+			data.eachWeight = res.eachWeight / 500
+			data.eachPostage = res.eachPostage / 100
+			data.freePostage = res.freePostage / 100
 			data.online = res.online
 
 			this.setState({
@@ -76,11 +76,11 @@ class ViewPostageDetail extends Component {
 		try {
 			const data = {
 				km: this.data.km,
-				weight: this.data.weight,
-				postage: this.data.postage,
-				eachWeight: this.data.eachWeight,
-				eachPostage: this.data.eachPostage,
-				freePostage: this.data.freePostage,
+				weight: this.data.weight * 500,
+				postage: this.data.postage * 100,
+				eachWeight: this.data.eachWeight * 500,
+				eachPostage: this.data.eachPostage * 100,
+				freePostage: this.data.freePostage * 100,
 				online: this.data.online,
 			}
 			if (this.data.id) {
@@ -122,7 +122,7 @@ class ViewPostageDetail extends Component {
 							defaultValue={this.data.weight}
 							value={this.data.weight}
 							onChange={this.valueChange.bind(this, 'weight')} />
-						<em>单位：克</em>
+						<em>单位：斤</em>
 					</Form.Item>
 
 					<Form.Item label="基础运费">
@@ -130,8 +130,7 @@ class ViewPostageDetail extends Component {
 							defaultValue={this.data.postage}
 							value={this.data.postage}
 							onChange={this.valueChange.bind(this, 'postage')} />
-						<em>单位：分</em>
-						<em style={{color:'#ff4949'}}>当前{this.data.postage/100}元</em>
+						<em>单位：元</em>
 					</Form.Item>
 
 					<Form.Item label="超出后每档重量">
@@ -139,7 +138,7 @@ class ViewPostageDetail extends Component {
 							defaultValue={this.data.eachWeight}
 							value={this.data.eachWeight}
 							onChange={this.valueChange.bind(this, 'eachWeight')} />
-						<em>单位：克</em>
+						<em>单位：斤</em>
 						<em>超出重量上限后会按该设置递增价格，直到更远的距离规则匹配</em>
 					</Form.Item>
 
@@ -148,8 +147,7 @@ class ViewPostageDetail extends Component {
 							defaultValue={this.data.eachPostage}
 							value={this.data.eachPostage}
 							onChange={this.valueChange.bind(this, 'eachPostage')} />
-						<em>单位：分</em>
-						<em style={{color:'#ff4949'}}>当前{this.data.eachPostage/100}元</em>
+						<em>单位：元</em>
 					</Form.Item>
 
 					<Form.Item label="满消费免运费">
@@ -157,8 +155,8 @@ class ViewPostageDetail extends Component {
 							defaultValue={this.data.freePostage}
 							value={this.data.freePostage}
 							onChange={this.valueChange.bind(this, 'freePostage')} />
-						<em>单位：分</em>
-						<em style={{color:'#ff4949'}}>当前{this.data.freePostage/100}元</em>
+						<em>单位：元</em>
+						<em style={{color:'#ff4400'}}>0元 = 不管买多少东西都 <strong>收取运费</strong></em>
 					</Form.Item>
 
 					<Form.Item label="使用中">

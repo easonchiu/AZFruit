@@ -54,8 +54,8 @@ class ViewProductSpecDetail extends Component {
 			data.stock = res.stock
 			data.unit = res.unit
 			data.weight = res.weight
-			data.price = res.price
-			data.prePrice = res.prePrice
+			data.price = res.price / 100
+			data.prePrice = res.prePrice / 100
 			data.online = res.online
 
 			this.setState({

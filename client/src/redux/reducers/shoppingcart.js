@@ -6,6 +6,7 @@ const initialState = Immutable({
 	address: {},
 	totalPrice: 0,
 	totalWeight: 0,
+	postagePrice: 0,
 	amount: ''
 })
 
@@ -16,6 +17,7 @@ const reducer = handleActions({
 			address: action.payload.address,
 			totalPrice: action.payload.totalPrice,
 			totalWeight: action.payload.totalWeight,
+			postagePrice: action.payload.postagePrice,
 		})
 	},
 	SHOPPINGCART_SET_AMOUNT(state, action) {

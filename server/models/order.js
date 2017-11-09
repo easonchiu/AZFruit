@@ -5,16 +5,6 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var OrderSchema = Schema({
-	// 商品名称
-	productName: {
-		type: String,
-		required: true
-	},
-	// 商品id
-	productId: {
-		type: Schema.Types.ObjectId,
-		required: true
-	},
 	// 订单号
 	orderNo: {
 		type: String,
@@ -23,12 +13,18 @@ var OrderSchema = Schema({
 	// 微信支付订单号
 	wxOrderNo: {
 		type: String,
+		default: ''
 	},
 	// 城市，目前只能上海
 	city: {
 		type: String,
 		default: '上海',
 		enum: ['上海']
+	},
+	// 城市编号
+	cityCode: {
+		type: String,
+		default: '310100'
 	},
 	// 邮编号码
 	zipCode: {
@@ -40,18 +36,92 @@ var OrderSchema = Schema({
 		type: String,
 		required: true
 	},
-	// 收货人地址
+	// 收货人姓名
+	name: {
+		type: String,
+		required: true
+	},
+	// 小区（地图选的）
+	area: {
+		type: String,
+		required: true
+	},
+	// 经度
+	lat: {
+		type: Number,
+		required: true
+	},
+	// 纬度
+	lon: {
+		type: Number,
+		required: true
+	},
+	// 送货距离
+	distance: {
+		type: Number,
+		required: true
+	},
+	// 收货人地址（门牌号部分）
 	address: {
 		type: String,
 		required: true
 	},
+	// 商品
+	productList: [{
+		
+	}],
+	// 总重量
+	totalWeight: {
+		type: Number,
+		default: 0
+	},
+	// 总价(不包含邮费)
+	totalPrice: {
+		type: Number,
+		default: 0
+	},
+	// 满减
+	discount: {
+		type: Number,
+		default: 0
+	},
+	// 满减名称
+	discountName: {
+		type: String,
+		default: 0
+	},
+	// 优惠券减免
+	coupon: {
+		type: Number,
+		default: 0
+	},
+	// 优惠券名称
+	couponName: {
+		type: String,
+		default: 0
+	},
+	// 邮费
+	postage: {
+		type: Number,
+		default: 0
+	},
+	// 需要支付
+	needPayment: {
+		type: Number,
+		default: 0
+	},
+	// 实际支付
+	finalPayment: {
+		type: Number,
+		default: 0
+	},
 	// 状态 
 	// 1: 待支付
-	// 2: 已支付
-	// 3: 已发货
-	// 4: 已完成
-	// 5: 已评价
-	// 6: 交易关闭
+	// 11: 已支付
+	// 21: 已发货
+	// 31: 已完成
+	// 41: 已评价
+	// 90: 交易关闭
 	status: {
 		type: Number,
 		default: 1
@@ -61,21 +131,6 @@ var OrderSchema = Schema({
 		type: String,
 		default: ''
 	},
-	// 评论内容
-	comment: {
-		type: String,
-		default: ''
-	},
-	// 评论时间
-	commentTime: {
-		type: Date,
-		default: Date.now
-	},
-	// 打星
-	star: {
-		type: Number,
-		default: 5
-	},
 	// 订单备注(客户下单时填写的)
 	mark: {
 		type: String,
@@ -83,6 +138,11 @@ var OrderSchema = Schema({
 	},
 	// 创建时间
 	createTime: {
+		type: Date,
+		default: Date.now
+	},
+	// 支付时间
+	paymentTime: {
 		type: Date,
 		default: Date.now
 	}

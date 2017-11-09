@@ -88,22 +88,29 @@ class ViewPostage extends Component {
 							label: '超出公里数(公里)',
 							prop: 'km',
 							width: 150,
-							align: 'center'
+							align: 'center',
+							render: data => {
+								return data.km + '公里'
+							}
 						}, {
 							label: '基础重量(克)',
-							prop: 'weight',
 							align: 'center',
 							width: 120,
+							render: data => {
+								return data.weight / 500 + '斤'
+							}
 						}, {
 							label: '运费',
 							render: data => {
 								return data.postage / 100 + '元'
 							}
 						}, {
-							label: '超出后每档重量(克)',
-							prop: 'eachWeight',
+							label: '超出后每档重量',
 							align: 'center',
 							width: 180,
+							render: data => {
+								return data.eachWeight / 500 + '斤'
+							}
 						}, {
 							label: '每档重量的价格',
 							align: 'center',
@@ -116,6 +123,9 @@ class ViewPostage extends Component {
 							width: 150,
 							align: 'center',
 							render: data => {
+								if (data.freePostage == 0) {
+									return '不免'
+								}
 								return data.freePostage / 100 + '元'
 							}
 						}, {

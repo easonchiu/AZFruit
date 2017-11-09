@@ -2,6 +2,7 @@ var Shoppingcart = require('../models/shoppingcart')
 var Product = require('../models/product')
 var ProductSpec = require('../models/productSpec')
 var Address = require('../models/address')
+var Postage = require('../models/postage')
 var qs = require('qs')
 
 class Control {
@@ -11,28 +12,26 @@ class Control {
 	 * 需要注意的是这里仅做添加数据，并没有重新计算总价和总重量之类的
 	 */
 	static async add(ctx, next) {
-		
-		const body = ctx.request.body
-
-		if (!body.pid) {
-			return ctx.error({
-				msg: '商品id不能为空'
-			})
-		}
-		
-		if (!body.specId) {
-			return ctx.error({
-				msg: '规格id不能为空'
-			})
-		}
-
-		if (!body.amount || body.amount < 1) {
-			return ctx.error({
-				msg: '购买商品数量不正确'
-			})
-		}
-		
 		try {
+			const body = ctx.request.body
+
+			if (!body.pid) {
+				return ctx.error({
+					msg: '商品id不能为空'
+				})
+			}
+			
+			if (!body.specId) {
+				return ctx.error({
+					msg: '规格id不能为空'
+				})
+			}
+
+			if (!body.amount || body.amount < 1) {
+				return ctx.error({
+					msg: '购买商品数量不正确'
+				})
+			}
 
 			// 查询信息
 			const info = await Control.getProductInfo(body)
@@ -112,8 +111,8 @@ class Control {
 					upsert: true
 				})
 
-			// 顺便做一个操作，删除所有在购物车中超过3天未更新的产品
-			await Control.deleteData()
+			// 添加商品的时候顺便做一个操作，删除所有在购物车中超过7天未更新的产品
+			await Control.deleteProductInShoppingcartOverDays(7)
 			
 			return ctx.success()
 		} catch(e) {
@@ -128,125 +127,16 @@ class Control {
 			
 			// 找到请求中的addressId
 			const search = qs.parse(ctx.search.replace(/^\?/, ''))
-			
-			// 查找相应的地址
-			const address = await Address.findOne({
-				uid: uid
-			})
-			
-			let choosedAddress = null, resAddress = null
-			for (let i = 0; i < address.addressList.length; i++) {
-				const d = address.addressList[i]
-				if (search.addressId && d._id == search.addressId) {
-					choosedAddress = d
-				}
-				else if (!search.addressId && d._id == address.defaultAddress) {
-					choosedAddress = d
-				}
-			}
-			
-			// 如果有地址，整理数据
-			if (choosedAddress) {
-				resAddress = {
-					city: choosedAddress.city,
-					cityCode: choosedAddress.cityCode,
-					zipCode: choosedAddress.zipCode,
-					name: choosedAddress.name,
-					mobile: choosedAddress.mobile,
-					area: choosedAddress.area,
-					address: choosedAddress.address,
-					distance: choosedAddress.distance * 1.2 // 因为取的是直线距离，实际距离肯定是大于它的
-				}
-			}
 
-			// 先获取购物车中的所以商品
-			const find = await Shoppingcart.find({
-				uid: uid
-			}, {
-				pid: 1,
-				specId: 1,
-				amount: 1,
-				_id: 1
-			})
+			const data = await Control.getShoppingcartInfo(uid, search.addressId)
 
-			if (!find) {
+			if (data) {
 				return ctx.success({
-					data: []
+					data: data
 				})
+			} else {
+				return ctx.error()
 			}
-
-			// 循环更新购物车内的所有产品
-			for (let i = 0; i < find.length; i++) {
-				const data = find[i]
-
-				// 先获取商品的信息
-				const info = await Control.getProductInfo({
-					pid: data.pid,
-					specId: data.specId
-				})
-
-				// 如果购物车里的商品存在，更新
-				if (info) {
-					// 分别计算每个规格的总重量和总价
-					info.totalWeight = info.weight * data.amount
-					info.totalPrice = info.price * data.amount
-
-					await Shoppingcart.update({
-						_id: data._id
-					}, info)
-				}
-				// 如果不存在了，删除
-				else {
-					await Shoppingcart.remove({
-						_id: data._id
-					})
-				}
-			}
-
-			// 再次查找所有数据
-			const refind = await Shoppingcart
-				.aggregate({
-					$match: {
-						uid: uid
-					}
-				}, {
-					$project: {
-						id: '$_id',
-						_id: 0,
-						cover: 1,
-						name: 1,
-						specName: 1,
-						unit: 1,
-						amount: 1,
-						price: 1,
-						totalPrice: 1,
-						weight: 1,
-						totalWeight: 1,
-						online: 1,
-						stock: 1,
-						specId: 1,
-						pid: 1,
-					}
-				})
-
-			// 计算总价、总重量
-			let totalPrice = 0, totalWeight = 0
-			for (let i = 0; i < refind.length; i++) {
-				if (refind[i].online) {
-					totalPrice += refind[i].totalPrice
-					totalWeight += refind[i].totalWeight
-				}
-			}
-
-			return ctx.success({
-				data: {
-					list: refind,
-					address: resAddress,
-					totalPrice,
-					totalWeight
-				}
-			})
-
 		} catch(e) {
 			return ctx.error()
 		}
@@ -254,16 +144,15 @@ class Control {
 
 	// 从购物车中移除商品
 	static async remove(ctx, next) {
-
-		const body = ctx.request.body
-
-		if (!body.id) {
-			return ctx.error({
-				msg: '购物id不能为空'
-			})
-		}
-
 		try {
+			const body = ctx.request.body
+
+			if (!body.id) {
+				return ctx.error({
+					msg: '购物id不能为空'
+				})
+			}
+		
 			const {uid} = ctx.state.jwt
 
 			await Shoppingcart.remove({
@@ -279,22 +168,21 @@ class Control {
 
 	// 更新某个商品的购买数量
 	static async update(ctx, next) {
-
-		const body = ctx.request.body
-
-		if (!body.id) {
-			return ctx.error({
-				msg: '购物id不能为空'
-			})
-		}
-
-		if (!body.amount) {
-			return ctx.error({
-				msg: '购买商品数量正确'
-			})
-		}
-
 		try {
+			const body = ctx.request.body
+
+			if (!body.id) {
+				return ctx.error({
+					msg: '购物id不能为空'
+				})
+			}
+
+			if (!body.amount) {
+				return ctx.error({
+					msg: '购买商品数量正确'
+				})
+			}
+		
 			const {uid} = ctx.state.jwt
 
 			await Shoppingcart.update({
@@ -384,17 +272,186 @@ class Control {
 	}
 	
 	// 这里针对全部用户的数据
-	// 如果商品在购物车中停留超过72小时，删除购物车商品
-	static async deleteData() {
+	// 如果商品在购物车中停留超过{day}天，删除购物车商品，保持数据库干净
+	static async deleteProductInShoppingcartOverDays(day) {
 		const now = new Date().getTime()
-		const age72h = now - 60 * 60 * 1000 * 72
+		const overDays = now - 60 * 60 * 1000 * 24 * day
 
 		const res = await Shoppingcart.remove({
 		    updateTime: {
-		        '$lte': new Date(age72h)
+		        '$lte': new Date(overDays)
 		    }
 		})
 		return res
+	}
+
+	// 计算某用户购物车中的信息
+	// uid: 用户id
+	// aid: 地址id,若没有的话使用默认地址,如果默认地址也没有的话将不返回地址信息
+	static async getShoppingcartInfo(uid, aid) {
+		try {
+			// 查找相应的地址
+			const address = await Address.findOne({
+				uid: uid
+			})
+			
+			let choosedAddress = null, resAddress = null
+			for (let i = 0; i < address.addressList.length; i++) {
+				const d = address.addressList[i]
+				if (aid && d._id == aid) {
+					choosedAddress = d
+				}
+				else if (!aid && d._id == address.defaultAddress) {
+					choosedAddress = d
+				}
+			}
+			
+			// 如果有地址，整理数据
+			if (choosedAddress) {
+				resAddress = {
+					city: choosedAddress.city,
+					cityCode: choosedAddress.cityCode,
+					zipCode: choosedAddress.zipCode,
+					name: choosedAddress.name,
+					mobile: choosedAddress.mobile,
+					area: choosedAddress.area,
+					address: choosedAddress.address,
+					distance: choosedAddress.distance * 1.2 // 因为取的是直线距离，实际距离肯定是大于它的
+				}
+			}
+
+			// 先获取购物车中的所以商品
+			const find = await Shoppingcart.find({
+				uid: uid
+			}, {
+				pid: 1,
+				specId: 1,
+				amount: 1,
+				_id: 1
+			})
+
+			if (!find) {
+				return {}
+			}
+
+			// 循环更新购物车内的所有产品
+			for (let i = 0; i < find.length; i++) {
+				const data = find[i]
+
+				// 先获取商品的信息
+				const info = await Control.getProductInfo({
+					pid: data.pid,
+					specId: data.specId
+				})
+
+				// 如果购物车里的商品存在，更新
+				if (info) {
+					// 分别计算每个规格的总重量和总价
+					info.totalWeight = info.weight * data.amount
+					info.totalPrice = info.price * data.amount
+
+					await Shoppingcart.update({
+						_id: data._id
+					}, info)
+				}
+				// 如果不存在了，删除
+				else {
+					await Shoppingcart.remove({
+						_id: data._id
+					})
+				}
+			}
+
+			// 再次查找所有数据
+			const list = await Shoppingcart
+				.aggregate({
+					$match: {
+						uid: uid
+					}
+				}, {
+					$project: {
+						id: '$_id',
+						_id: 0,
+						cover: 1,
+						name: 1,
+						specName: 1,
+						unit: 1,
+						amount: 1,
+						price: 1,
+						totalPrice: 1,
+						weight: 1,
+						totalWeight: 1,
+						online: 1,
+						stock: 1,
+						specId: 1,
+						pid: 1,
+					}
+				})
+
+			// 计算总价、总重量
+			let totalPrice = 0, totalWeight = 0
+			for (let i = 0; i < list.length; i++) {
+				if (list[i].online) {
+					totalPrice += list[i].totalPrice
+					totalWeight += list[i].totalWeight
+				}
+			}
+
+			// 如果有地址，获取数据库中的运费列表
+			let postagePrice = 0
+			if (resAddress) {
+				// 运费数据库里存的km是千米单位，而地址数据库里存的是米，需要转换
+				// 找到小于(等于)实际送货距离并最接近的那个规则
+				const postages = await Postage
+					.find({
+						km: {
+							$lte: resAddress.distance / 1000
+						}
+					})
+					.sort({
+						'km': -1
+					})
+					.limit(1)
+				
+				// 如果匹配中规则，计算运费，否则的话运费将为0元，即免运费
+				if (postages && postages.length) {
+					const data = postages[0]
+
+					// 如果总价小于免邮费标准，需要付钱
+					// 如果freePostage = 0，说明买多少都要收运费
+					if (totalPrice < data.freePostage || data.freePostage == 0) {
+						// 首页邮费等于基础邮费
+						postagePrice = data.postage
+
+						// 如果超重，需要另加费用
+						if (totalWeight > data.weight && data.weight > 0) {
+							// 计算超出多少重量
+							const overflowWeight = Math.abs(totalWeight - data.weight)
+
+							// 计算超出几档
+							const offset = data.eachWeight > 0 ?
+								Math.ceil(overflowWeight / data.eachWeight) : 0
+
+							// 几档 x 每档价格
+							const offsetPrice = offset * data.eachPostage
+
+							// 把这部分价格加到邮费上
+							postagePrice += offsetPrice
+						}
+					}
+				}
+			}
+
+			return {
+				list,
+				postagePrice,
+				totalPrice,
+				totalWeight,
+				address: resAddress
+			}
+		} catch(e) {
+			return false
+		}
 	}
 	
 }
