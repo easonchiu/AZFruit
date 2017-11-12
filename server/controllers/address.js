@@ -324,6 +324,60 @@ class Control {
 			ctx.error()
 		}
 	}
+
+	// 获取地址，如果id不对则返回默认地址
+	static getAddressById(uid, aid, def) {
+		return new Promise(async (resolve, reject) => {
+			// 查找相应的地址
+			const address = await Address.findOne({
+				uid: uid
+			})
+			
+			// 如果用户有地址数据，匹配
+			let choosedAddress = null
+
+			if (address && address.addressList) {
+				let defaultAddress = null
+				for (let i = 0; i < address.addressList.length; i++) {
+					const d = address.addressList[i]
+					// 如果有选择地址，返回选择的
+					if (aid && d._id == aid) {
+						choosedAddress = d
+					}
+					// 如果没有选择但有默认地址，返回默认地址
+					if (d._id == address.defaultAddress) {
+						defaultAddress = d
+					}
+				}
+				if (def && !choosedAddress && defaultAddress) {
+					choosedAddress = defaultAddress
+				}
+			} else {
+				reject()
+			}
+			
+			// 如果匹配中地址，整理数据
+			if (choosedAddress) {
+				resolve({
+					id: choosedAddress._id,
+					city: choosedAddress.city,
+					cityCode: choosedAddress.cityCode,
+					zipCode: choosedAddress.zipCode,
+					name: choosedAddress.name,
+					mobile: choosedAddress.mobile,
+					area: choosedAddress.area,
+					address: choosedAddress.address,
+					lat: choosedAddress.lat,
+					lon: choosedAddress.lon,
+					distance: choosedAddress.distance * 1.2 // 因为取的是直线距离，实际距离肯定是大于它的
+				})
+			} else {
+				reject()
+			}
+		})
+	}
+
+	
 	
 }
 

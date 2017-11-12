@@ -7,6 +7,7 @@ import mass from 'mass'
 
 import Layout from 'src/auto/layout'
 import Button from 'src/auto/button'
+import Cell from 'src/auto/cell'
 
 @connect
 @mass(style)
@@ -67,15 +68,15 @@ class ViewAddress extends Component {
 					
 					{
 						data.length ?
-						<div className="list">
+						<Cell>
 							{
 								data.map(res => (
-									<div key={res.id} className="item">
-										<div className="txt">
+									<Cell.Row key={res.id} styleName="item">
+										<div styleName="text">
 											<h6>
 												{
 													res.id === defAddress ?
-													<strong>[默认]</strong> :
+													<strong>默认</strong> :
 													null
 												}
 												{res.name}
@@ -83,11 +84,11 @@ class ViewAddress extends Component {
 											</h6>
 											<p>{res.area} {res.address}</p>
 										</div>
-										<Link to={`/address/edit/${res.id}`}>编辑</Link>
-									</div>
+										<Link to={`/address/edit/${res.id}`} />
+									</Cell.Row>
 								))
 							}
-						</div> :
+						</Cell> :
 						<p>暂无地址</p>
 					}
 

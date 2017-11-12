@@ -2,6 +2,44 @@
 
 .view-address {
 
+	.item {
+		.text {
+			-webkit-box-flex: 1;
+		}
+		h6 {
+			display: block;
+			font-size: 0.3rem;
+			margin-bottom: 0.1rem;
+		}
+		strong {
+			margin-right: 0.1rem;
+			color: #00bb44;
+			font-size: 0.26rem;
+			font-weight: normal;
+		}
+		span {
+			font-weight: normal;
+			margin-left: 0.2rem;
+			font-size: 0.26rem;
+			color: #999;
+		}
+		p {
+			color: #666;
+			font-size: 0.26rem;
+		}
+		> a {
+			display: block;
+			width: 0.6rem;
+			height: 0.6rem;
+			background: url('../../assets/imgs/icon-edit.png') center center no-repeat;
+			background-size: 0.3rem;
+			margin-right: -0.15rem;
+			&:active {
+				opacity: 0.7;
+			}
+		}
+	}
+
 	.footer {
 		padding: 0.2rem 0.3rem;
 	}

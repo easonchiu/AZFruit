@@ -67,9 +67,7 @@ var OrderSchema = Schema({
 		required: true
 	},
 	// 商品
-	productList: [{
-		
-	}],
+	productList: [{}],
 	// 总重量
 	totalWeight: {
 		type: Number,

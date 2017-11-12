@@ -14,10 +14,12 @@
 	}
 
 	.delete {
-		color: #ff4949;
 		display: block;
 		height: 0.8rem;
-		line-height: 0.8rem;
+		width: 0.8rem;
+		background: url('../../assets/imgs/icon-delete.png') center center no-repeat;
+		background-size: 0.4rem;
+		margin-right: -0.2rem;
 		&:active {
 			opacity: 0.7;
 		}

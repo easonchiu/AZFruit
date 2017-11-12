@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react'
 import { Link } from 'react-router-dom'
 import mass from 'mass'
 import connect from 'src/redux/connect'
+import { getToken } from 'src/assets/libs/token'
 
 @connect
 class NavSpct extends PureComponent {
@@ -11,7 +12,7 @@ class NavSpct extends PureComponent {
 	}
 
 	componentDidMount() {
-		if (this.props.$$shoppingcart.amount === '') {
+		if (this.props.$$shoppingcart.amount === '' && getToken()) {
 			this.props.$shoppingcart.fetchAmount()
 		}
 	}

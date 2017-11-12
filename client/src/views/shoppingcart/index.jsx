@@ -266,14 +266,25 @@ class ViewShoppingcart extends Component {
 		this.props.history.push('/')
 	}
 
-	payment = e => {
-		alert('生成订单')
+	payment = async aid => {
+		Loading.show()
+		try {
+			await this.props.$order.create({
+				addressid: aid
+			})
+		} catch(e) {
+			Toast.show(e.msg)
+		}
+		Loading.hide()
 	}
 
 	render() {
-		const price = this.props.$$shoppingcart.totalPrice || 0
-		const postage = this.props.$$shoppingcart.postagePrice || 0
-		const weight = this.props.$$shoppingcart.totalWeight || 0
+		const {
+			totalPrice = 0,
+			postagePrice = 0,
+			totalWeight = 0,
+			address = {}
+		} = this.props.$$shoppingcart
 
 		return (
 			<Layout styleName="view-shoppingcart">
@@ -293,24 +304,29 @@ class ViewShoppingcart extends Component {
 
 				<Layout.Footer
 					styleName="footer"
-					visible={!this.data.loading && !this.data.errorInfo}>
+					visible={!this.data.loading && !this.data.errorInfo && totalPrice != 0}>
+					
 					<div styleName="total">
 						{
-							postage > 0 ?
+							postagePrice > 0 ?
 							<em>
-								总重量约{Math.round(weight/50)/10}斤，运费另收￥{postage / 100}元
+								总重量约{Math.round(totalWeight/50)/10}斤，运费另收￥{postagePrice / 100}元
 							</em> :
 							<em>
-								总重量约{Math.round(weight/50)/10}斤，免运费
+								总重量约{Math.round(totalWeight/50)/10}斤，免运费
 							</em>
 						}
 						<p>
 							<span>总计：￥</span>
-							<strong>{(price + postage) / 100}</strong>
+							<strong>{(totalPrice + postagePrice) / 100}</strong>
 							<span>元</span>
 						</p>
 					</div>
-					<Button onClick={this.payment}>结算</Button>
+
+					<Button disabled={!address.id}
+						onClick={this.payment.bind(this, address.id)}>
+						结算
+					</Button>
 				</Layout.Footer>
 			</Layout>
 		)

@@ -27,7 +27,8 @@ class ViewAddress extends Component {
 			mobile: '',
 			area: '',
 			address: '',
-			default: false
+			default: false,
+			defaultDisabled: true,
 		})
 	}
 
@@ -64,14 +65,20 @@ class ViewAddress extends Component {
 
 	componentWillMount() {
 		this.id = this.props.match.params.id
-		this.first = this.props.match.params.first == 'first'
 	}
 
 	componentDidMount() {
 		if (this.id) {
 			this.fetch(this.id)
 		}
-		this.data.default = this.first
+		else {
+			const def = this.props.match.params.first == 'first'
+			
+			this.setState({
+				default: def,
+				defaultDisabled: def,
+			})
+		}
 	}
 
 	async fetch() {
@@ -86,6 +93,7 @@ class ViewAddress extends Component {
 				area: res.area,
 				address: res.address,
 				default: res.default,
+				defaultDisabled: res.default,
 			})
 		} catch(e) {
 			console.error(e)
@@ -172,12 +180,15 @@ class ViewAddress extends Component {
 				<Layout.Header
 					title="地址管理"
 					addonBefore={
-						<a href="javascript:;" className="back" onClick={this.backClick} />
+						<a href="javascript:;"
+							className="back"
+							onClick={this.backClick} />
 					}
 					addonAfter={
 						this.id ?
-						<a href="javascript:;" styleName="delete" onClick={this.deleteClick}>
-							删除
+						<a href="javascript:;"
+							styleName="delete"
+							onClick={this.deleteClick}>
 						</a> :
 						null
 					} />
@@ -218,7 +229,7 @@ class ViewAddress extends Component {
 								onChange={this.changeAddress} />
 						</Cell.Row>
 						{
-							!this.first ?
+							!this.data.defaultDisabled ?
 							<Cell.Row styleName="defrow">
 								<label>设为默认地址</label>
 								<Switch value={this.data.default}

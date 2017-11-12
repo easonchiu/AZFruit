@@ -43,6 +43,8 @@
 			span {
 				margin-left: 0.2rem;
 				font-weight: normal;
+				font-size: 0.26rem;
+				color: #999;
 			}
 		}
 		.change {
@@ -67,6 +69,7 @@
 		p {
 			-webkit-box-flex: 1;
 			color: #666;
+			font-size: 0.26rem;
 		}
 		em {
 			font-style: normal;

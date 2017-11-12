@@ -1,8 +1,11 @@
 var Shoppingcart = require('../models/shoppingcart')
 var Product = require('../models/product')
 var ProductSpec = require('../models/productSpec')
-var Address = require('../models/address')
-var Postage = require('../models/postage')
+var Postage = require('./postage')
+
+
+var Address = require('./address')
+
 var qs = require('qs')
 
 class Control {
@@ -256,7 +259,7 @@ class Control {
 		}
 		
 		// 如果找到，整合信息并返回
-		const res = {
+		return {
 			cover: productInfo.cover,
 			name: productInfo.name,
 			specName: specInfo.desc,
@@ -268,7 +271,6 @@ class Control {
 			specId: specId,
 			pid: pid
 		}
-		return res
 	}
 	
 	// 这里针对全部用户的数据
@@ -290,41 +292,10 @@ class Control {
 	// aid: 地址id,若没有的话使用默认地址,如果默认地址也没有的话将不返回地址信息
 	static async getShoppingcartInfo(uid, aid) {
 		try {
-			// 查找相应的地址
-			const address = await Address.findOne({
-				uid: uid
-			})
 			
-			// 如果用户有地址数据，匹配
-			let choosedAddress = null, resAddress = null
-			if (address && address.addressList) {
-				for (let i = 0; i < address.addressList.length; i++) {
-					const d = address.addressList[i]
-					// 如果有选择地址，返回选择的
-					if (aid && d._id == aid) {
-						choosedAddress = d
-					}
-					// 如果没有选择但有默认地址，返回默认地址
-					else if (!aid && d._id == address.defaultAddress) {
-						choosedAddress = d
-					}
-				}
-			}
+			// 获取地址
+			const resAddress = await Address.getAddressById(uid, aid, true)
 			
-			// 如果匹配中地址，整理数据
-			if (choosedAddress) {
-				resAddress = {
-					city: choosedAddress.city,
-					cityCode: choosedAddress.cityCode,
-					zipCode: choosedAddress.zipCode,
-					name: choosedAddress.name,
-					mobile: choosedAddress.mobile,
-					area: choosedAddress.area,
-					address: choosedAddress.address,
-					distance: choosedAddress.distance * 1.2 // 因为取的是直线距离，实际距离肯定是大于它的
-				}
-			}
-
 			// 先获取购物车中的所以商品
 			const find = await Shoppingcart.find({
 				uid: uid
@@ -347,6 +318,7 @@ class Control {
 			}
 			
 			// 如果有商品的话，继续
+			let hasDelete = false
 			
 			// 循环更新购物车内的所有产品
 			for (let i = 0; i < find.length; i++) {
@@ -373,6 +345,7 @@ class Control {
 					await Shoppingcart.remove({
 						_id: data._id
 					})
+					hasDelete = true
 				}
 			}
 
@@ -414,46 +387,7 @@ class Control {
 			// 如果有地址，获取数据库中的运费列表
 			let postagePrice = 0
 			if (resAddress) {
-				// 运费数据库里存的km是千米单位，而地址数据库里存的是米，需要转换
-				// 找到小于(等于)实际送货距离并最接近的那个规则
-				const postages = await Postage
-					.find({
-						km: {
-							$lte: resAddress.distance / 1000
-						}
-					})
-					.sort({
-						'km': -1
-					})
-					.limit(1)
-				
-				// 如果匹配中规则，计算运费，否则的话运费将为0元，即免运费
-				if (postages && postages.length) {
-					const data = postages[0]
-
-					// 如果总价小于免邮费标准，需要付钱
-					// 如果freePostage = 0，说明买多少都要收运费
-					if (totalPrice < data.freePostage || data.freePostage == 0) {
-						// 首页邮费等于基础邮费
-						postagePrice = data.postage
-
-						// 如果超重，需要另加费用
-						if (totalWeight > data.weight && data.weight > 0) {
-							// 计算超出多少重量
-							const overflowWeight = Math.abs(totalWeight - data.weight)
-
-							// 计算超出几档
-							const offset = data.eachWeight > 0 ?
-								Math.ceil(overflowWeight / data.eachWeight) : 0
-
-							// 几档 x 每档价格
-							const offsetPrice = offset * data.eachPostage
-
-							// 把这部分价格加到邮费上
-							postagePrice += offsetPrice
-						}
-					}
-				}
+				postagePrice = await Postage.countPostage(resAddress.distance, totalPrice, totalWeight)
 			}
 
 			return {
@@ -461,11 +395,19 @@ class Control {
 				postagePrice,
 				totalPrice,
 				totalWeight,
+				hasDelete,
 				address: resAddress
 			}
 		} catch(e) {
 			return false
 		}
+	}
+
+	// 清空购物车
+	static removeAll(uid) {
+		return new Promise(async (resolve, reject) => {
+			resolve()
+		})
 	}
 	
 }

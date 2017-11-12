@@ -7,6 +7,7 @@ import mass from 'mass'
 
 import Layout from 'src/auto/layout'
 import Button from 'src/auto/button'
+import Cell from 'src/auto/cell'
 
 @connect
 @mass(style)
@@ -54,8 +55,17 @@ class ViewAddressChoose extends Component {
 				
 				<Layout.Header
 					title="选择地址"
-					addonBefore={<a href="javascript:;" className="back" onClick={this.backClick} />}
-					addonAfter={<Link to="/address">地址管理</Link>} />
+					addonBefore={
+						<a href="javascript:;"
+							className="back"
+							onClick={this.backClick} />
+					}
+					addonAfter={
+						<Link to="/address"
+							styleName="manage">
+							地址管理
+						</Link>
+					} />
 
 				<Layout.Body
 					errorInfo={this.data.errorInfo}
@@ -63,24 +73,24 @@ class ViewAddressChoose extends Component {
 					
 					{
 						data.length ?
-						<div styleName="list">
+						<Cell>
 							{
 								data.map(res => (
-									<a href="javascript:;"
+									<Cell.Row href="javascript:;"
 										key={res.id}
 										onClick={this.onClick.bind(this, res)}
 										styleName="item">
 										{
 											aid == res.id ||
 											(aid == undefined && res.id == defAddress) ?
-											<em>当前</em> :
-											null
+											<sup /> :
+											<sub />
 										}
-										<div styleName="txt">
+										<div styleName="text">
 											<h6>
 												{
 													res.id === defAddress ?
-													<strong>[默认]</strong> :
+													<strong>默认</strong> :
 													null
 												}
 												{res.name}
@@ -88,10 +98,10 @@ class ViewAddressChoose extends Component {
 											</h6>
 											<p>{res.area} {res.address}</p>
 										</div>
-									</a>
+									</Cell.Row>
 								))
 							}
-						</div> :
+						</Cell> :
 						<p>暂无地址</p>
 					}
 

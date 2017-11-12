@@ -184,6 +184,60 @@ class Control {
 		}
 	}
 	
+	// 根据距离、价格、重量计算邮费
+	static countPostage(distance, price, weight) {
+		return new Promise(async (resolve, reject) => {
+
+			// 运费数据库里存的km是千米单位，而地址数据库里存的是米，需要转换
+			// 找到小于(等于)实际送货距离并最接近的那个规则
+			const postages = await Postage
+				.find({
+					km: {
+						$lte: distance / 1000
+					}
+				})
+				.sort({
+					'km': -1
+				})
+				.limit(1)
+			
+			// 如果没有邮费规则，当0元处理
+			if (!postages || postages.length == 0) {
+				reject('找不到相关的邮费规则')
+			}
+			else {
+				const data = postages[0]
+				let postagePrice = 0
+
+				// 如果总价小于免邮费标准，需要付钱
+				// 如果freePostage = 0，说明买多少都要收运费
+				if (price < data.freePostage || data.freePostage == 0) {
+					// 首先邮费等于基础邮费
+					postagePrice = data.postage
+					
+
+					// 如果超重，需要另加费用
+					if (weight > data.weight && data.weight > 0) {
+						// 计算超出多少重量
+						const overflowWeight = Math.abs(weight - data.weight)
+
+						// 计算超出几档
+						const offset = data.eachWeight > 0 ?
+							Math.ceil(overflowWeight / data.eachWeight) : 0
+
+						// 几档 x 每档价格
+						const offsetPrice = offset * data.eachPostage
+
+						// 把这部分价格加到邮费上
+						postagePrice += offsetPrice
+					}
+				}
+
+				resolve(postagePrice)
+			}
+
+		})
+	}
 	
 }
 
