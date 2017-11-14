@@ -11,5 +11,7 @@ router
 	
 	// 用户下单
 	.post(`${prefix.app}/order`, checkJWT, order.create)
+	// 用户查看订单列表
+	.get(`${prefix.app}/order/list`, checkJWT, order.appFetchList)
 
 module.exports = router

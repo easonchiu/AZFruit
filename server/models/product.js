@@ -119,4 +119,5 @@ var ProductSchema = Schema({
 	}
 })
 
-module.exports = mongoose.model('Product', ProductSchema)
+const model = mongoose.model('Product', ProductSchema)
+module.exports = model

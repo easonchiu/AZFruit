@@ -27,4 +27,5 @@ var UploadSchema = Schema({
 	}
 })
 
-module.exports = mongoose.model('Upload', UploadSchema)
+const model = mongoose.model('Upload', UploadSchema)
+module.exports = model

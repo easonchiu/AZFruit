@@ -15,6 +15,11 @@ var OrderSchema = Schema({
 		type: String,
 		default: ''
 	},
+	// 用户id
+	uid: {
+		type: String,
+		required: true
+	},
 	// 城市，目前只能上海
 	city: {
 		type: String,
@@ -146,4 +151,5 @@ var OrderSchema = Schema({
 	}
 })
 
-module.exports = mongoose.model('Order', OrderSchema)
+const model = mongoose.model('Order', OrderSchema)
+module.exports = model

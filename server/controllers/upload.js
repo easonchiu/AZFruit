@@ -1,4 +1,4 @@
-var Upload = require('../models/upload')
+var UploadModel = require('../models/upload')
 var fs = require('fs')
 var mongoose = require('../conf/mongoose')
 
@@ -34,11 +34,14 @@ class Control {
 			let type = ''
 			if ((/:image\/png/).test(body.base64)) {
 				type = '.png'
-			} else if ((/:image\/jpg/).test(body.base64)) {
+			}
+			else if ((/:image\/jpg/).test(body.base64)) {
 				type = '.jpg'
-			} else if ((/:image\/jpeg/).test(body.base64)) {
+			}
+			else if ((/:image\/jpeg/).test(body.base64)) {
 				type = '.jpeg'
-			} else {
+			}
+			else {
 				return ctx.error({
 					msg: '图片格式不允许'
 				})
@@ -46,16 +49,20 @@ class Control {
 			
 			// 去掉base64的头部
 			const base64Data = body.base64.replace(/^data:image\/\w+;base64,/, '')
+
 			// 将base64存成一个buffer
 			const dataBuffer = new Buffer(base64Data, 'base64')
+
 			// 将buffer存到目录中
-			await upload.write('upload/'+body.class+'-'+filename+type, dataBuffer)
+			await UploadModel.write('upload/'+body.class+'-'+filename+type, dataBuffer)
+
 			// 数据库保存图片信息
-			await Upload.create({
+			await UploadModel.create({
 				name: body.class+'-'+filename,
 				uri: body.class+'-'+filename+type,
 				class: body.class,
 			})
+
 			return ctx.success({
 				data: body.class+'-'+filename+type
 			})
@@ -71,7 +78,7 @@ class Control {
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
-			const count = await Upload.count({})
+			const count = await UploadModel.count({})
 			let list = []
 
 			if (count > 0) {
@@ -95,7 +102,7 @@ class Control {
 						}
 					})
 				}
-				list = await Upload
+				list = await UploadModel
 					.aggregate(sql)
 			}
 

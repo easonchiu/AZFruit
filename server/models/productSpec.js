@@ -57,4 +57,5 @@ var ProductSpecSchema = Schema({
 	}
 })
 
-module.exports = mongoose.model('ProductSpec', ProductSpecSchema)
+const model = mongoose.model('ProductSpec', ProductSpecSchema)
+module.exports = model

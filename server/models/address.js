@@ -72,4 +72,5 @@ var AddressSchema = Schema({
 	}]
 })
 
-module.exports = mongoose.model('Address', AddressSchema)
+const model = mongoose.model('Address', AddressSchema)
+module.exports = model

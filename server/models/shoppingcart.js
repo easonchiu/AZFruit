@@ -98,4 +98,5 @@ var ShoppingcartSchema = Schema({
     }
 })
 
-module.exports = mongoose.model('Shoppingcart', ShoppingcartSchema)
+const model = mongoose.model('Shoppingcart', ShoppingcartSchema)
+module.exports = model

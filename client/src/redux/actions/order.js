@@ -1,6 +1,8 @@
 import { createAction } from 'redux-actions'
 import http from 'src/assets/libs/http'
 
+const _fetchList = createAction('ORDER_FETCH_LIST');
+
 const create = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'post',
@@ -10,6 +12,17 @@ const create = payload => async (dispatch, getState) => {
 	return res
 }
 
+const fetchList = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'get',
+        url: `/order/list`,
+        params: payload
+	})
+	dispatch(_fetchList(res))
+}
+
+
 export default {
 	create,
+	fetchList,
 }

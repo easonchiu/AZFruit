@@ -80,7 +80,7 @@ class Upload extends Component {
 	loadImage(src) {
 	    // 过滤掉 非 image 类型的文件  
 	    if(!src.type.match(/image.*/)){  
-	        alert('asdf')
+	        alert('格式错误')
 	        return 
 	    }
 	

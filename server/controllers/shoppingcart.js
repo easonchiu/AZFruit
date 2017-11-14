@@ -1,10 +1,9 @@
-var Shoppingcart = require('../models/shoppingcart')
-var Product = require('../models/product')
-var ProductSpec = require('../models/productSpec')
-var Postage = require('./postage')
+var ShoppingcartModel = require('../models/shoppingcart')
+var ProductModel = require('../models/product')
+var SkuModel = require('../models/productSpec')
 
-
-var Address = require('./address')
+var PostageCon = require('./postage')
+var AddressCon = require('./address')
 
 var qs = require('qs')
 
@@ -59,7 +58,7 @@ class Control {
 			// 先找购物车中是否有该产品
 			const {uid} = ctx.state.jwt
 
-			const find = await Shoppingcart.findOne({
+			const find = await ShoppingcartModel.findOne({
 				uid: uid,
 				pid: body.pid,
 				specId: body.specId
@@ -105,7 +104,7 @@ class Control {
 			// 添加新的产品到购物车数据
 			// 购物车中没有的话会添加
 			// 有的话叠加数量
-			await Shoppingcart.
+			await ShoppingcartModel.
 				update({
 					uid: uid,
 					pid: body.pid,
@@ -158,7 +157,7 @@ class Control {
 		
 			const {uid} = ctx.state.jwt
 
-			await Shoppingcart.remove({
+			await ShoppingcartModel.remove({
 				_id: body.id,
 				uid: uid
 			})
@@ -188,7 +187,7 @@ class Control {
 		
 			const {uid} = ctx.state.jwt
 
-			await Shoppingcart.update({
+			await ShoppingcartModel.update({
 				_id: body.id,
 				uid: uid
 			}, {
@@ -208,7 +207,7 @@ class Control {
 			const {uid} = ctx.state.jwt
 			
 			// 先获取购物车中的所以商品
-			const find = await Shoppingcart.find({
+			const find = await ShoppingcartModel.find({
 				uid
 			}, {
 				pid: 1,
@@ -243,12 +242,12 @@ class Control {
 	
 	// 获取单个产品的信息
 	static async getProductInfo({pid = '', specId = ''}) {
-		const specInfo = await ProductSpec
+		const specInfo = await SkuModel
 			.findOne({
 				_id: specId
 			})
 
-		const productInfo = await Product
+		const productInfo = await ProductModel
 			.findOne({
 				_id: pid
 			})
@@ -279,7 +278,7 @@ class Control {
 		const now = new Date().getTime()
 		const overDays = now - 60 * 60 * 1000 * 24 * day
 
-		const res = await Shoppingcart.remove({
+		const res = await ShoppingcartModel.remove({
 		    updateTime: {
 		        '$lte': new Date(overDays)
 		    }
@@ -294,10 +293,10 @@ class Control {
 		try {
 			
 			// 获取地址
-			const resAddress = await Address.getAddressById(uid, aid, true)
+			const resAddress = await AddressCon.getAddressById(uid, aid, true)
 			
 			// 先获取购物车中的所以商品
-			const find = await Shoppingcart.find({
+			const find = await ShoppingcartModel.find({
 				uid: uid
 			}, {
 				pid: 1,
@@ -318,7 +317,6 @@ class Control {
 			}
 			
 			// 如果有商品的话，继续
-			let hasDelete = false
 			
 			// 循环更新购物车内的所有产品
 			for (let i = 0; i < find.length; i++) {
@@ -336,21 +334,20 @@ class Control {
 					info.totalWeight = info.weight * data.amount
 					info.totalPrice = info.price * data.amount
 
-					await Shoppingcart.update({
+					await ShoppingcartModel.update({
 						_id: data._id
 					}, info)
 				}
 				// 如果不存在了，删除
 				else {
-					await Shoppingcart.remove({
+					await ShoppingcartModel.remove({
 						_id: data._id
 					})
-					hasDelete = true
 				}
 			}
 
 			// 再次查找所有数据
-			const list = await Shoppingcart
+			const list = await ShoppingcartModel
 				.aggregate({
 					$match: {
 						uid: uid
@@ -387,7 +384,7 @@ class Control {
 			// 如果有地址，获取数据库中的运费列表
 			let postagePrice = 0
 			if (resAddress) {
-				postagePrice = await Postage.countPostage(resAddress.distance, totalPrice, totalWeight)
+				postagePrice = await PostageCon.countPostage(resAddress.distance, totalPrice, totalWeight)
 			}
 
 			return {
@@ -395,7 +392,6 @@ class Control {
 				postagePrice,
 				totalPrice,
 				totalWeight,
-				hasDelete,
 				address: resAddress
 			}
 		} catch(e) {
@@ -406,7 +402,18 @@ class Control {
 	// 清空购物车
 	static removeAll(uid) {
 		return new Promise(async (resolve, reject) => {
-			resolve()
+			try {
+				if (!uid) {
+					reject()
+				}
+				await ShoppingcartModel.remove({
+					uid
+				})
+				resolve()
+			}
+			catch(e) {
+				reject()
+			}
 		})
 	}
 	

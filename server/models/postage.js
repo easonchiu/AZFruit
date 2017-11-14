@@ -47,4 +47,5 @@ var PostageSchema = Schema({
 	}
 })
 
-module.exports = mongoose.model('Postage', PostageSchema)
+const model = mongoose.model('Postage', PostageSchema)
+module.exports = model

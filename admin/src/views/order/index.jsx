@@ -72,7 +72,7 @@ class ViewOrder extends Component {
 		return (
 			<div className="view-order">
 
-				<h1>order管理</h1>
+				<h1>订单管理</h1>
 
 				<Table
 					className="table"
@@ -120,11 +120,8 @@ class ViewOrder extends Component {
 								return (
 									<p className="console">
 										<Link to={`/order/detail/${data.id}`}>
-											编辑
+											查看详情
 										</Link>
-										<a href="javascript:;" onClick={this.remove.bind(this, data)}>
-											删除
-										</a>
 									</p>
 								)
 							}
@@ -142,7 +139,6 @@ class ViewOrder extends Component {
 						onCurrentChange={this.changePage} />
 				</div>
 				
-				<Button className="bodybtn" size="large" type="primary" onClick={this.submit}>新增</Button>
 			</div>
 		)
 	}

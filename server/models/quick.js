@@ -37,4 +37,5 @@ var QuickSchema = Schema({
 	}
 })
 
-module.exports = mongoose.model('Quick', QuickSchema)
+const model = mongoose.model('Quick', QuickSchema)
+module.exports = model

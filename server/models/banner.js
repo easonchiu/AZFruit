@@ -37,4 +37,5 @@ var BannerSchema = Schema({
 	}
 })
 
-module.exports = mongoose.model('Banner', BannerSchema)
+const model = mongoose.model('Banner', BannerSchema)
+module.exports = model
