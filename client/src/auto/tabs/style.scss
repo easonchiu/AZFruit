@@ -16,7 +16,7 @@
 		color: #757575;
 		position: relative;
 		&:active {
-			background: #fafafa;
+			opacity: 0.5;
 			color: inherit;
 		}
 		&:after {

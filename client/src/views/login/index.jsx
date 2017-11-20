@@ -102,9 +102,11 @@ class ViewLogin extends Component {
 	render() {
 		return (
 			<Layout styleName="view-login">
-				<Layout.Header title="登录" ghost />
+				<Layout.Header title="账户登录" ghost />
 
 				<Layout.Body styleName="body">
+
+					<h1 styleName="logo">LOGO</h1>
 				
 					<Input
 						type="tel"
@@ -120,9 +122,13 @@ class ViewLogin extends Component {
 						onChange={this.verifcodeChange}
 						styleName="code"
 						addonBefore={<p>验证码</p>}
-						addonAfter={<a href="javascript:;" onClick={this.getVerifcode}>
-							获取验证码
-						</a>}
+						addonAfter={
+							<a href="javascript:;"
+								styleName="code-btn"
+								onClick={this.getVerifcode}>
+								获取验证码
+							</a>
+						}
 						placeholder="请输入验证码" />
 
 					<Button styleName="button"

@@ -36,7 +36,7 @@ const Routes = () => {
 				<Route exact path="/category" component={ ViewCategory }/>
 				<Route exact path="/detail/:id" component={ ViewDetail }/>
 				<Route exact path="/login" component={ ViewLogin }/>
-				<Route exact path="/order" component={ ViewOrder }/>
+				<Route exact path="/order" component={ LoginIfNeeded(ViewOrder)(true) }/>
 				<Route exact path="/profile" component={ ViewProfile }/>
 				<Route exact path="/shoppingcart/:aid?" component={ LoginIfNeeded(ViewShoppingcart)(true) }/>
 				<Route exact path="/address" component={ LoginIfNeeded(ViewAddress)(true) }/>

@@ -3,9 +3,11 @@
 .view-address-detail {
 
 	.form {
+		margin-bottom: 0.3rem;
 		label {
 			display: block;
 			width: 6em;
+			color: #999;
 		}
 		textarea {
 			display: block;

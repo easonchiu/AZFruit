@@ -199,21 +199,6 @@ class ViewAddress extends Component {
 				
 					<Cell styleName="form">
 						<Cell.Row>
-							<label>收货人姓名</label>
-							<Input ghost
-								placeholder="请输入收货人姓名"
-								value={this.data.name}
-								onChange={this.changeName} />
-						</Cell.Row>
-						<Cell.Row>
-							<label>电话号码</label>
-							<Input ghost
-								type="tel"
-								placeholder="请输入电话号码"
-								value={this.data.mobile}
-								onChange={this.changeMobile} />
-						</Cell.Row>
-						<Cell.Row>
 							<label>小区</label>
 							<Input ghost
 								type="tel"
@@ -228,16 +213,38 @@ class ViewAddress extends Component {
 								value={this.data.address}
 								onChange={this.changeAddress} />
 						</Cell.Row>
-						{
-							!this.data.defaultDisabled ?
+					</Cell>
+
+					<Cell styleName="form">
+						<Cell.Row>
+							<label>收货人姓名</label>
+							<Input ghost
+								placeholder="请输入收货人姓名"
+								value={this.data.name}
+								onChange={this.changeName} />
+						</Cell.Row>
+						<Cell.Row>
+							<label>电话号码</label>
+							<Input ghost
+								type="tel"
+								placeholder="请输入电话号码"
+								value={this.data.mobile}
+								onChange={this.changeMobile} />
+						</Cell.Row>
+					</Cell>
+					
+
+					{
+						!this.data.defaultDisabled ?
+						<Cell styleName="form">
 							<Cell.Row styleName="defrow">
 								<label>设为默认地址</label>
 								<Switch value={this.data.default}
 									onChange={this.changeDefault} />
-							</Cell.Row> :
-							null
-						}
-					</Cell>
+							</Cell.Row>
+						</Cell> :
+						null
+					}
 
 				</Layout.Body>
 				

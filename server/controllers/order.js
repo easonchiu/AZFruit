@@ -29,6 +29,7 @@ class Control {
 						name: 1,
 						area: 1,
 						address: 1,
+						productList: 1,
 						totalWeight: 1,
 						totalPrice: 1,
 						status: 1,
