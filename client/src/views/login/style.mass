@@ -5,16 +5,16 @@
 
 	.body {
 		padding: 0.4rem;
-		padding-top: 1rem;
+		padding-top: 0.6rem;
 	}
 
 	.logo {
-		width: 2rem;
-		height: 2rem;
+		width: 3rem;
+		height: 1.4rem;
 		background: #f2f2f2;
 		margin: 0 auto 1rem auto;
 		text-align: center;
-		line-height: 2rem;
+		line-height: 1.4rem;
 		font-size: 0.4rem;
 		color: #ccc;
 	}
@@ -27,6 +27,13 @@
 			display: -webkit-box;
 			-webkit-box-align: center;
 		}
+		i {
+			display: block;
+			width: 0.6rem;
+			height: 0.6rem;
+			background: #eee;
+			margin: 0 0.2rem;
+		}
 	}
 
 	.code {
@@ -36,6 +43,13 @@
 			height: 100%;
 			display: -webkit-box;
 			-webkit-box-align: center;
+		}
+		i {
+			display: block;
+			width: 0.6rem;
+			height: 0.6rem;
+			background: #eee;
+			margin: 0 0.2rem;
 		}
 	}
 

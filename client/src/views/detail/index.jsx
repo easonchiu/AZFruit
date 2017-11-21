@@ -235,8 +235,14 @@ class ViewDetail extends Component {
 				<Layout.Header
 					ghost
 					title={data.name}
-					addonBefore={<a href="javascript:;" className="back" onClick={this.backClick} />}
-					addonAfter={<NavSpct />} />
+					addonBefore={
+						<a href="javascript:;"
+							className="back"
+							onClick={this.backClick}
+						/>
+					}
+					addonAfter={<NavSpct />}
+				/>
 
 				<Layout.Body
 					styleName="body"

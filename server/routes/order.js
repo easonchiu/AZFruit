@@ -13,5 +13,7 @@ router
 	.post(`${prefix.app}/order`, checkJWT, order.create)
 	// 用户查看订单列表
 	.get(`${prefix.app}/order/list`, checkJWT, order.appFetchList)
+	// 用户查看订单详情
+	.get(`${prefix.app}/order/detail/:id`, checkJWT, order.appFetchDetail)
 
 module.exports = router

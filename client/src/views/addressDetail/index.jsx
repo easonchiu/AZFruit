@@ -12,6 +12,7 @@ import Cell from 'src/auto/cell'
 import Input from 'src/auto/input'
 import Switch from 'src/auto/switch'
 import Loading from 'src/auto/loading'
+import Popup from 'src/auto/popup'
 
 @connect
 @mass(style)
@@ -29,6 +30,7 @@ class ViewAddress extends Component {
 			address: '',
 			default: false,
 			defaultDisabled: true,
+			areaPopupVisible: false,
 		})
 	}
 
@@ -173,6 +175,32 @@ class ViewAddress extends Component {
 		Loading.hide()
 	}
 
+	renderAreaPopup() {
+		return (
+			<Popup
+				visible={this.data.areaPopupVisible}
+				height={100}
+				styleName="area-popup"
+			>
+				<Layout.Header
+					title="选择小区"
+					addonBefore={
+						<a href="javascript:;"
+							className="close"
+							onClick={e => this.data.areaPopupVisible = false}
+						/>
+					}
+				/>
+
+				<Layout.Body>
+
+					body
+
+				</Layout.Body>
+			</Popup>
+		)
+	}
+
 	render() {
 		return (
 			<Layout styleName="view-address-detail">
@@ -182,7 +210,8 @@ class ViewAddress extends Component {
 					addonBefore={
 						<a href="javascript:;"
 							className="back"
-							onClick={this.backClick} />
+							onClick={this.backClick}
+						/>
 					}
 					addonAfter={
 						this.id ?
@@ -200,18 +229,26 @@ class ViewAddress extends Component {
 					<Cell styleName="form">
 						<Cell.Row>
 							<label>小区</label>
-							<Input ghost
-								type="tel"
-								placeholder="请选择"
-								value={this.data.area}
-								onChange={this.changeArea} />
+							<p
+								styleName={this.data.area ? '' : 'empty'}
+								onClick={e => this.data.areaPopupVisible = true}>
+								{
+									this.data.area ?
+									this.data.area :
+									'请选择小区'
+								}
+							</p>
 						</Cell.Row>
+
+						{this.renderAreaPopup()}
+
 						<Cell.Row>
 							<label>门牌号</label>
 							<Input ghost
 								placeholder="请输入"
 								value={this.data.address}
-								onChange={this.changeAddress} />
+								onChange={this.changeAddress}
+							/>
 						</Cell.Row>
 					</Cell>
 
@@ -221,7 +258,8 @@ class ViewAddress extends Component {
 							<Input ghost
 								placeholder="请输入收货人姓名"
 								value={this.data.name}
-								onChange={this.changeName} />
+								onChange={this.changeName}
+							/>
 						</Cell.Row>
 						<Cell.Row>
 							<label>电话号码</label>
@@ -229,7 +267,8 @@ class ViewAddress extends Component {
 								type="tel"
 								placeholder="请输入电话号码"
 								value={this.data.mobile}
-								onChange={this.changeMobile} />
+								onChange={this.changeMobile}
+							/>
 						</Cell.Row>
 					</Cell>
 					
@@ -240,7 +279,8 @@ class ViewAddress extends Component {
 							<Cell.Row styleName="defrow">
 								<label>设为默认地址</label>
 								<Switch value={this.data.default}
-									onChange={this.changeDefault} />
+									onChange={this.changeDefault}
+								/>
 							</Cell.Row>
 						</Cell> :
 						null

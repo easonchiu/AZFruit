@@ -8,6 +8,7 @@ import ViewCategory from 'src/views/category'
 import ViewDetail from 'src/views/detail'
 import ViewLogin from 'src/views/login'
 import ViewOrder from 'src/views/order'
+import ViewOrderDetail from 'src/views/orderDetail'
 import ViewProfile from 'src/views/profile'
 import ViewShoppingcart from 'src/views/shoppingcart'
 import ViewAddress from 'src/views/address'
@@ -37,6 +38,7 @@ const Routes = () => {
 				<Route exact path="/detail/:id" component={ ViewDetail }/>
 				<Route exact path="/login" component={ ViewLogin }/>
 				<Route exact path="/order" component={ LoginIfNeeded(ViewOrder)(true) }/>
+				<Route exact path="/order/:id" component={ LoginIfNeeded(ViewOrderDetail)(true) }/>
 				<Route exact path="/profile" component={ ViewProfile }/>
 				<Route exact path="/shoppingcart/:aid?" component={ LoginIfNeeded(ViewShoppingcart)(true) }/>
 				<Route exact path="/address" component={ LoginIfNeeded(ViewAddress)(true) }/>

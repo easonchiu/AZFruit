@@ -1,6 +1,7 @@
 var OrderModel = require('../models/order')
 var ShoppingcartCon = require('./shoppingcart')
 var SkuModel = require('../models/productSpec')
+var cache = require('memory-cache')
 
 class Control {
 
@@ -85,18 +86,45 @@ class Control {
 		
 		return ctx.body = res
 	}
+	
+	// 用户获取订单详情
+	static async appFetchDetail(ctx, next) {
+		try {
+			const {uid} = ctx.state.jwt
+
+			const id = ctx.params.id
+
+			const res = await OrderModel.findOne({
+				uid,
+				orderNo: id
+			}, {
+				__v: 0,
+				_id: 0,
+			})
+
+			if (res) {
+				return ctx.success({
+					data: res
+				})
+			} else {
+				return ctx.error()
+			}
+		} catch(e) {
+			return ctx.error()
+		}
+	}
 
 	// 用户下单
 	static async create(ctx, next) {
 		try {
-			if (Control.lock) {
+			if (cache.get('lock')) {
 				return ctx.error({
 					msg: '系统繁忙，请稍后再试'
 				})
 			}
 
 			// 上锁
-			Control.lock = true
+			cache.put('lock', true)
 
 			const body = ctx.request.body
 
@@ -112,7 +140,7 @@ class Control {
 
 					if (data.stock < data.amount) {
 						// 解锁
-						Control.lock = false
+						cache.del('lock')
 						return ctx.error({
 							msg: '购物车中的' + data.name + '库存不够'
 						})
@@ -135,23 +163,25 @@ class Control {
 			}
 			else {
 				// 解锁
-				Control.lock = false
+				cache.del('lock')
 				return ctx.error({
 					msg: '购物车中没有可购买的产品'
 				})
 			}
 
-			// 创建个订单号，订单号为当前系统时间的毫秒级，保证不会重复
+			// 创建个订单号，订单号为当前系统时间的秒级，再加计数器
 			const now = new Date()
-			const yyyy = now.getFullYear()
+			const yy = ('' + now.getFullYear()).substr(-2)
 			const mm = ('0000' + (now.getMonth() + 1)).substr(-2)
 			const dd = ('0000' + now.getDate()).substr(-2)
 			const h = ('0000' + now.getHours()).substr(-2)
 			const m = ('0000' + now.getMinutes()).substr(-2)
 			const s = ('0000' + now.getSeconds()).substr(-2)
-			const ms = ('0000' + now.getMilliseconds()).substr(-4)
-			const orderNo = yyyy + mm + dd + h + m + s + ms
-			
+			const count = cache.get('orderCount') ? +cache.get('orderCount') + 1 : '123'
+			const nextCount = count > 999 ? '123' : count
+			cache.put('orderCount', nextCount)
+			const orderNo = yy + mm + dd + h + m + s + count
+
 			// 生成订单
 			await OrderModel.create({
 				orderNo,
@@ -180,12 +210,12 @@ class Control {
 			await ShoppingcartCon.removeAll(uid)
 			
 			// 解锁
-			Control.lock = false
+			cache.del('lock')
 			return ctx.success()
 		}
 		catch(e) {
 			// 解锁
-			Control.lock = false
+			cache.del('lock')
 			return ctx.error()
 		}
 	}

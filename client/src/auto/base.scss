@@ -24,6 +24,16 @@ html, body {
 			opacity: 0.7;
 		}
 	}
+	.close {
+		display: block;
+		width: 0.8rem;
+		height: 0.8rem;
+		background: url('../assets/imgs/icon-back.png') 0 center no-repeat;
+		background-size: 0.44rem 0.44rem;
+		&:active {
+			opacity: 0.7;
+		}
+	}
 }
 
 hr.body-line {

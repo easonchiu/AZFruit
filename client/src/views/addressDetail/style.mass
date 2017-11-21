@@ -9,9 +9,17 @@
 			width: 6em;
 			color: #999;
 		}
-		textarea {
+		p {
+			line-height: 0.4rem;
+			padding: 0.07rem 0;
 			display: block;
 			-webkit-box-flex: 1;
+			&:active {
+				opacity: 0.7;
+			}
+		}
+		p.empty {
+			color: #ccc;
 		}
 	}
 
@@ -41,5 +49,13 @@
 :global(.delete-address-alert) {
 	:global(.x-alert__btn-y) {
 		color: #ff4949 !important;
+	}
+}
+
+.area-popup {
+	:global(.x-popup__inner) {
+		padding: 0;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
 	}
 }

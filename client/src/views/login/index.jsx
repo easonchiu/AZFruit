@@ -113,7 +113,7 @@ class ViewLogin extends Component {
 						value={this.data.mobile}
 						onChange={this.mobileChange}
 						styleName="mobile"
-						addonBefore={<p>手机号</p>}
+						addonBefore={<i />}
 						placeholder="请输入手机号" />
 					
 					<Input
@@ -121,7 +121,7 @@ class ViewLogin extends Component {
 						value={this.data.verifcode}
 						onChange={this.verifcodeChange}
 						styleName="code"
-						addonBefore={<p>验证码</p>}
+						addonBefore={<i />}
 						addonAfter={
 							<a href="javascript:;"
 								styleName="code-btn"

@@ -1,5 +1,6 @@
 import style from './style'
 import React, { PureComponent as Component } from 'react'
+import {Link} from 'react-router-dom'
 import connect from 'src/redux/connect'
 import mass from 'mass'
 import stateData from 'react-state-data'
@@ -80,9 +81,8 @@ class ViewOrder extends Component {
 	}
 
 	renderItem = data => {
-		console.log(data)
 		return (
-			<div styleName="item" key={data.orderNo}>
+			<Link to={`/order/${data.orderNo}`} styleName="item" key={data.orderNo}>
 				<div styleName="hd">
 					<p>订单号：{data.orderNo}</p>
 					<span>待支付</span>
@@ -97,7 +97,7 @@ class ViewOrder extends Component {
 				<div styleName="ft">
 					总计：<span>￥{data.totalPrice / 100}元</span>
 				</div>
-			</div>
+			</Link>
 		)
 	}
 
@@ -110,7 +110,8 @@ class ViewOrder extends Component {
 				<Layout.Header
 					title="我的订单"
 					addonAfter={<NavSpct />}
-					addonBottom={this.renderTabs()} />
+					addonBottom={this.renderTabs()}
+				/>
 
 				<Layout.Body
 					loading={this.data.loading}
