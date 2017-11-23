@@ -50,7 +50,7 @@ class ViewOrder extends Component {
 			<Layout styleName="view-order-detail">
 				
 				<Layout.Header
-					title="我的订单"
+					title="订单详情"
 					addonBefore={
 						<a href="javascript:;"
 							className="back"

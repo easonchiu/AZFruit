@@ -13,6 +13,7 @@ import Input from 'src/auto/input'
 import Switch from 'src/auto/switch'
 import Loading from 'src/auto/loading'
 import Popup from 'src/auto/popup'
+import Panel from 'src/auto/panel'
 
 @connect
 @mass(style)
@@ -31,6 +32,9 @@ class ViewAddress extends Component {
 			default: false,
 			defaultDisabled: true,
 			areaPopupVisible: false,
+			areaPopupValue: '',
+			areaPopupList: [],
+			searching: false,
 		})
 	}
 
@@ -81,6 +85,15 @@ class ViewAddress extends Component {
 				defaultDisabled: def,
 			})
 		}
+
+		AMap.plugin(['AMap.Autocomplete'], e => {
+			var autoOptions = {
+				city: "上海", // 城市，默认全国
+				input: "keyword" // 使用联想输入的input的id
+			}
+
+			this.autocomplete = new AMap.Autocomplete(autoOptions)
+	    })
 	}
 
 	async fetch() {
@@ -174,6 +187,46 @@ class ViewAddress extends Component {
 		}
 		Loading.hide()
 	}
+	
+	// 小区搜索结果的点击
+	resultClick = e => {
+		this.setState({
+			areaPopupVisible: false,
+			area: e.name
+		})
+	}
+
+	searchInput = e => {
+		this.setState({
+			areaPopupValue: e.target.value,
+			searching: true
+		})
+		
+		clearTimeout(this.searchTimeout)
+
+		this.searchTimeout = setTimeout(() => {
+			this.autocomplete &&
+			this.autocomplete.search(this.data.areaPopupValue, (status, result) => {
+				if (result == 'NO_PARAMS') {
+					this.data.areaPopupList = []
+				}
+				else {
+					const list = []
+					if (result.tips) {
+						result.tips.forEach(res => {
+							if (res.address && res.address.length) {
+								list.push(res)
+							}
+						})
+					}
+					this.data.areaPopupList = list
+				}
+				this.setState({
+					searching: false
+				})
+			})
+		}, 300)
+	}
 
 	renderAreaPopup() {
 		return (
@@ -182,19 +235,60 @@ class ViewAddress extends Component {
 				height={100}
 				styleName="area-popup"
 			>
-				<Layout.Header
-					title="选择小区"
-					addonBefore={
-						<a href="javascript:;"
-							className="close"
-							onClick={e => this.data.areaPopupVisible = false}
-						/>
+				<Layout.Header styleName="header">
+					<Input
+						placeholder="请输入小区名称"
+						styleName="input"
+						id="keyword"
+						value={this.data.areaPopupValue}
+						onChange={this.searchInput}
+					/>
+					<a href="javascript:;"
+						styleName="close"
+						onClick={e => this.data.areaPopupVisible = false}>
+						取消
+					</a>
+				</Layout.Header>
+
+				<Layout.Body styleName="body">
+
+					{
+						!this.data.searching &&
+						this.data.areaPopupValue != '' &&
+						this.data.areaPopupList.length ?
+						<Panel styleName="box">
+							<Cell styleName="result">
+								{
+									this.data.areaPopupList.map((res, i) => (
+										<Cell.Row
+											arrow
+											styleName="row"
+											key={i}
+											value={res}
+											onClick={this.resultClick}
+										>
+											<h6>{res.name}</h6>
+											<p>{res.district}{res.address}</p>
+										</Cell.Row>
+									))
+								}
+							</Cell>
+						</Panel> :
+						
+						!this.data.searching &&
+						this.data.areaPopupValue != '' &&
+						!this.data.areaPopupList.length ?
+
+						<Panel styleName="box empty">暂无内容</Panel> :
+						
+						!this.data.searching &&
+						this.data.areaPopupValue == '' ?
+						<Panel styleName="box empty">暂无内容</Panel> :
+
+						<Panel styleName="box empty">搜索中...</Panel>
+
 					}
-				/>
-
-				<Layout.Body>
-
-					body
+					
 
 				</Layout.Body>
 			</Popup>

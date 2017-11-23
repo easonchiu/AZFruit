@@ -2,7 +2,7 @@ import './style'
 import React, { cloneElement } from 'react'
 import classnames from 'classnames'
 
-import {Icon} from '../'
+import Icon from '../icon'
 
 const CellRow = props => {
 	const css = classnames('x-cell__row', {

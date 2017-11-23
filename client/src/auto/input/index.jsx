@@ -12,6 +12,7 @@ const Input = props => {
 		'x-input--error': props.isError,
 		'x-input--ghost': props.ghost,
 	}, props.className)
+
 	return (
 		<div className={css}>
 			{addonBefore}
