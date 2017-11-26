@@ -5,6 +5,7 @@ import mass from 'mass'
 import stateData from 'react-state-data'
 import cn from 'classnames'
 import {Link} from 'react-router-dom'
+import { getOpenid, authorize } from 'src/assets/libs/wxoauth'
 
 import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
@@ -278,11 +279,26 @@ class ViewShoppingcart extends Component {
 	}
 
 	payment = async aid => {
+		// 如果没有openid，去授权
+		// 一般情况下这里不会丢失本地openid，都是人工干预的
+		const openid = getOpenid()
+		if (!openid) {
+			Loading.show('微信授权...')
+			setTimeout(e => {
+				authorize()
+			}, 1000)
+			return false
+		}
+
 		Loading.show()
 		try {
 			const res = await this.props.$order.create({
-				addressid: aid
+				addressid: aid,
+				openid
 			})
+
+			return false
+
 			this.props.history.replace(`/order/detail/${res.orderNo}`)
 		} catch(e) {
 			Toast.show(e.msg)

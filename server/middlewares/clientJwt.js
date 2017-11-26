@@ -14,7 +14,7 @@ module.exports = async (ctx, next) => {
 		const res = jwt.verify(token, jwtKey)
 
 		if (!res.uid) {
-			ctx.error()
+			return ctx.error()
 		}
 
 		ctx.state.jwt = res

@@ -2,6 +2,8 @@ var OrderModel = require('../models/order')
 var ShoppingcartCon = require('./shoppingcart')
 var SkuModel = require('../models/productSpec')
 var cache = require('memory-cache')
+var axios = require('axios')
+var WX = require('../conf/wx')
 
 class Control {
 
@@ -226,6 +228,13 @@ class Control {
 			const body = ctx.request.body
 
 			const {uid} = ctx.state.jwt
+			
+			// 如果没有openid，一般都会有
+			if (!uid || !body.openid) {
+				return ctx.error({
+					msg: '身份信息错误'
+				})
+			}
 
 			// 获取购物车内的信息
 			const info = await ShoppingcartCon.getShoppingcartInfo(uid, body.addressid)
@@ -283,7 +292,7 @@ class Control {
 			const after30m = new Date(now.getTime() + 1000 * 60 * 30)
 
 			// 生成订单
-			await OrderModel.create({
+			const res = await OrderModel.create({
 				orderNo,
 				wxOrderNo: '',
 				uid: uid,
@@ -306,6 +315,44 @@ class Control {
 				productList: info.list,
 				paymentTimeout: after30m
 			})
+
+			if (res) {
+				// 请求的传参
+				const data = {
+					appid: WX.appID, // 微信支付分配的公众账号ID
+					mch_id: WX.mchID, // 微信支付分配的商户号
+					nonce_str: 'suobian', // 随机字符串，长度要求在32位以内。
+					sign: 'sign', // 通过签名算法计算得出的签名值，详见签名生成算法
+					body: '商品描述-商品描述', // 商品简单描述，该字段请按照规范传递，具体请见参数规定
+					out_trade_no: orderNo, // 商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。
+					total_fee: 1, // 订单总金额，单位为分，详见支付金额
+					spbill_create_ip: '123', // APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
+					time_expire: '20191227091010', // 订单失效时间，格式为yyyyMMddHHmmss
+					notify_url: 'async notice', // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
+					trade_type: 'JSAPI',
+				}
+
+				// 将请求的值转为xml形式
+				let xmlData = ''
+				for (let i in data) {
+					console.log(i)
+					xmlData += '<' + i + '>' + data[i] + '</' + i + '>'
+				}
+
+				// 微信预支付
+				const pre = await axios.request({
+					method: 'post',
+					url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
+					data: xmlData
+				})
+				console.log(pre.data)
+			}
+			else {
+				return ctx.error({
+					msg: '订单创建失败'
+				})
+			}
+			return
 
 			// 清空购物车
 			await ShoppingcartCon.removeAll(uid)

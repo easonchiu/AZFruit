@@ -22,6 +22,7 @@ var postageRoute = require('./routes/postage')
 var uploadRoute = require('./routes/upload')
 var shoppingcartRoute = require('./routes/shoppingcart')
 var addressRoute = require('./routes/address')
+var wxRoute = require('./routes/wx')
 
 // 创建实例
 var app = new Koa()
@@ -51,6 +52,7 @@ app
 	.use(uploadRoute.routes(), uploadRoute.allowedMethods())
 	.use(shoppingcartRoute.routes(), shoppingcartRoute.allowedMethods())
 	.use(addressRoute.routes(), addressRoute.allowedMethods())
+	.use(wxRoute.routes(), wxRoute.allowedMethods())
 
 
 // 起一个服务

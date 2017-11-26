@@ -32,10 +32,12 @@ http.interceptors.response.use(config => {
 		msg: config.data.msg
 	})
 }, error => {
-	if (error.response.status === '401') {
+	if (error.response.status == '401') {
 		clearToken()
 		window.location.href = process.env.ENV_NAME === 'production' ? '/azfruit/#/login' : '/#/login'
-		return false
+		return Promise.reject({
+			msg: '登录超时，请重新登录'
+		})
 	}
 	return Promise.reject({
 		msg: '系统错误'

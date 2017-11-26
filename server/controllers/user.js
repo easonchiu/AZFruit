@@ -1,7 +1,6 @@
 var jwt = require('jsonwebtoken')
 var jwtKey = require('../conf/clientJwtKey')
 
-var mongoose = require('../conf/mongoose')
 var User = require('../models/user')
 var Reg = require('../utils/reg')
 
@@ -163,7 +162,6 @@ class Control {
 			return ctx.error()
 		}
 	}
-	
 
 	// 生成随机数
 	static createRandomNum(len, str = 10) {
