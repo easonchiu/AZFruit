@@ -16,14 +16,7 @@ const Button = props => {
 
 	return (
 		<a className={css} style={props.style} onClick={props.onClick}>
-			{
-				children.map((res, i) => {
-					if (typeof res !== 'object') {
-						return <p key={i}>{res}</p>
-					}
-					return res
-				})
-			}
+			<p>{children}</p>
 		</a>
 	)
 }

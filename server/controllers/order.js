@@ -7,57 +7,70 @@ class Control {
 
 	static async _fetchList(ctx, next, uid) {
 		try {
-			let { skip = 0, limit = 10 } = ctx.query
+			let { skip = 0, limit = 10, type = 1 } = ctx.query
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
-			const count = await OrderModel.count(uid ? {
-				uid: uid
-			} : null)
-			let list = []
-
-			if (count > 0) {
-				const search = [{
-					$project: {
-						_id: 0,
-						id: '$_id',
-						orderNo: 1,
-						wxOrderNo: 1,
-						city: 1,
-						cityCode: 1,
-						zipCode: 1,
-						mobile: 1,
-						name: 1,
-						area: 1,
-						address: 1,
-						productList: 1,
-						totalWeight: 1,
-						totalPrice: 1,
-						status: 1,
-						createTime: 1,
+			const search = [{
+				$sort: {
+					createTime: -1,
+				}
+			}, {
+				$project: {
+					_id: 0,
+					id: '$_id',
+					orderNo: 1,
+					wxOrderNo: 1,
+					city: 1,
+					cityCode: 1,
+					zipCode: 1,
+					mobile: 1,
+					name: 1,
+					area: 1,
+					address: 1,
+					productList: 1,
+					totalWeight: 1,
+					totalPrice: 1,
+					status: 1,
+					createTime: 1,
+				}
+			}, {
+				$skip: skip
+			}, {
+				$limit: limit
+			}]
+			
+			// 如果特指到某一用户，只查他的
+			if (uid) {
+				const match = {
+					$match: {
+						uid
 					}
-				}, {
-					$skip: skip
-				}, {
-					$limit: limit
-				}]
-				
-				// 如果特指到某一用户，只查他的
-				if (uid) {
-					search.unshift({
-						$match: {
-							uid
-						}
-					})
 				}
 
-				list = await OrderModel.aggregate(search)
+				// 进行中的订单
+				if (type == 1) {
+					match.$match.status = 1
+					match.$match.paymentTimeout = {
+						'$gt': new Date()
+					}
+				}
+				// 已完成的订单
+				else if (type == 2) {
+					// 除了待支付和已关闭的订单
+					match.$match.status = {
+						$all: [11, 21, 31, 41]
+					}
+				}
+				search.unshift(match)
 			}
+
+			const list = await OrderModel.aggregate(search) || []
 
 			return ctx.success({
 				data: {
 					list,
-					count,
+					count: 0,
 					skip,
 					limit,
 				}
@@ -86,6 +99,56 @@ class Control {
 		
 		return ctx.body = res
 	}
+
+	// 用户取消订单
+	static async appCancelOrder(ctx, next) {
+		try {
+			const {uid} = ctx.state.jwt
+
+			const id = ctx.params.id
+
+			// 查找相关且未支付的订单
+			const res = await OrderModel.findOne({
+				uid,
+				orderNo: id,
+				status: 1
+			}, {
+				__v: 0,
+				_id: 0,
+			})
+
+			// 找到订单
+			if (res) {
+				// 要将订单状态改为交易关闭，只有待支付的可以
+				await OrderModel.update({
+					uid,
+					orderNo: id
+				}, {
+					$set: {
+						status: 90
+					}
+				})
+				
+				// 还库存
+				await Control.revertStock(res.productList)
+
+				return ctx.success()
+			}
+			// 未找到订单
+			else {
+				if (res.status && res.status !== 1) {
+					return ctx.error({
+						msg: '订单无法关闭'
+					})
+				} else {
+					return ctx.error()
+				}
+			}
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
 	
 	// 用户获取订单详情
 	static async appFetchDetail(ctx, next) {
@@ -103,9 +166,43 @@ class Control {
 			})
 
 			if (res) {
-				return ctx.success({
-					data: res
-				})
+				// 待支付的订单
+				if (res.status === 1) {
+					// 如果还在支付时间内
+					if (res.paymentTimeoutSec > 0) {
+						return ctx.success({
+							data: res
+						})
+					}
+					// 如果已经过了支付时间
+					else {
+						// 要将订单状态改为交易关闭
+						await OrderModel.update({
+							uid,
+							orderNo: id
+						}, {
+							$set: {
+								status: 90
+							}
+						})
+						
+						// 还库存
+						await Control.revertStock(res.productList)
+
+						return ctx.error({
+							msg: '订单超时未支付，请重新下单',
+							code: 90
+						})
+					}
+				}
+				// 如果订单状态不为待支付，直接将查询结果返回
+				else if (res.status !== 1) {
+					return ctx.success({
+						data: res
+					})
+				} else {
+					return ctx.error()
+				}
 			} else {
 				return ctx.error()
 			}
@@ -181,6 +278,9 @@ class Control {
 			const nextCount = count > 999 ? '123' : count
 			cache.put('orderCount', nextCount)
 			const orderNo = yy + mm + dd + h + m + s + count
+			
+			// 订单需要30分钟内支付
+			const after30m = new Date(now.getTime() + 1000 * 60 * 30)
 
 			// 生成订单
 			await OrderModel.create({
@@ -203,7 +303,8 @@ class Control {
 				needPayment: info.totalPrice,
 				finalPayment: 0,
 				status: 1,
-				productList: info.list
+				productList: info.list,
+				paymentTimeout: after30m
 			})
 
 			// 清空购物车
@@ -211,13 +312,36 @@ class Control {
 			
 			// 解锁
 			cache.del('lock')
-			return ctx.success()
+			return ctx.success({
+				data: {
+					orderNo
+				}
+			})
 		}
 		catch(e) {
 			// 解锁
 			cache.del('lock')
 			return ctx.error()
 		}
+	}
+	
+	// 归还库存
+	static async revertStock(list) {
+		return new Promise(async (resolve, reject) => {
+			for (let i = 0; i < list.length; i++) {
+				const data = list[i]
+				await SkuModel.update({
+					_id: data.specId
+				}, {
+					$inc: {
+						stock: data.amount,
+						sellCount: -data.amount,
+					}
+				})
+			}
+
+			resolve()
+		})
 	}
 
 }

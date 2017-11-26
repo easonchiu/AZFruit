@@ -5,7 +5,7 @@
 	
 	.manage {
 		display: block;
-		color: #333;
+		color: #666;
 		font-size: 0.28rem;
 		line-height: 0.8rem;
 		&:active {

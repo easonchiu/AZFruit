@@ -40,7 +40,7 @@ class Control {
 			}
 
 			// 获取经纬度
-			const locationInfo = await amapLocation(body.area + body.address)
+			const locationInfo = await amapLocation(body.areaAddress)
 
 			if (!locationInfo || !locationInfo.location) {
 				return ctx.error({
@@ -69,6 +69,7 @@ class Control {
 						name: body.name,
 						mobile: body.mobile,
 						area: body.area,
+						areaAddress: body.areaAddress,
 						lat: location[0],
 						lon: location[1],
 						distance: distanceInfo.distance,
@@ -131,6 +132,7 @@ class Control {
 					mobile: d.mobile || '',
 					city: d.city || '',
 					area: d.area || '',
+					areaAddress: d.areaAddress || '',
 					address: d.address || '',
 					id: d._id
 				})
@@ -176,6 +178,7 @@ class Control {
 							name: d.name || '',
 							mobile: d.mobile || '',
 							area: d.area || '',
+							areaAddress: d.areaAddress || '',
 							address: d.address || '',
 							default: find.defaultAddress == id,
 						}
@@ -269,7 +272,7 @@ class Control {
 			}
 			
 			// 获取经纬度
-			const locationInfo = await amapLocation(body.area + body.address)
+			const locationInfo = await amapLocation(body.areaAddress)
 
 			if (!locationInfo || !locationInfo.location) {
 				return ctx.error({
@@ -293,6 +296,7 @@ class Control {
 					'addressList.$.name': body.name,
 					'addressList.$.mobile': body.mobile,
 					'addressList.$.area': body.area,
+					'addressList.$.areaAddress': body.areaAddress,
 					'addressList.$.lat': location[0],
 					'addressList.$.lon': location[1],
 					'addressList.$.distance': distanceInfo.distance,
@@ -366,6 +370,7 @@ class Control {
 					name: choosedAddress.name,
 					mobile: choosedAddress.mobile,
 					area: choosedAddress.area,
+					areaAddress: choosedAddress.areaAddress,
 					address: choosedAddress.address,
 					lat: choosedAddress.lat,
 					lon: choosedAddress.lon,

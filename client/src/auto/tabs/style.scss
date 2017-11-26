@@ -13,38 +13,41 @@
 		-webkit-box-flex: 1;
 		background: #fff;
 		font-size: 0.3rem;
-		color: #757575;
+		color: #999;
 		position: relative;
 		&:active {
-			opacity: 0.5;
+			// background: #fafafa;
 			color: inherit;
 		}
 	}
 	&--active {
-		color: #00bb44;
+		color: #333;
 		&:active {
-			color: #00bb44;
+			color: #333;
 		}
 	}
 	&__line {
 		width: 50%;
-		height: 0.04rem;
+		height: 0.06rem;
+		// background: #00bb44;
 		-webkit-transition: -webkit-transform 0.3s cubic-bezier(0.86,0,0.07,1);
 		display: block;
 		position: absolute;
 		left: 0;
-		bottom: 0.02rem;
+		bottom: 0;
 		z-index: 9;
 		top: auto;
 		pointer-events: none;
 		&:after {
-			content: "";
-			display: block;
-			width: 1rem;
-			height: 0.04rem;
+			content: '';
 			background: #00bb44;
-			margin: 0 auto;
-			border-radius: 0.02rem;
+			width: 0.3rem;
+			height: 0.06rem;
+			position: absolute;
+			left: 50%;
+			top: 0;
+			margin-left: -0.15rem;
+			border-radius: 0.03rem;
 		}
 	}
 }

@@ -15,5 +15,7 @@ router
 	.get(`${prefix.app}/order/list`, checkJWT, order.appFetchList)
 	// 用户查看订单详情
 	.get(`${prefix.app}/order/detail/:id`, checkJWT, order.appFetchDetail)
+	// 用户取消订单
+	.patch(`${prefix.app}/order/:id`, checkJWT, order.appCancelOrder)
 
 module.exports = router

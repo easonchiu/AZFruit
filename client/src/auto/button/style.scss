@@ -34,6 +34,12 @@
 			border: 2px solid #ff7700 - 10;
 		}
 	}
+	&--gray {
+		background: #f2f2f2;
+		border: 2px solid #f2f2f2;
+		color: #bbb;
+		pointer-events: none;
+	}
 	&--default {
 		border: 2px solid #00bb55;
 		background: #fff;

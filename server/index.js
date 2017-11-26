@@ -23,12 +23,12 @@ var uploadRoute = require('./routes/upload')
 var shoppingcartRoute = require('./routes/shoppingcart')
 var addressRoute = require('./routes/address')
 
-
 // 创建实例
 var app = new Koa()
 
 // 错误捕获
 onerror(app)
+
 
 // 加载中间件
 app
@@ -36,6 +36,7 @@ app
 	.use(bodyParser())
 	.use(helmet())
 	.use(response())
+
 
 // 加载路由
 app
@@ -50,8 +51,11 @@ app
 	.use(uploadRoute.routes(), uploadRoute.allowedMethods())
 	.use(shoppingcartRoute.routes(), shoppingcartRoute.allowedMethods())
 	.use(addressRoute.routes(), addressRoute.allowedMethods())
-	
+
 
 // 起一个服务
 const server = http.createServer(app.callback())
 server.listen(port, () => console.log(`✅  The server is running at http://localhost:${port}/`))
+
+
+

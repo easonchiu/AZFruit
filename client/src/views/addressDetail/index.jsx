@@ -28,6 +28,7 @@ class ViewAddress extends Component {
 			name: '',
 			mobile: '',
 			area: '',
+			areaAddress: '',
 			address: '',
 			default: false,
 			defaultDisabled: true,
@@ -106,6 +107,7 @@ class ViewAddress extends Component {
 				name: res.name,
 				mobile: res.mobile,
 				area: res.area,
+				areaAddress: res.areaAddress,
 				address: res.address,
 				default: res.default,
 				defaultDisabled: res.default,
@@ -125,11 +127,6 @@ class ViewAddress extends Component {
 	changeMobile = e => {
 		const val = e.target.value.trim().substr(0, 11)
 		this.data.mobile = val
-	}
-
-	changeArea = e => {
-		const val = e.target.value.trim().substr(0, 40)
-		this.data.area = val
 	}
 
 	changeAddress = e => {
@@ -166,6 +163,7 @@ class ViewAddress extends Component {
 						name: this.data.name,
 						mobile: this.data.mobile,
 						area: this.data.area,
+						areaAddress: this.data.areaAddress,
 						address: this.data.address,
 						default: this.data.default,
 					})
@@ -175,6 +173,7 @@ class ViewAddress extends Component {
 						name: this.data.name,
 						mobile: this.data.mobile,
 						area: this.data.area,
+						areaAddress: this.data.areaAddress,
 						address: this.data.address,
 						default: this.data.default,
 					})
@@ -190,9 +189,11 @@ class ViewAddress extends Component {
 	
 	// 小区搜索结果的点击
 	resultClick = e => {
+		console.log(e)
 		this.setState({
 			areaPopupVisible: false,
-			area: e.name
+			area: e.name,
+			areaAddress: e.district + e.address,
 		})
 	}
 
@@ -288,7 +289,6 @@ class ViewAddress extends Component {
 						<Panel styleName="box empty">搜索中...</Panel>
 
 					}
-					
 
 				</Layout.Body>
 			</Popup>

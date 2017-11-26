@@ -4,7 +4,8 @@
 	.body {
 		padding: 0;
 	}
-
+	
+	// 地址模块
 	.address {
 		background: #ffffd6;
 		margin-bottom: 0.2rem;
@@ -47,6 +48,8 @@
 				color: #999;
 			}
 		}
+
+		// 更换地址按钮
 		.change {
 			position: absolute;
 			right: 0.3rem;
@@ -62,31 +65,35 @@
 				opacity: 0.7;
 			}
 		}
-	}
-
-	.location {
-		display: -webkit-box;
-		p {
-			-webkit-box-flex: 1;
-			color: #666;
-			font-size: 0.26rem;
+		
+		// 地理位置信息
+		.location {
+			display: -webkit-box;
+			p {
+				-webkit-box-flex: 1;
+				color: #666;
+				font-size: 0.26rem;
+			}
+			em {
+				font-style: normal;
+				color: #999;
+				font-size: 0.24rem;
+			}
 		}
-		em {
-			font-style: normal;
-			color: #999;
-			font-size: 0.24rem;
-		}
 	}
-
+	
+	// 列表容器
 	.list {
 		margin-bottom: 0.3rem;
+		padding: 0 0.3rem;
 	}
-
+	
+	// 产品列表的每项
 	.item {
-		background: #fff;
-		border-bottom: 1px solid #e2e2e2;
-		padding: 0.3rem;
+		padding: 0.2rem;
 		display: -webkit-box;
+		margin-bottom: 0.2rem;
+
 		&:last-child {
 			border-bottom: none;
 		}
@@ -95,10 +102,13 @@
 				opacity: 0.5;
 			}
 		}
+		
+		// 产品主体文字信息
 		.info {
-			margin-right: 0.2rem;
+			margin-right: 0.1rem;
 			-webkit-box-flex: 1;
 			position: relative;
+			padding: 0.1rem;
 			h1 {
 				font-size: 0.3rem;
 				font-weight: normal;
@@ -118,7 +128,8 @@
 				margin-bottom: 0.05rem;
 			}
 		}
-
+		
+		// 产品的加减功能
 		.tools {
 			display: -webkit-box;
 			-webkit-box-align: center;
@@ -152,7 +163,6 @@
 			.delete {
 				background: #ff4949;
 				font-size: 0.2rem;
-				margin-left: 0.4rem;
 			}
 			span {
 				display: -webkit-box;
@@ -168,22 +178,24 @@
 		}
 
 		.thumb {
-			width: 1.4rem;
-			height: 1.4rem;
+			width: 1.6rem;
+			height: 1.6rem;
 			overflow: hidden;
-			margin-right: 0.2rem;
+			margin-right: 0.1rem;
 			img {
 				display: block;
-				width: 1.4rem;
-				height: 1.4rem;
+				width: 1.6rem;
+				height: 1.6rem;
 			}
 		}
 	}
-
+	
+	// 每个产品的小计
 	.item-total {
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
 		-webkit-box-align: end;
+		padding: 0.1rem;
 		p {
 			display: block;
 			color: #ff4949;
@@ -214,11 +226,13 @@
 			background: #00bb44;
 		}
 	}
-
+	
+	// 产品状态
 	.item-status {
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
 		-webkit-box-align: end;
+		padding: 0.1rem;
 		p {
 			display: block;
 			color: #ff4949;
@@ -238,7 +252,16 @@
 			}
 		}
 	}
-
+	
+	// 无产品时的提示
+	.empty-tips {
+		line-height: 3rem;
+		text-align: center;
+		font-size: 0.28rem;
+		color: #999;
+	}
+	
+	// 底部结算模块
 	.footer {
 		display: -webkit-box;
 		-webkit-box-align: center;

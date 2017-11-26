@@ -7,7 +7,7 @@ const Panel = props => {
 
 	}, props.className)
 	return (
-		<div className={css}>
+		<div className={css} onClick={props.onClick}>
 			{ props.children }
 		</div>
 	)

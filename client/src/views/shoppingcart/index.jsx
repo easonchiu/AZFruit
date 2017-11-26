@@ -10,6 +10,7 @@ import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
 import Loading from 'src/auto/loading'
 import Toast from 'src/auto/toast'
+import Panel from 'src/auto/panel'
 import Alert from 'src/auto/alert'
 import Button from 'src/auto/button'
 import AppFooter from 'src/components/appFooter'
@@ -139,7 +140,9 @@ class ViewShoppingcart extends Component {
 			return (
 				<div styleName="address empty">
 					<p>您还没有收货地址哦~</p>
-					<Button onClick={e => this.props.history.push('/address/create/first')}>创建地址</Button>
+					<Button onClick={e => this.props.history.push('/address/create/first')}>
+						创建地址
+					</Button>
 				</div>
 			)
 		}
@@ -170,11 +173,19 @@ class ViewShoppingcart extends Component {
 					this.data.edited == res.id ?
 					<div styleName="tools">
 						<a href="javascript:;"
-							styleName={this.data.amount <= 1 ? 'disabled' : ''}
+							styleName={
+								this.data.amount <= 1 ?
+								'disabled' :
+								''
+							}
 							onClick={this.minus}>﹣</a>
 						<span>{this.data.amount}</span>
 						<a href="javascript:;"
-							styleName={this.data.amount >= Math.min(this.data.maxAmount, 9) ? 'disabled' : ''}
+							styleName={
+								this.data.amount >= Math.min(this.data.maxAmount, 9) ?
+								'disabled' :
+								''
+							}
 							onClick={this.add}>﹢</a>
 						<a href="javascript:;" styleName="delete"
 							onClick={this.delete.bind(this, res)}>删除</a>
@@ -240,7 +251,7 @@ class ViewShoppingcart extends Component {
 			{
 				list.map(res => {
 					return (
-						<div key={res.id} styleName={cn('item', {
+						<Panel key={res.id} styleName={cn('item', {
 							error: (!res.online || res.stock < res.amount) && this.data.edited != res.id
 						})}>
 							<div styleName="thumb">
@@ -254,7 +265,7 @@ class ViewShoppingcart extends Component {
 								renderOnline(res) :
 								renderOffline(res)
 							}
-						</div>
+						</Panel>
 					)
 				})
 			}
@@ -269,9 +280,10 @@ class ViewShoppingcart extends Component {
 	payment = async aid => {
 		Loading.show()
 		try {
-			await this.props.$order.create({
+			const res = await this.props.$order.create({
 				addressid: aid
 			})
+			this.props.history.replace(`/order/detail/${res.orderNo}`)
 		} catch(e) {
 			Toast.show(e.msg)
 		}
@@ -283,7 +295,8 @@ class ViewShoppingcart extends Component {
 			totalPrice = 0,
 			postagePrice = 0,
 			totalWeight = 0,
-			address = {}
+			address = {},
+			list
 		} = this.props.$$shoppingcart
 
 		return (
@@ -296,15 +309,40 @@ class ViewShoppingcart extends Component {
 					errorInfo={this.data.errorInfo}
 					loading={this.data.loading}>
 					
-					{this.renderAddress()}
+					{
+						list.length ?
+						this.renderAddress() :
+						null
+					}
 					
-					{this.renderList()}
+					{
+						list.length ?
+						this.renderList() :
+						null
+					}
+
+					{
+						!list.length ?
+						<p styleName="empty-tips">购物车中没有东西哦~</p> :
+						null
+					}
+
+					{
+						!list.length ?
+						<div></div> :
+						null
+					}
 					
 				</Layout.Body>
 
 				<Layout.Footer
 					styleName="footer"
-					visible={!this.data.loading && !this.data.errorInfo && totalPrice != 0}>
+					visible={
+						!this.data.loading &&
+						!this.data.errorInfo &&
+						list.length > 0
+					}
+				>
 					
 					<div styleName="total">
 						{

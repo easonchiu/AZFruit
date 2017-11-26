@@ -49,6 +49,11 @@ var AddressSchema = Schema({
 			type: String,
 			required: true
 		},
+		// 小区地址（地图选的）
+		areaAddress: {
+			type: String,
+			required: true
+		},
 		// 经度
 		lat: {
 			type: Number,

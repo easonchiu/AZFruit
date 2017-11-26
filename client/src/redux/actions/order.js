@@ -30,9 +30,17 @@ const fetchDetail = payload => async (dispatch, getState) => {
 	dispatch(_fetchDetail(res))
 }
 
+const cancelOrder = payload => async (dispatch) => {
+	const res = await http.request({
+		method: 'patch',
+        url: `/order/${payload}`,
+	})
+	return res
+}
 
 export default {
 	create,
 	fetchList,
 	fetchDetail,
+	cancelOrder,
 }

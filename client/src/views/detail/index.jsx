@@ -172,6 +172,10 @@ class ViewDetail extends Component {
 	renderAddtoCartPopup() {
 		const data = this.props.$$goods.detail || {}
 		const spec = this.props.$$goods.spec || []
+		
+		if (!spec.length) {
+			return null
+		}
 
 		return (
 			<Popup
@@ -229,6 +233,7 @@ class ViewDetail extends Component {
 
 	render() {
 		const data = this.props.$$goods.detail || {}
+		const spec = this.props.$$goods.spec || []
 
 		return (
 			<Layout styleName="view-detail">
@@ -272,10 +277,14 @@ class ViewDetail extends Component {
 					</div>
 
 				</Layout.Body>
-
-				<Layout.Footer styleName="footer">
-					<Button onClick={this.addToCart}>加入购物车</Button>
-				</Layout.Footer>
+				
+				{
+					spec.length ?
+					<Layout.Footer styleName="footer">
+						<Button onClick={this.addToCart}>加入购物车</Button>
+					</Layout.Footer> :
+					null
+				}
 				
 				{this.renderAddtoCartPopup()}
 

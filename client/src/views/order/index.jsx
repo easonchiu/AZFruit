@@ -7,7 +7,9 @@ import stateData from 'react-state-data'
 
 import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
+import Panel from 'src/auto/panel'
 import Tabs from 'src/auto/tabs'
+import Button from 'src/auto/button'
 import AppFooter from 'src/components/appFooter'
 import NavSpct from 'src/components/navSpct'
 
@@ -29,10 +31,12 @@ class ViewOrder extends Component {
 		this.fetch()
 	}
 
-	async fetch() {
+	async fetch(type = 1) {
 		this.data.loading = true
 		try {
-			await this.props.$order.fetchList()
+			await this.props.$order.fetchList({
+				type
+			})
 		} catch(e) {
 			console.error(e)
 			this.data.errorInfo = e.msg
@@ -41,15 +45,21 @@ class ViewOrder extends Component {
 	}
 
 	tabsClick = e => {
-		this.data.tabsActive = e
+		if (this.data.tabsActive !== e) {
+			this.props.history.replace(`/order/${e}`)
+			this.data.tabsActive = e
+			this.fetch(e)
+		}
 	}
 
 	renderTabs() {
 		return (
-			<Tabs onClick={this.tabsClick}
+			<Tabs
+				onClick={this.tabsClick}
 				active={this.data.tabsActive}
-				styleName="header-tabs">
-				<Tabs.Item value={1}>全部</Tabs.Item>
+				styleName="header-tabs"
+			>
+				<Tabs.Item value={1}>进行中</Tabs.Item>
 				<Tabs.Item value={2}>已完成</Tabs.Item>
 			</Tabs>
 		)
@@ -80,9 +90,13 @@ class ViewOrder extends Component {
 		)
 	}
 
+	itemClick = data => {
+		this.props.history.push(`/order/detail/${data.orderNo}`)
+	}
+
 	renderItem = data => {
 		return (
-			<Link to={`/order/${data.orderNo}`} styleName="item" key={data.orderNo}>
+			<Panel onClick={this.itemClick.bind(this, data)} styleName="item" key={data.orderNo}>
 				<div styleName="hd">
 					<p>订单号：{data.orderNo}</p>
 					<span>待支付</span>
@@ -97,7 +111,7 @@ class ViewOrder extends Component {
 				<div styleName="ft">
 					总计：<span>￥{data.totalPrice / 100}元</span>
 				</div>
-			</Link>
+			</Panel>
 		)
 	}
 
@@ -118,13 +132,18 @@ class ViewOrder extends Component {
 					errorInfo={this.data.errorInfo}>
 					
 					{
-						data.list ?
+						data.list && data.list.length ?
 						<div styleName="list">
 						{
 							data.list.map(this.renderItem)
 						}
 						</div> :
-						null
+						<div styleName="empty">
+							<p>还没有订单哦~</p>
+							<Button onClick={e => this.props.history.push('/')}>
+								去逛逛
+							</Button>
+						</div>
 					}
 
 				</Layout.Body>

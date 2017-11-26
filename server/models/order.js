@@ -18,7 +18,8 @@ var OrderSchema = Schema({
 	// 用户id
 	uid: {
 		type: String,
-		required: true
+		required: true,
+		index: true // 按uid来作索引
 	},
 	// 城市，目前只能上海
 	city: {
@@ -147,8 +148,28 @@ var OrderSchema = Schema({
 	// 支付时间
 	paymentTime: {
 		type: Date,
+		default: ''
+	},
+	// 超时时间
+	paymentTimeout: {
+		type: Date,
 		default: Date.now
 	}
+} ,{
+	toJSON: {
+		virtuals: true
+	}
+})
+
+// 计算超时时间
+OrderSchema.virtual('paymentTimeoutSec').get(function() {
+	// 如果是待支付的话，计算剩余支付时间
+	let timeout = -1
+	if (this.status === 1) {
+		const now = new Date()
+		timeout = Math.round((this.paymentTimeout.getTime() - now.getTime()) / 1000)
+	}
+    return timeout
 })
 
 const model = mongoose.model('Order', OrderSchema)

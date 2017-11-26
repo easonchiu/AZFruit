@@ -2,7 +2,142 @@
 
 .view-order-detail {
 
-	display: block;
-
+	.header {
+		.delete {
+			display: block;
+			color: #666;
+			font-size: 0.28rem;
+			line-height: 0.8rem;
+			&:active {
+				opacity: 0.7;
+			}
+		}
+	}
 	
+	// 商品列表
+	.goods-list {
+		display: block;
+		margin-bottom: 0.2rem;
+		margin-top: -0.1rem;
+	}
+
+	// 单个产品
+	.goods-item {
+		border-bottom: 1px solid #e5e5e5;
+		padding: 0.2rem;
+		display: -webkit-box;
+		.info {
+			margin-right: 0.1rem;
+			-webkit-box-flex: 1;
+			position: relative;
+			padding: 0.1rem;
+			h1 {
+				font-size: 0.3rem;
+				font-weight: normal;
+				color: #333;
+				margin-bottom: 0.05rem;
+			}
+			p {
+				font-size: 0.26rem;
+				font-weight: normal;
+				color: #333;
+				margin-bottom: 0.05rem;
+			}
+			strong {
+				font-size: 0.26rem;
+				font-weight: normal;
+				color: #999;
+				margin-bottom: 0.05rem;
+			}
+		}
+
+		.thumb {
+			width: 1.6rem;
+			height: 1.6rem;
+			overflow: hidden;
+			margin-right: 0.1rem;
+			img {
+				display: block;
+				width: 1.6rem;
+				height: 1.6rem;
+			}
+		}
+
+		.total {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-box-align: end;
+			padding: 0.1rem;
+			p {
+				display: block;
+				color: #666;
+				font-size: 0.28rem;
+			}
+			span {
+				display: block;
+				color: #999;
+				font-size: 0.24rem;
+				margin-bottom: 0.1rem;
+			}
+		}
+	}
+
+	.panel {
+		display: block;
+		margin-bottom: 0.2rem;
+		padding: 0.3rem 0.3rem 0.1rem 0.3rem;
+		h2 {
+			font-size: 0.3rem;
+			margin-bottom: 0.2rem;
+		}
+		sup {
+			display: block;
+			color: #ff4949;
+			margin-bottom: 0.1rem;
+			font-size: 0.24rem;
+			line-height: 1;
+		}
+		li {
+			display: -webkit-box;
+			border-top: 1px solid #e5e5e5;
+			padding: 0.2rem 0;
+		}
+		label {
+			margin-right: 0.1rem;
+			color: #999;
+			font-size: 0.26rem;
+			line-height: 0.4rem;
+			display: block;
+			width: 5.5em;
+		}
+		p, strong {
+			display: block;
+			-webkit-box-flex: 1;
+			font-size: 0.26rem;
+			line-height: 0.4rem;
+			text-align: right;
+		}
+		strong {
+			color: #ff4949;
+		}
+		span {
+			display: block;
+			color: #999;
+			font-size: 0.24rem;
+			line-height: 0.4rem;
+		}
+	}
+
+	.order-panel {
+		margin-bottom: 0;
+	}
+
+	.footer {
+		padding: 0.2rem 0.3rem;
+	}
+	
+}
+
+:global(.cancel-order .x-alert__btn-y) {
+	color: #ff4949 !important;
 }
