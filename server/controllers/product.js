@@ -1,3 +1,4 @@
+var markdown = require('markdown').markdown
 var Product = require('../models/product')
 
 class Control {
@@ -272,28 +273,35 @@ class Control {
 			const res = await Product.findOne({
 				_id: id
 			})
-
-			return ctx.success({
-				data: {
-					name: res.name,
-					cover: res.cover,
-					index: res.index,
-					desc: res.desc,
-					parameter: res.parameter,
-					isImport: res.isImport,
-					origin: res.origin,
-					category: res.category,
-					badge: res.badge,
-					badgeColor: res.badgeColor,
-					imgs: res.imgs,
-					detail: res.detail,
-					atIndex: res.atIndex,
-					online: res.online,
-					specCount: res.specCount,
-					createTime: res.createTime,
-					id: id
-				}
-			})
+			
+			if (res) {
+				return ctx.success({
+					data: {
+						name: res.name,
+						cover: res.cover,
+						index: res.index,
+						desc: res.desc,
+						parameter: res.parameter,
+						isImport: res.isImport,
+						origin: res.origin,
+						category: res.category,
+						badge: res.badge,
+						badgeColor: res.badgeColor,
+						imgs: res.imgs,
+						detail: res.detail,
+						atIndex: res.atIndex,
+						online: res.online,
+						specCount: res.specCount,
+						createTime: res.createTime,
+						id: id
+					}
+				})
+			}
+			else {
+				return ctx.error({
+					msg: '找不到该商品'
+				})
+			}
 		} catch(e) {
 			return ctx.error()
 		}
@@ -307,28 +315,36 @@ class Control {
 			const res = await Product.findOne({
 				_id: id
 			})
-
-			return ctx.success({
-				data: {
-					name: res.name,
-					cover: res.cover,
-					desc: res.desc,
-					parameter: res.parameter,
-					isImport: res.isImport,
-					origin: res.origin,
-					badge: res.badge,
-					badgeColor: res.badgeColor,
-					imgs: res.imgs,
-					detail: res.detail,
-					price: res.price,
-					prePrice: res.prePrice,
-					unit: res.unit,
-					parameter: res.parameter,
-					online: res.online,
-					specCount: res.specCount,
-					id: id
-				}
-			})
+			
+			if (res) {
+				const detail = markdown.toHTML(res.detail)
+				return ctx.success({
+					data: {
+						name: res.name,
+						cover: res.cover,
+						desc: res.desc,
+						parameter: res.parameter,
+						isImport: res.isImport,
+						origin: res.origin,
+						badge: res.badge,
+						badgeColor: res.badgeColor,
+						imgs: res.imgs,
+						detail: detail,
+						price: res.price,
+						prePrice: res.prePrice,
+						unit: res.unit,
+						parameter: res.parameter,
+						online: res.online,
+						specCount: res.specCount,
+						id: id
+					}
+				})
+			}
+			else {
+				return ctx.error({
+					msg: '找不到该商品'
+				})
+			}
 		} catch(e) {
 			return ctx.error()
 		}

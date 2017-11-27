@@ -8,11 +8,12 @@ import http from 'src/assets/libs/http'
 
 export const isWeixin = isWX || true
 
-export const getOpenid = e => sessionStorage.getItem('openid')
+export const getOpenid = e => localStorage.getItem('openid')
 
-const setOpenid = e => sessionStorage.setItem('openid', e)
+const setOpenid = e => localStorage.setItem('openid', e)
 
 export const authorize = async e => {
+	return false
 	const href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=snsapi_base&state=#wechat_redirect`
 	window.location.href = href
 }

@@ -78,57 +78,28 @@ class ViewOrder extends Component {
 					className="table"
 					columns={[
 						{
-							label: '排序',
-							prop: 'index',
-							width: 80,
+							label: '订单号',
+							prop: 'orderNo',
+							width: 160,
 							align: 'center'
 						}, {
-							label: '描述',
-							prop: 'desc',
-							width: 200,
+							label: '下单时间',
+							prop: 'createTime',
+							width: 220,
 						}, {
-							label: '图片地址',
-							prop: 'uri'
-						}, {
-							label: '跳转链接',
-							prop: 'link'
-						}, {
-							label: '状态',
-							prop: 'online',
-							width: 120,
-							align: 'center',
-							render: data => {
-								return (
-									<div className="status">
-									{
-										data.online ?
-										<i className="online" /> :
-										<i className="offline" />
-									}
-									{
-										data.online ?
-										'使用中' :
-										'停用'
-									}
-									</div>
-								)
+							label: '收货地址',
+							width: 220,
+							render(data) {
+								return data.city + data.area + data.address
 							}
 						}, {
-							label: '',
-							width: 150,
-							render: data => {
-								return (
-									<p className="console">
-										<Link to={`/order/detail/${data.id}`}>
-											查看详情
-										</Link>
-									</p>
-								)
+							label: '订单状态',
+							render(data) {
+								return data.status
 							}
 						}
 					]}
 					data={this.props.$$order.list}
-					rowClassName={e => e.online ? 'online' : 'offline'}
 					border={true} />
 
 				<div className="pager">

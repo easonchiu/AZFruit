@@ -2,8 +2,6 @@ import './style'
 import React, { cloneElement } from 'react'
 import classnames from 'classnames'
 
-import Icon from '../icon'
-
 const CellRow = props => {
 	const css = classnames('x-cell__row', {
 		'x-cell--arrow': props.arrow,
@@ -13,11 +11,6 @@ const CellRow = props => {
 		<div className={css} style={props.style}
 			onClick={e => props.onClick !== undefined && props.onClick(props.value)}>
 			{ props.children }
-			{
-				props.arrow ?
-				<Icon type="right" className="x-cell__arrow" /> :
-				null
-			}
 		</div>
 	)
 }

@@ -4,6 +4,7 @@ import http from 'src/assets/libs/http'
 const _fetchList = createAction('ORDER_FETCH_LIST');
 const _fetchDetail = createAction('ORDER_FETCH_DETAIL');
 
+// 下单
 const create = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'post',
@@ -13,6 +14,7 @@ const create = payload => async (dispatch, getState) => {
 	return res
 }
 
+// 获取我的订单列表
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
@@ -22,6 +24,7 @@ const fetchList = payload => async (dispatch, getState) => {
 	dispatch(_fetchList(res))
 }
 
+// 获取我的订单详情
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
@@ -30,6 +33,7 @@ const fetchDetail = payload => async (dispatch, getState) => {
 	dispatch(_fetchDetail(res))
 }
 
+// 取消订单
 const cancelOrder = payload => async (dispatch) => {
 	const res = await http.request({
 		method: 'patch',

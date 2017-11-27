@@ -2,11 +2,17 @@ import './style'
 import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
+import ReactMde, { ReactMdeCommands } from 'react-mde'
 
 import { Button, Form, Input, InputNumber, Switch, Loading, Message, Select, Toast, Table } from 'element-react'
 import Colors from 'src/components/colors'
 import Upload from 'src/components/upload'
 import CDN from 'src/assets/libs/cdn'
+
+import 'font-awesome/css/font-awesome.css'
+import 'react-mde/lib/styles/css/react-mde.css';
+import 'react-mde/lib/styles/css/react-mde-command-styles.css';
+import 'react-mde/lib/styles/css/markdown-default-theme.css';
 
 @connect
 @reactStateData
@@ -29,7 +35,7 @@ class ViewProductDetail extends Component {
 			badge: '',
 			badgeColor: '',
 			imgs: [],
-			detail: '',
+			detail: {text: ''},
 			atIndex: false,
 			online: false,
 			parameter: [],
@@ -73,7 +79,9 @@ class ViewProductDetail extends Component {
 				data.badge = res.badge
 				data.badgeColor = res.badgeColor
 				data.imgs = res.imgs
-				data.detail = res.detail
+				data.detail = {
+					text: res.detail
+				}
 				data.atIndex = res.atIndex
 				data.online = res.online
 				data.classNames = res.category.map(res => res.id)
@@ -110,7 +118,7 @@ class ViewProductDetail extends Component {
 				badge: this.data.badge,
 				badgeColor: this.data.badgeColor,
 				imgs: this.data.imgs,
-				detail: this.data.detail,
+				detail: this.data.detail.text || '',
 				atIndex: this.data.atIndex,
 				online: this.data.online,
 			}
@@ -385,9 +393,11 @@ class ViewProductDetail extends Component {
 					</Form.Item>
 
 					<Form.Item label="详情">
-						<Input
+						<ReactMde
 							value={this.data.detail}
-							onChange={this.valueChange.bind(this, 'detail')} />
+							onChange={this.valueChange.bind(this, 'detail')}
+							commands={ReactMdeCommands}
+						/>
 					</Form.Item>
 
 					<Form.Item label="产地">

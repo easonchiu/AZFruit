@@ -174,10 +174,35 @@
 		margin-left: -0.3rem;
 		margin-right: -0.3rem;
 		padding: 0.1rem 0.3rem;
+		.more {
+			p {
+				font-size: 0.28rem;
+				text-align: justify;
+				margin-bottom: 0.1rem;
+			}
+			ul {
+				list-style-type: unset;
+				padding-left: 1.2em;
+				margin-bottom: 0.1rem;
+				li {
+					font-size: 0.28rem;
+					color: #666;
+				}
+			}
+			img {
+				display: block;
+				max-width: 100%;
+			}
+			h1, h2, h3, h4, h5, h6 {
+				font-size: 0.3rem;
+				margin-bottom: 0.1rem;
+			}
+		}
 	}
 
 	.parameter {
 		margin-bottom: 0.2rem;
+		padding-left: 0 !important;
 		li {
 			display: -webkit-box;
 			border-bottom: 1px solid #f2f2f2;

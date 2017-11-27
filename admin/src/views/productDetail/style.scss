@@ -50,4 +50,31 @@
 			max-width: 300px;
 		}
 	}
+
+	.react-mde {
+		width: 400px;
+	}
+	.markdown-help {
+		display: -webkit-box;
+		-webkit-box-align: center;
+		svg, span {
+			display: block !important;
+			line-height: 1;
+		}
+	}
+	.mde-preview {
+		* {
+			line-height: 1.5;
+			margin: 0;
+		}
+		h1, h2 {
+			margin-bottom: 5px;
+			padding-bottom: 0;
+		}
+		ul {
+			list-style-type: unset;
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+	}
 }

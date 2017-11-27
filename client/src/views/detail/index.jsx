@@ -271,9 +271,7 @@ class ViewDetail extends Component {
 								))
 							}
 						</ul>
-						<div>
-							{data.detail}
-						</div>
+						<div styleName="more" dangerouslySetInnerHTML={{__html: data.detail}} />
 					</div>
 
 				</Layout.Body>
