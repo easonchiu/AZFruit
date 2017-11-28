@@ -1,6 +1,6 @@
 import './style'
 import React, {Component} from 'react'
-import { Button, Dialog } from 'element-react'
+import { Button, Dialog, Message } from 'element-react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 import cn from 'classnames'
@@ -34,6 +34,7 @@ class Upload extends Component {
 				Message.error('获取base64失败')
 			}
 		} catch(e) {
+			console.error(e)
 			Message.error(e.msg)
 		}
 	}

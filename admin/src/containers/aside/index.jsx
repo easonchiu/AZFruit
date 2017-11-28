@@ -27,7 +27,7 @@ class Aside extends Component {
 			link: '/product/list',
 			match: '/product',
 			name: '产品管理',
-			badge: '差详情编辑器'
+			badge: 'OK'
 		}, {
 			link: '/quick/list',
 			match: '/quick',

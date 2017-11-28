@@ -1,16 +1,41 @@
 var UploadModel = require('../models/upload')
 var fs = require('fs')
 var mongoose = require('../conf/mongoose')
-
+var qiniu = require('../conf/qiniu')
 
 class Control {
 	
+	//构建上传策略函数
+	static uptoken(key) {
+		var bucket = 'ivcsun'
+		var putPolicy = new qiniu.rs.PutPolicy(bucket + ':' + key)
+		return putPolicy.token()
+	}
+
+	//构造上传函数
+	static uploadFile(uptoken, key, localFile) {
+		return new Promise((resolve, reject) => {
+			var extra = new qiniu.io.PutExtra()
+			qiniu.io.putFile(uptoken, key, localFile, extra, function(err, ret) {
+				if(!err) {
+					// 上传成功， 处理返回值
+					resolve({
+						hash: ret.hash,
+						key: ret.key,
+						persistentId: ret.persistentId
+					})      
+				} else {
+					// 上传失败， 处理返回代码
+					reject(err)
+				}
+			})
+		})
+	}
+	
 	/* 
 	 * 创建
-	 *
 	 * !@base64 资源
 	 * !@class 归类
-	 *
 	 */
 	static async save(ctx, next) {
 		const body = ctx.request.body
@@ -53,13 +78,28 @@ class Control {
 			// 将base64存成一个buffer
 			const dataBuffer = new Buffer(base64Data, 'base64')
 
+			// 本地的文件名
+			const localfilename = 'upload/' + body.class + '-' + filename + type
+			
 			// 将buffer存到目录中
-			await UploadModel.write('upload/'+body.class+'-'+filename+type, dataBuffer)
+			await Control.saveLocalPic(localfilename, dataBuffer)
+
+			//上传到七牛后保存的文件名
+			const qnfilename = body.class + '-' + filename + type
+
+			// 生成上传token
+			const qntoken = Control.uptoken(qnfilename)
+
+			// 上传到七牛云
+			const qnres = await Control.uploadFile(qntoken, qnfilename, localfilename)
+
+			// 本地的删除
+			await Control.removeLocalPic(localfilename)
 
 			// 数据库保存图片信息
 			await UploadModel.create({
 				name: body.class+'-'+filename,
-				uri: body.class+'-'+filename+type,
+				uri: qnres.key,
 				class: body.class,
 			})
 
@@ -67,6 +107,7 @@ class Control {
 				data: body.class+'-'+filename+type
 			})
 		} catch(e) {
+			console.log(e)
 			return ctx.error()
 		}
 	}
@@ -120,9 +161,21 @@ class Control {
 	}
 
 	// 存图
-	static write(file, base64) {
+	static saveLocalPic(file, base64) {
 		return new Promise((resolve, reject) => {
 			fs.writeFile(file, base64, function(err){
+				if (err) {
+					reject()
+				}
+				resolve(file)
+			})
+		})
+	}
+
+	// 删本地图
+	static removeLocalPic(file) {
+		return new Promise((resolve, reject) => {
+			fs.unlink(file, function(err){
 				if (err) {
 					reject()
 				}
