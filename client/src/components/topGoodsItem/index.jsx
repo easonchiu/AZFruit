@@ -50,7 +50,7 @@ const TopGoodsItem = props => {
 				</h6>
 				{
 					data.prePrice > data.price ?
-					<del>市场价 {data.prePrice / 100}元</del> :
+					<del>原价 {data.prePrice / 100}元</del> :
 					null
 				}
 			</div>

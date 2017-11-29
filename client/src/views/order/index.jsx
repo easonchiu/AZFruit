@@ -139,6 +139,7 @@ class ViewOrder extends Component {
 						}
 						</div> :
 						<div styleName="empty">
+							<i />
 							<p>还没有订单哦~</p>
 							<Button onClick={e => this.props.history.push('/')}>
 								去逛逛

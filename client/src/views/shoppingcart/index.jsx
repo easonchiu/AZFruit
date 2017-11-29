@@ -136,6 +136,9 @@ class ViewShoppingcart extends Component {
 	}
 
 	renderAddress() {
+		if (this.data.loading) {
+			return null
+		}
 		const address = this.props.$$shoppingcart.address
 		if (!address) {
 			return (
@@ -281,23 +284,24 @@ class ViewShoppingcart extends Component {
 	payment = async aid => {
 		// 如果没有openid，去授权
 		// 一般情况下这里不会丢失本地openid，都是人工干预的
-		const openid = getOpenid()
-		if (!openid) {
-			Loading.show('微信授权...')
-			setTimeout(e => {
-				authorize()
-			}, 1000)
-			return false
-		}
+
+		// const openid = getOpenid()
+		// if (!openid) {
+		// 	Loading.show('微信授权...')
+		// 	setTimeout(e => {
+		// 		authorize()
+		// 	}, 1000)
+		// 	return false
+		// }
 
 		Loading.show()
 		try {
 			const res = await this.props.$order.create({
 				addressid: aid,
-				openid
+				openid: 'testopenid'
 			})
 
-			return false
+			// return false
 
 			this.props.history.replace(`/order/detail/${res.orderNo}`)
 		} catch(e) {
@@ -318,18 +322,22 @@ class ViewShoppingcart extends Component {
 		return (
 			<Layout styleName="view-shoppingcart">
 				<Layout.Header title="购物车"
-					addonBefore={<a href="javascript:;" className="back" onClick={this.backClick} />} />
+					addonBefore={
+						<a
+							href="javascript:;"
+							className="back"
+							onClick={this.backClick}
+						/>
+					}
+					addonBottom={
+						this.renderAddress()
+					}
+				/>
 
 				<Layout.Body
 					styleName="body"
 					errorInfo={this.data.errorInfo}
 					loading={this.data.loading}>
-					
-					{
-						list.length ?
-						this.renderAddress() :
-						null
-					}
 					
 					{
 						list.length ?
@@ -339,7 +347,13 @@ class ViewShoppingcart extends Component {
 
 					{
 						!list.length ?
-						<p styleName="empty-tips">购物车中没有东西哦~</p> :
+						<div styleName="empty-tips">
+							<i />
+							<p>购物车中没有东西哦~</p>
+							<Button onClick={e => this.props.history.push('/')}>
+								去逛逛
+							</Button>
+						</div> :
 						null
 					}
 

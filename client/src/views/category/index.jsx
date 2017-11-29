@@ -29,13 +29,22 @@ class ViewCategory extends Component {
 		this.fetch()
 	}
 
+	// 获取数据
 	async fetch() {
 		this.data.loading = true
 		try {
 			await this.props.$category.fetchList()
-			const first = this.props.$$category.list[0]
-			if (first) {
-				await this.props.$goods.fetchList(first.id)
+			const id = this.props.match.params.id
+			if (id) {
+				this.props.$$category.list.forEach((res, i) => {
+					if (res.id === id) {
+						this.data.active = i
+					}
+				})
+			}
+			const current = id ? {id} : this.props.$$category.list[0]
+			if (current) {
+				await this.props.$goods.fetchList(current.id)
 			}
 		} catch(e) {
 			console.error(e)
@@ -44,10 +53,13 @@ class ViewCategory extends Component {
 		this.data.loading = false
 	}
 
+	// 侧边分类点击
 	categoryClick = async res => {
 		if (res.i == this.data.active) {
 			return false
 		}
+
+		this.props.history.replace(`/category/${res.id}`)
 
 		this.data.active = res.i
 		Loading.show()
@@ -59,7 +71,8 @@ class ViewCategory extends Component {
 		}
 		Loading.hide()
 	}
-
+	
+	// 渲染侧栏
 	renderAside() {
 		const categoryList = this.props.$$category.list
 
@@ -84,7 +97,8 @@ class ViewCategory extends Component {
 			</nav>
 		)
 	}
-
+	
+	// 渲染产品列表
 	renderList() {
 		const goodsList = this.props.$$goods.list
 

@@ -72,10 +72,22 @@ class ViewIndex extends Component {
 						}}>
 							{
 								bannerList.map((res, i) => {
+									if (res.link) {
+										return (
+											<a
+												key={i}
+												href={res.link}
+												styleName="item"
+												style={{backgroundImage:`url(${CDN+res.uri})`}}
+											/>
+										)
+									}
 									return (
-										<div key={i}
+										<div
+											key={i}
 											styleName="item"
-											style={{backgroundImage:`url(${CDN+res.uri})`}} />
+											style={{backgroundImage:`url(${CDN+res.uri})`}}
+										/>
 									)
 								})
 							}
@@ -100,8 +112,7 @@ class ViewIndex extends Component {
 							quickList.map((res, i) => {
 								return (
 									<a key={i}
-										href="javascript:;"
-										onClick={e => this.props.history.push(res.link)}
+										href={res.link}
 										styleName="item">
 										<i style={{backgroundImage: `url(${CDN+res.uri})`}} />
 										<p>{res.name}</p>

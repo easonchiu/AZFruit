@@ -36,7 +36,7 @@ const Routes = () => {
 		<Router basename={basename}>
 			<Switch>
 				<Route exact path="/" component={ ViewIndex }/>
-				<Route exact path="/category" component={ ViewCategory }/>
+				<Route exact path="/category/:id?" component={ ViewCategory }/>
 				<Route exact path="/detail/:id" component={ ViewDetail }/>
 				<Route exact path="/login" component={ ViewLogin }/>
 				<Route exact path="/order/:type?" component={ LoginIfNeeded(ViewOrder)(true) }/>

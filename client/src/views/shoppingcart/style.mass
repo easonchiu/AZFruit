@@ -2,15 +2,15 @@
 
 .view-shoppingcart {
 	.body {
-		padding: 0;
+		padding: 0.2rem 0 0 0;
 	}
 	
 	// 地址模块
 	.address {
-		background: #ffffd6;
-		margin-bottom: 0.2rem;
-		padding: 0.3rem 0.3rem 0.35rem 0.3rem;
+		background: #fff;
+		padding: 0 0.3rem 0.35rem 0.3rem;
 		position: relative;
+		margin-top: -0.1rem;
 		&:after {
 			content: "";
 			display: block;
@@ -53,7 +53,7 @@
 		.change {
 			position: absolute;
 			right: 0.3rem;
-			top: 0.3rem;
+			top: 0;
 			height: 0.45rem;
 			line-height: 0.45rem;
 			font-size: 0.24rem;
@@ -255,10 +255,32 @@
 	
 	// 无产品时的提示
 	.empty-tips {
-		line-height: 3rem;
-		text-align: center;
-		font-size: 0.28rem;
-		color: #999;
+		position: absolute;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		display: -webkit-box;
+		-webkit-box-pack: center;
+		-webkit-box-align: center;
+		-webkit-box-orient: vertical;
+		i {
+			display: block;
+			width: 1rem;
+			height: 1rem;
+			background: url('../../assets/imgs/icon-empty.png');
+			background-size: 100% 100%;
+			margin-top: -0.8rem;
+		}
+		> p {
+			text-align: center;
+			font-size: 0.28rem;
+			color: #999;
+			line-height: 1rem;
+		}
+		a {
+			width: 3rem;
+		}
 	}
 	
 	// 底部结算模块

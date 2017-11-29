@@ -126,7 +126,7 @@ class ViewDetail extends Component {
 					<span>元/{data.unit}</span>
 					{
 						data.prePrice > data.price ?
-						<del>市场价 {data.prePrice && data.prePrice / 100}元</del> :
+						<del>原价 {data.prePrice && data.prePrice / 100}元</del> :
 						null
 					}
 				</h6>
@@ -213,7 +213,7 @@ class ViewDetail extends Component {
 								{
 									res.prePrice > res.price ?
 									<span>
-										市场价{res.prePrice / 100}元
+										原价{res.prePrice / 100}元
 									</span> :
 									null
 								}
