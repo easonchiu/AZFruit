@@ -2,18 +2,17 @@ const ua = navigator.userAgent.toLowerCase()
 const isWX = ua.indexOf('micromessenger') != -1
 
 const APPID = 'wxafcd379c5276d6a3'
-const REDIRECT_URI = encodeURIComponent('http://47.92.130.15/callback/')
+const REDIRECT_URI = encodeURIComponent(window.location.href)
 
 import http from 'src/assets/libs/http'
 
-export const isWeixin = isWX || true
+export const isWeixin = isWX
 
 export const getOpenid = e => localStorage.getItem('openid')
 
 const setOpenid = e => localStorage.setItem('openid', e)
 
 export const authorize = async e => {
-	return false
 	const href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${APPID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=snsapi_base&state=#wechat_redirect`
 	window.location.href = href
 }
