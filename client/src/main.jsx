@@ -31,6 +31,7 @@ class Wrapper extends Component {
 	}
 
 	async componentWillMount() {
+		return false
 		// 如果不在微信中打开，啥也不请求
 		if (!isWeixin) {
 			return false
@@ -70,12 +71,12 @@ class Wrapper extends Component {
 	}
 
 	render() {
-		if (!isWeixin) {
-			return <p>请在微信客户端中打开</p>
-		}
-		else if (!this.state.done) {
-			return null
-		}
+		// if (!isWeixin) {
+		// 	return <p>请在微信客户端中打开</p>
+		// }
+		// else if (!this.state.done) {
+		// 	return null
+		// }
 		return (
 			<Provider store={store}>
 				<Routers />
