@@ -78,9 +78,24 @@ var ProductSchema = Schema({
 		default: ''
 	},
 	// 首页推荐
-	atIndex: {
+	recom: {
 		type: Boolean,
 		default: false
+	},
+	// 首页推荐排序
+	recomIndex: {
+		type: Number,
+		default: 0
+	},
+	// 首页排行榜
+	ranking: {
+		type: Boolean,
+		default: false
+	},
+	// 排名
+	rankingVal: {
+		type: Number,
+		default: 0
 	},
 	// 上下架
 	online: {
@@ -88,7 +103,7 @@ var ProductSchema = Schema({
 		default: false
 	},
 	// 有库存并上架中的规格数量
-	specCount: {
+	skuCount: {
 		type: Number,
 		default: 0
 	},

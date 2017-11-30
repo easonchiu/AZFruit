@@ -113,26 +113,6 @@ class ViewProduct extends Component {
 								)
 							}
 						}, {
-							label: '首页推荐',
-							width: 100,
-							align: 'center',
-							render: data => {
-								return (
-									<div className="status">
-									{
-										data.atIndex ?
-										<i className="online" /> :
-										<i className="offline" />
-									}
-									{
-										data.atIndex ?
-										'是' :
-										'否'
-									}
-									</div>
-								)
-							}
-						}, {
 							label: '上下架/可购规格',
 							width: 150,
 							align: 'center',
@@ -150,7 +130,7 @@ class ViewProduct extends Component {
 										'下架'
 									}
 									&nbsp;
-									({data.specCount})
+									({data.skuCount})
 									</div>
 								)
 							}

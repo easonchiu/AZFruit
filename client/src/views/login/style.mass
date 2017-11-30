@@ -29,10 +29,11 @@
 		}
 		i {
 			display: block;
-			width: 0.6rem;
+			width: 0.9rem;
 			height: 0.6rem;
-			background: #eee;
-			margin: 0 0.2rem;
+			background: url('../../assets/imgs/icon-mobile.png') center no-repeat;
+			background-size: 40%;
+			opacity: 0.4;
 		}
 	}
 
@@ -46,10 +47,11 @@
 		}
 		i {
 			display: block;
-			width: 0.6rem;
+			width: 0.9rem;
 			height: 0.6rem;
-			background: #eee;
-			margin: 0 0.2rem;
+			background: url('../../assets/imgs/icon-password.png') center no-repeat;
+			background-size: 40%;
+			opacity: 0.4;
 		}
 	}
 
@@ -63,6 +65,10 @@
 		color: #00bb44;
 		&:active {
 			opacity: 0.6;
+		}
+		&.disabled {
+			color: #ccc;
+			pointer-events: none;
 		}
 	}
 

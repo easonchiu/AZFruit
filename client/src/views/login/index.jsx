@@ -2,7 +2,6 @@ import style from './style'
 import React, { PureComponent as Component } from 'react'
 import connect from 'src/redux/connect'
 import mass from 'mass'
-import stateData from 'react-state-data'
 
 import Layout from 'src/auto/layout'
 import Input from 'src/auto/input'
@@ -13,30 +12,52 @@ import Loading from 'src/auto/loading'
 
 @connect
 @mass(style)
-@stateData
 class ViewLogin extends Component {
 	constructor(props) {
 		super(props)
 
-		this.setData({
+		this.state = {
 			mobile: '18201938590',
 			verifcode: '',
-			smskey: ''
-		})
+			smskey: '',
+			timeout: 0
+		}
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer)
+		console.log(123123)
 	}
 
 	mobileChange = e => {
 		const v = e.target.value.trim().substr(0, 11)
-		this.data.mobile = v
+		this.setState({
+			mobile: v
+		})
 	}
 
 	verifcodeChange = e => {
 		const v = e.target.value.trim().substr(0, 6)
-		this.data.verifcode = v
+		this.setState({
+			verifcode: v
+		})
 	}
 
+	// 短信验证码拿到后的倒计时
+	runTimer = e => {
+		if (this.state.timeout > 0) {
+			this.timer = setTimeout(e => {
+				this.setState({
+					timeout: this.state.timeout - 1
+				})
+				this.runTimer()
+			}, 1000)
+		}
+	}
+	
+	// 获取短信验证码
 	getVerifcode = async e => {
-		const mobile = this.data.mobile
+		const mobile = this.state.mobile
 
 		if (!mobile) {
 			Toast.show('请输入手机号')
@@ -52,18 +73,22 @@ class ViewLogin extends Component {
 			const res = await this.props.$user.verifcode({
 				mobile
 			})
-			this.data.smskey = res.smskey
+			this.setState({
+				smskey: res.smskey,
+				timeout: 60
+			}, this.runTimer)
 			Alert.show('您的验证码(上线后该提示应为短信)=' + res.verifcode)
 		} catch(e) {
 			Toast.show(e.msg)
 		}
 		Loading.hide()
 	}
-
+	
+	// 提交登录
 	submit = async e => {
-		const mobile = this.data.mobile
-		const verifcode = this.data.verifcode
-		const smskey = this.data.smskey
+		const mobile = this.state.mobile
+		const verifcode = this.state.verifcode
+		const smskey = this.state.smskey
 
 		if (!mobile) {
 			Toast.show('请输入手机号')
@@ -110,7 +135,7 @@ class ViewLogin extends Component {
 				
 					<Input
 						type="tel"
-						value={this.data.mobile}
+						value={this.state.mobile}
 						onChange={this.mobileChange}
 						styleName="mobile"
 						addonBefore={<i />}
@@ -118,15 +143,24 @@ class ViewLogin extends Component {
 					
 					<Input
 						type="number"
-						value={this.data.verifcode}
+						value={this.state.verifcode}
 						onChange={this.verifcodeChange}
 						styleName="code"
 						addonBefore={<i />}
 						addonAfter={
 							<a href="javascript:;"
-								styleName="code-btn"
-								onClick={this.getVerifcode}>
-								获取验证码
+								styleName={
+									this.state.timeout ?
+									'code-btn disabled' :
+									'code-btn'
+								}
+								onClick={this.getVerifcode}
+							>
+								{
+									this.state.timeout > 0 ?
+									this.state.timeout + '秒后重试' :
+									'获取验证码'
+								}
 							</a>
 						}
 						placeholder="请输入验证码" />

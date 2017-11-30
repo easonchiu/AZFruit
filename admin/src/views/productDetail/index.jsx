@@ -36,7 +36,6 @@ class ViewProductDetail extends Component {
 			badgeColor: '',
 			imgs: [],
 			detail: {text: ''},
-			atIndex: false,
 			online: false,
 			parameter: [],
 			parameterEdit: null,
@@ -82,7 +81,6 @@ class ViewProductDetail extends Component {
 				data.detail = {
 					text: res.detail
 				}
-				data.atIndex = res.atIndex
 				data.online = res.online
 				data.classNames = res.category.map(res => res.id)
 
@@ -119,7 +117,6 @@ class ViewProductDetail extends Component {
 				badgeColor: this.data.badgeColor,
 				imgs: this.data.imgs,
 				detail: this.data.detail.text || '',
-				atIndex: this.data.atIndex,
 				online: this.data.online,
 			}
 			if (this.data.id) {
@@ -441,16 +438,6 @@ class ViewProductDetail extends Component {
 						<Colors
 							value={this.data.badgeColor}
 							onChange={this.valueChange.bind(this, 'badgeColor')} />
-					</Form.Item>
-
-					<Form.Item label="是否首页推荐">
-						<Switch
-							value={this.data.atIndex}
-							onText=""
-							offText=""
-							onColor="#13ce66"
-							offColor="#ff4949"
-							onChange={this.valueChange.bind(this, 'atIndex')} />
 					</Form.Item>
 
 					<Form.Item label="上下架">

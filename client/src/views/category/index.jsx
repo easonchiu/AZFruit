@@ -33,8 +33,13 @@ class ViewCategory extends Component {
 	async fetch() {
 		this.data.loading = true
 		try {
+			// 获取菜单列表
 			await this.props.$category.fetchList()
+
+			// 从网址中获取当前菜单的id
 			const id = this.props.match.params.id
+
+			// 设置当前菜单
 			if (id) {
 				this.props.$$category.list.forEach((res, i) => {
 					if (res.id === id) {
@@ -42,6 +47,8 @@ class ViewCategory extends Component {
 					}
 				})
 			}
+
+			// 获取当前菜单的数据
 			const current = id ? {id} : this.props.$$category.list[0]
 			if (current) {
 				await this.props.$goods.fetchList(current.id)

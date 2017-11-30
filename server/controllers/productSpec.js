@@ -43,7 +43,7 @@ class Control {
 				online: body.online,
 			})
 
-			await Control.updateProductSpecCount(body.pid)
+			await Control.updateProductSkuCount(body.pid)
 
 			if (res) {
 				return ctx.success()
@@ -221,7 +221,7 @@ class Control {
 				_id: id
 			}, body)
 
-			await Control.updateProductSpecCount(body.pid)
+			await Control.updateProductSkuCount(body.pid)
 			
 			return ctx.success()
 		} catch(e) {
@@ -244,7 +244,7 @@ class Control {
 			await ProductSpec.remove({
 				_id: id
 			})
-			await Control.updateProductSpecCount(body.pid)
+			await Control.updateProductSkuCount(body.pid)
 			return ctx.success()
 		} catch(e) {
 			return ctx.error()
@@ -252,7 +252,7 @@ class Control {
 	}
 
 	// 修改产品的有库存并上架中的规格数量
-	static async updateProductSpecCount(pid) {
+	static async updateProductSkuCount(pid) {
 		// 获取相关产品，在线，库存大于0的
 		const res = await ProductSpec
 			.aggregate([{
@@ -278,7 +278,7 @@ class Control {
 		
 		// 初始化
 		const obj = {
-			specCount: 0,
+			SkuCount: 0,
 			price: 0,
 			prePrice: 0,
 			unit: ''
@@ -286,7 +286,7 @@ class Control {
 		
 		// 如果有数据
 		if (res[0]) {
-			obj.specCount = res.length
+			obj.SkuCount = res.length
 			obj.price = res[0].price || 0
 			obj.prePrice = res[0].prePrice || 0
 			obj.unit = res[0].unit || ''

@@ -17,9 +17,8 @@ class Control {
 	 * @badgeColor 标签底色
 	 * @imgs 产品轮播图
 	 * @detail 详情
-	 * @atIndex 首页推荐
 	 * @online 上下架
-	 * @specCount 有库存并上架中的规格数量，该值在规格操作时自动修改
+	 * @skuCount 有库存并上架中的规格数量，该值在规格操作时自动修改
 	 *
 	 */
 	static async create(ctx, next) {
@@ -57,7 +56,6 @@ class Control {
 				badgeColor: body.badgeColor,
 				imgs: body.imgs,
 				detail: body.detail,
-				atIndex: body.atIndex,
 				online: body.online,
 			})
 
@@ -107,9 +105,12 @@ class Control {
 							badgeColor: 1,
 							imgs: 1,
 							detail: 1,
-							atIndex: 1,
+							recom: 1,
+							recomIndex: 1,
+							ranking: 1,
+							rankingVal: 1,
 							online: 1,
-							specCount: 1,
+							skuCount: 1,
 							id: '$_id'
 						}
 					}, {
@@ -140,7 +141,7 @@ class Control {
 					$match: {
 						online: true,
 						atIndex: true,
-						specCount: {
+						skuCount: {
 							'$gt': 0
 						}
 					}
@@ -178,7 +179,7 @@ class Control {
 	static async appFetchList(ctx, next) {
 		const match = {
 			online: true,
-			specCount: {
+			skuCount: {
 				'$gt': 0
 			}
 		}
@@ -229,7 +230,7 @@ class Control {
 				.aggregate([{
 					$match: {
 						online: true,
-						specCount: {
+						skuCount: {
 							'$gt': 0
 						}
 					}
@@ -291,7 +292,7 @@ class Control {
 						detail: res.detail,
 						atIndex: res.atIndex,
 						online: res.online,
-						specCount: res.specCount,
+						skuCount: res.skuCount,
 						createTime: res.createTime,
 						id: id
 					}
@@ -335,7 +336,7 @@ class Control {
 						unit: res.unit,
 						parameter: res.parameter,
 						online: res.online,
-						specCount: res.specCount,
+						skuCount: res.skuCount,
 						id: id
 					}
 				})
