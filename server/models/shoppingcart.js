@@ -11,10 +11,10 @@ var ShoppingcartSchema = Schema({
 		required: true
 	},
 	// 产品规格id
-	specId: {
+	skuId: {
 		type: String,
 		required: true,
-		ref: 'ProductSpec'
+		ref: 'Sku'
 	},
 	// 产品id
 	pid: {
@@ -28,7 +28,7 @@ var ShoppingcartSchema = Schema({
 		required: true
 	},
 	// 规格名称
-	specName: {
+	skuName: {
 		type: String,
 		default: ''
 	},

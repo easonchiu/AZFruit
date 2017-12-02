@@ -1,23 +1,23 @@
 @charset "utf-8";
 
-.view-product {
+.view-ranking {
 	> h1 {
 		font-size: 30px;
 		margin-bottom: 20px;
 		color: #3c404c + 30;
 	}
+	h6 {
+		font-size: 20px;
+		margin-bottom: 10px;
+		color: #3c404c + 50;
+	}
 	.table {
 		margin-bottom: 10px;
 		img {
-			width: 160px;
+			display: block;
+			width: 120px;
+			height: 120px;
 			margin: 10px 0;
-		}
-		.badge {
-			display: inline-block;
-			color: #fff;
-			padding: 0 10px;
-			border-radius: 3px;
-			font-size: 12px;
 		}
 		tr:hover {
 			.console {
@@ -47,9 +47,6 @@
 					background: #00bb44;
 				}
 			}
-			p {
-				margin-right: 10px;
-			}
 		}
 	}
 	.pager {
@@ -77,5 +74,12 @@
 				opacity: 0.7;
 			}
 		}
+	}
+}
+
+.ranking-box {
+	p {
+		color: #666;
+		margin-bottom: 10px;
 	}
 }

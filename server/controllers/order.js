@@ -1,6 +1,6 @@
 var OrderModel = require('../models/order')
 var ShoppingcartCon = require('./shoppingcart')
-var SkuModel = require('../models/productSpec')
+var SkuModel = require('../models/sku')
 var cache = require('memory-cache')
 var axios = require('axios')
 var WX = require('../conf/wx')
@@ -30,7 +30,7 @@ class Control {
 					name: 1,
 					area: 1,
 					address: 1,
-					productList: 1,
+					goodsList: 1,
 					totalWeight: 1,
 					totalPrice: 1,
 					status: 1,
@@ -132,7 +132,7 @@ class Control {
 				})
 				
 				// 还库存
-				await Control.revertStock(res.productList)
+				await Control.revertStock(res.goodsList)
 
 				return ctx.success()
 			}
@@ -189,7 +189,7 @@ class Control {
 						})
 						
 						// 还库存
-						await Control.revertStock(res.productList)
+						await Control.revertStock(res.goodsList)
 
 						return ctx.error({
 							msg: '订单超时未支付，请重新下单',
@@ -258,7 +258,7 @@ class Control {
 					const data = info.list[i]
 
 					await SkuModel.update({
-						_id: data.specId
+						_id: data.skuId
 					}, {
 						$inc: {
 							stock: -data.amount,
@@ -312,7 +312,7 @@ class Control {
 				needPayment: info.totalPrice,
 				finalPayment: 0,
 				status: 1,
-				productList: info.list,
+				goodsList: info.list,
 				paymentTimeout: after30m
 			})
 
@@ -378,7 +378,7 @@ class Control {
 			for (let i = 0; i < list.length; i++) {
 				const data = list[i]
 				await SkuModel.update({
-					_id: data.specId
+					_id: data.skuId
 				}, {
 					$inc: {
 						stock: data.amount,

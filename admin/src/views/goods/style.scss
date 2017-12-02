@@ -1,18 +1,19 @@
 @charset "utf-8";
 
-.view-productSpec {
+.view-goods {
 	> h1 {
 		font-size: 30px;
 		margin-bottom: 20px;
 		color: #3c404c + 30;
 	}
-	h6 {
-		font-size: 20px;
-		margin-bottom: 10px;
-		color: #3c404c + 50;
-	}
 	.table {
 		margin-bottom: 10px;
+		img {
+			width: 120px;
+			height: 120px;
+			display: block;
+			margin: 10px 0;
+		}
 		.badge {
 			display: inline-block;
 			color: #fff;

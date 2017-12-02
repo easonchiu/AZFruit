@@ -1,5 +1,5 @@
-var ProductSpec = require('../models/productSpec')
-var Product = require('../models/product')
+var SkuModel = require('../models/sku')
+var GoodsModel = require('../models/goods')
 
 class Control {
 	
@@ -32,7 +32,7 @@ class Control {
 		}
 
 		try {
-			const res = await ProductSpec.create({
+			const res = await SkuModel.create({
 				pid: body.pid,
 				desc: body.desc,
 				stock: body.stock,
@@ -43,7 +43,7 @@ class Control {
 				online: body.online,
 			})
 
-			await Control.updateProductSkuCount(body.pid)
+			await Control.updateSkuCount(body.pid)
 
 			if (res) {
 				return ctx.success()
@@ -71,11 +71,11 @@ class Control {
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
-			const count = await ProductSpec.count({})
+			const count = await SkuModel.count({})
 			let list = []
 
 			if (count > 0) {
-				list = await ProductSpec
+				list = await SkuModel
 					.aggregate([{
 						$match: {
 							pid: pid
@@ -120,7 +120,7 @@ class Control {
 	}
 
 	// 用户获取列表
-	static async appFetchSpec(ctx, next) {
+	static async appFetchSku(ctx, next) {
 		try {
 			let { id } = ctx.params
 			
@@ -130,7 +130,7 @@ class Control {
 				})
 			}
 
-			const list = await ProductSpec
+			const list = await SkuModel
 				.aggregate([{
 					$match: {
 						pid: id,
@@ -165,7 +165,7 @@ class Control {
 		try {
 			const { id } = ctx.params
 
-			const res = await ProductSpec.findOne({
+			const res = await SkuModel.findOne({
 				_id: id
 			})
 
@@ -193,7 +193,7 @@ class Control {
 		try {
 			const { id } = ctx.params
 
-			let find = await ProductSpec.findOne({
+			let find = await SkuModel.findOne({
 				_id: id
 			})
 
@@ -217,11 +217,11 @@ class Control {
 				})
 			}
 
-			await ProductSpec.update({
+			await SkuModel.update({
 				_id: id
 			}, body)
 
-			await Control.updateProductSkuCount(body.pid)
+			await Control.updateSkuCount(body.pid)
 			
 			return ctx.success()
 		} catch(e) {
@@ -241,10 +241,10 @@ class Control {
 
 		try {
 			const { id } = ctx.params
-			await ProductSpec.remove({
+			await SkuModel.remove({
 				_id: id
 			})
-			await Control.updateProductSkuCount(body.pid)
+			await Control.updateSkuCount(body.pid)
 			return ctx.success()
 		} catch(e) {
 			return ctx.error()
@@ -252,9 +252,9 @@ class Control {
 	}
 
 	// 修改产品的有库存并上架中的规格数量
-	static async updateProductSkuCount(pid) {
+	static async updateSkuCount(pid) {
 		// 获取相关产品，在线，库存大于0的
-		const res = await ProductSpec
+		const res = await SkuModel
 			.aggregate([{
 				$match: {
 					pid: pid,
@@ -278,7 +278,7 @@ class Control {
 		
 		// 初始化
 		const obj = {
-			SkuCount: 0,
+			skuCount: 0,
 			price: 0,
 			prePrice: 0,
 			unit: ''
@@ -286,14 +286,14 @@ class Control {
 		
 		// 如果有数据
 		if (res[0]) {
-			obj.SkuCount = res.length
+			obj.skuCount = res.length
 			obj.price = res[0].price || 0
 			obj.prePrice = res[0].prePrice || 0
 			obj.unit = res[0].unit || ''
 		}
 
 		// 更新到产品的数据库中
-		await Product.update({
+		await GoodsModel.update({
 			_id: pid
 		}, obj, {
 			upsert: true

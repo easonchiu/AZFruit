@@ -65,9 +65,9 @@ class ViewOrder extends Component {
 		)
 	}
 
-	renderProductItem = (data, index) => {
+	renderGoodsItem = (data, index) => {
 		return (
-			<div key={index} styleName="product-item">
+			<div key={index} styleName="goods-item">
 				<div styleName="thumb">
 					<img src={CDN + data.cover} />
 				</div>
@@ -76,7 +76,7 @@ class ViewOrder extends Component {
 						{data.name}
 					</h1>
 					<p>
-						{data.specName} 约{Math.round(data.weight/50)/10}斤
+						{data.skuName} 约{Math.round(data.weight/50)/10}斤
 					</p>
 					<strong>
 						￥{data.price / 100}元/{data.unit}
@@ -103,8 +103,8 @@ class ViewOrder extends Component {
 				</div>
 				<div className="bd">
 					{
-						data.productList ?
-						data.productList.map(this.renderProductItem) :
+						data.goodsList ?
+						data.goodsList.map(this.renderGoodsItem) :
 						null
 					}
 				</div>

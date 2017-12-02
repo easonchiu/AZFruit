@@ -1,6 +1,6 @@
 var ShoppingcartModel = require('../models/shoppingcart')
-var ProductModel = require('../models/product')
-var SkuModel = require('../models/productSpec')
+var GoodsModel = require('../models/goods')
+var SkuModel = require('../models/sku')
 
 var PostageCon = require('./postage')
 var AddressCon = require('./address')
@@ -23,7 +23,7 @@ class Control {
 				})
 			}
 			
-			if (!body.specId) {
+			if (!body.skuId) {
 				return ctx.error({
 					msg: '规格id不能为空'
 				})
@@ -36,7 +36,7 @@ class Control {
 			}
 
 			// 查询信息
-			const info = await Control.getProductInfo(body)
+			const info = await Control.getGoodsInfo(body)
 			if (!info) {
 				return ctx.error({
 					msg: '没有找到该产品'
@@ -61,7 +61,7 @@ class Control {
 			const find = await ShoppingcartModel.findOne({
 				uid: uid,
 				pid: body.pid,
-				specId: body.specId
+				skuId: body.skuId
 			}, 'amount')
 
 			// 有的话取出原来的数量，和这次购买的数量相加
@@ -108,13 +108,13 @@ class Control {
 				update({
 					uid: uid,
 					pid: body.pid,
-					specId: body.specId,
+					skuId: body.skuId,
 				}, info, {
 					upsert: true
 				})
 
 			// 添加商品的时候顺便做一个操作，删除所有在购物车中超过7天未更新的产品
-			await Control.deleteProductInShoppingcartOverDays(7)
+			await Control.deleteGoodsInShoppingcartOverDays(7)
 			
 			return ctx.success()
 		} catch(e) {
@@ -211,7 +211,7 @@ class Control {
 				uid
 			}, {
 				pid: 1,
-				specId: 1,
+				skuId: 1,
 				amount: 1,
 				_id: 1
 			})
@@ -219,9 +219,9 @@ class Control {
 			let amount = 0
 			for (let i = 0; i < find.length; i++) {
 				// 先获取商品的信息
-				const info = await Control.getProductInfo({
+				const info = await Control.getGoodsInfo({
 					pid: find[i].pid,
-					specId: find[i].specId
+					skuId: find[i].skuId
 				})
 				
 				// 如果商品存在
@@ -241,40 +241,40 @@ class Control {
 	}
 	
 	// 获取单个产品的信息
-	static async getProductInfo({pid = '', specId = ''}) {
-		const specInfo = await SkuModel
+	static async getGoodsInfo({pid = '', skuId = ''}) {
+		const skuInfo = await SkuModel
 			.findOne({
-				_id: specId
+				_id: skuId
 			})
 
-		const productInfo = await ProductModel
+		const goodsInfo = await GoodsModel
 			.findOne({
 				_id: pid
 			})
 		
 		// 如果没找到产品信息或没找到规格信息，提示用户没相关产品
-		if (!specInfo || !productInfo) {
+		if (!skuInfo || !goodsInfo) {
 			return false
 		}
 		
 		// 如果找到，整合信息并返回
 		return {
-			cover: productInfo.cover,
-			name: productInfo.name,
-			specName: specInfo.desc,
-			unit: specInfo.unit,
-			price: specInfo.price,
-			weight: specInfo.weight,
-			online: productInfo.online && specInfo.online && specInfo.stock > 0,
-			stock: specInfo.stock,
-			specId: specId,
+			cover: goodsInfo.cover,
+			name: goodsInfo.name,
+			skuName: skuInfo.desc,
+			unit: skuInfo.unit,
+			price: skuInfo.price,
+			weight: skuInfo.weight,
+			online: goodsInfo.online && skuInfo.online && skuInfo.stock > 0,
+			stock: skuInfo.stock,
+			skuId: skuId,
 			pid: pid
 		}
 	}
 	
 	// 这里针对全部用户的数据
 	// 如果商品在购物车中停留超过{day}天，删除购物车商品，保持数据库干净
-	static async deleteProductInShoppingcartOverDays(day) {
+	static async deleteGoodsInShoppingcartOverDays(day) {
 		const now = new Date().getTime()
 		const overDays = now - 60 * 60 * 1000 * 24 * day
 
@@ -300,7 +300,7 @@ class Control {
 				uid: uid
 			}, {
 				pid: 1,
-				specId: 1,
+				skuId: 1,
 				amount: 1,
 				_id: 1
 			})
@@ -323,9 +323,9 @@ class Control {
 				const data = find[i]
 
 				// 先获取商品的信息
-				const info = await Control.getProductInfo({
+				const info = await Control.getGoodsInfo({
 					pid: data.pid,
-					specId: data.specId
+					skuId: data.skuId
 				})
 
 				// 如果购物车里的商品存在，更新
@@ -358,7 +358,7 @@ class Control {
 						_id: 0,
 						cover: 1,
 						name: 1,
-						specName: 1,
+						skuName: 1,
 						unit: 1,
 						amount: 1,
 						price: 1,
@@ -367,7 +367,7 @@ class Control {
 						totalWeight: 1,
 						online: 1,
 						stock: 1,
-						specId: 1,
+						skuId: 1,
 						pid: 1,
 					}
 				})

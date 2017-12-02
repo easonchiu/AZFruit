@@ -4,7 +4,7 @@ var mongoose = require('../conf/mongoose')
 var Schema = mongoose.Schema
 
 // 创建一个schema实例
-var ProductSchema = Schema({
+var GoodsSchema = Schema({
 	// 产品名称
 	name: {
 		type: String,
@@ -77,23 +77,13 @@ var ProductSchema = Schema({
 		type: String,
 		default: ''
 	},
-	// 首页推荐
-	recom: {
-		type: Boolean,
-		default: false
-	},
 	// 首页推荐排序
-	recomIndex: {
+	recom: {
 		type: Number,
 		default: 0
 	},
-	// 首页排行榜
-	ranking: {
-		type: Boolean,
-		default: false
-	},
 	// 排名
-	rankingVal: {
+	ranking: {
 		type: Number,
 		default: 0
 	},
@@ -134,5 +124,5 @@ var ProductSchema = Schema({
 	}
 })
 
-const model = mongoose.model('Product', ProductSchema)
+const model = mongoose.model('Goods', GoodsSchema)
 module.exports = model

@@ -4,7 +4,7 @@ var mongoose = require('../conf/mongoose')
 var Schema = mongoose.Schema
 
 // 创建一个schema实例
-var ProductSpecSchema = Schema({
+var SkuSchema = Schema({
 	// 所属产品
 	pid: {
 		type: String,
@@ -57,5 +57,5 @@ var ProductSpecSchema = Schema({
 	}
 })
 
-const model = mongoose.model('ProductSpec', ProductSpecSchema)
+const model = mongoose.model('Sku', SkuSchema)
 module.exports = model

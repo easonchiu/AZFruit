@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
 
 import $$banner from './banner'
-import $$product from './product'
-import $$productSpec from './productSpec'
+import $$goods from './goods'
+import $$sku from './sku'
 import $$order from './order'
 import $$category from './category'
 import $$quick from './quick'
@@ -11,8 +11,8 @@ import $$upload from './upload'
 
 const reducers = {
 	$$banner,
-	$$product,
-	$$productSpec,
+	$$goods,
+	$$sku,
 	$$order,
 	$$category,
 	$$quick,

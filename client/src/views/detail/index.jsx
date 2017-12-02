@@ -27,7 +27,7 @@ class ViewDetail extends Component {
 			loading: false,
 			errorInfo: '',
 			imgsIndex: 0,
-			activeSpec: 0,
+			activeSku: 0,
 			popupVisible: false
 		})
 	}
@@ -41,7 +41,7 @@ class ViewDetail extends Component {
 		try {
 			await Promise.all([
 				await this.props.$goods.fetchDetail(id),
-				await this.props.$goods.fetchSpec(id)
+				await this.props.$goods.fetchSku(id)
 			])
 		} catch(e) {
 			console.error(e)
@@ -135,24 +135,24 @@ class ViewDetail extends Component {
 	}
 	
 	// 规格点击
-	specClick = e => {
-		this.data.activeSpec = e
+	skuClick = e => {
+		this.data.activeSku = e
 	}
 
 	// 确定加入购物车
 	addToCartOk = async e => {
-		const spec = this.props.$$goods.spec || []
-		const data = spec[this.data.activeSpec]
+		const sku = this.props.$$goods.sku || []
+		const data = sku[this.data.activeSku]
 
 		if (data) {
 			Loading.show()
 			try {
 				const pid = this.props.match.params.id
-				const specId = data.id
+				const skuId = data.id
 				
 				await this.props.$shoppingcart.create({
 					pid,
-					specId,
+					skuId,
 					amount: 1
 				})
 
@@ -171,9 +171,9 @@ class ViewDetail extends Component {
 	// 购物车弹层
 	renderAddtoCartPopup() {
 		const data = this.props.$$goods.detail || {}
-		const spec = this.props.$$goods.spec || []
+		const sku = this.props.$$goods.sku || []
 		
-		if (!spec.length) {
+		if (!sku.length) {
 			return null
 		}
 
@@ -200,14 +200,14 @@ class ViewDetail extends Component {
 				</div>
 				<div styleName="list">
 				{
-					spec && spec.map((res, i) => {
+					sku && sku.map((res, i) => {
 						const css = cn('list-item', {
-							active: this.data.activeSpec == i
+							active: this.data.activeSku == i
 						})
 						return (
 							<a href="javascript:;"
 								styleName={css} key={res.id}
-								onClick={this.specClick.bind(this,i)}>
+								onClick={this.skuClick.bind(this,i)}>
 								<label>{res.desc}</label>
 								<p>{res.price / 100}元/{res.unit}</p>
 								{
@@ -233,7 +233,7 @@ class ViewDetail extends Component {
 
 	render() {
 		const data = this.props.$$goods.detail || {}
-		const spec = this.props.$$goods.spec || []
+		const sku = this.props.$$goods.sku || []
 
 		return (
 			<Layout styleName="view-detail">
@@ -277,7 +277,7 @@ class ViewDetail extends Component {
 				</Layout.Body>
 				
 				{
-					spec.length ?
+					sku.length ?
 					<Layout.Footer styleName="footer">
 						<Button onClick={this.addToCart}>加入购物车</Button>
 					</Layout.Footer> :

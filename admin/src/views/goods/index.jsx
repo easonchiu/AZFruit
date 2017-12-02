@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 
 @connect
 @reactStateData
-class ViewProduct extends Component {
+class ViewGoods extends Component {
 	constructor(props) {
 		super(props)
 
@@ -39,7 +39,7 @@ class ViewProduct extends Component {
 
 	changePage = e => {
 		const skip = (e - 1) * 10
-		this.props.history.replace(`/product/list?skip=${skip}`)
+		this.props.history.replace(`/goods/list?skip=${skip}`)
 		this.fetch(skip)
 	}
 
@@ -47,10 +47,10 @@ class ViewProduct extends Component {
 		this.data.loading = true
 		try {
 			this.skip = skip
-			await this.props.$product.fetchList({
+			await this.props.$goods.fetchList({
 				skip
 			})
-			const count = this.props.$$product.count
+			const count = this.props.$$goods.count
 			if (skip > 0 && skip >= count) {
 				this.changePage(Math.ceil(count / 10))
 			}
@@ -61,12 +61,12 @@ class ViewProduct extends Component {
 	}
 
 	submit = async e => {
-		this.props.history.push('/product/detail')
+		this.props.history.push('/goods/detail')
 	}
 
 	render() {
 		return (
-			<div className="view-product">
+			<div className="view-goods">
 
 				<h1>产品管理</h1>
 				
@@ -81,7 +81,7 @@ class ViewProduct extends Component {
 							align: 'center'
 						}, {
 							label: '封面',
-							width: 200,
+							width: 160,
 							render: data => {
 								return <img src={CDN+data.cover} />
 							}
@@ -158,10 +158,10 @@ class ViewProduct extends Component {
 							render: data => {
 								return (
 									<p className="console">
-										<Link to={`/product/detail/${data.id}`}>
+										<Link to={`/goods/detail/${data.id}`}>
 											编辑
 										</Link>
-										<Link to={`/product/${data.id}/spec/list`}>
+										<Link to={`/goods/${data.id}/sku/list`}>
 											规格管理
 										</Link>
 									</p>
@@ -169,7 +169,7 @@ class ViewProduct extends Component {
 							}
 						}
 					]}
-					data={this.props.$$product.list}
+					data={this.props.$$goods.list}
 					rowClassName={e => e.online || e.FCLonline ? 'online' : 'offline'}
 					border={true} />
 
@@ -177,7 +177,7 @@ class ViewProduct extends Component {
 					<Pagination
 						layout="prev, pager, next"
 						currentPage={this.skip / 10 + 1}
-						total={this.props.$$product.count}
+						total={this.props.$$goods.count}
 						onCurrentChange={this.changePage} />
 				</div>
 				</Loading>
@@ -188,4 +188,4 @@ class ViewProduct extends Component {
 	}
 }
 
-export default ViewProduct
+export default ViewGoods

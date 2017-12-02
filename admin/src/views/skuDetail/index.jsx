@@ -8,7 +8,7 @@ import Colors from 'src/components/colors'
 
 @connect
 @reactStateData
-class ViewProductSpecDetail extends Component {
+class ViewSkuDetail extends Component {
 	constructor(props) {
 		super(props)
 
@@ -44,7 +44,7 @@ class ViewProductSpecDetail extends Component {
 
 	async fetch(sid) {
 		try {
-			const res = await this.props.$productSpec.fetchDetail({
+			const res = await this.props.$sku.fetchDetail({
 				sid
 			})
 			const data = {}
@@ -86,12 +86,12 @@ class ViewProductSpecDetail extends Component {
 				online: this.data.online,
 			}
 			if (this.data.sid) {
-				await this.props.$productSpec.update({
+				await this.props.$sku.update({
 					sid: this.data.sid,
 					...data
 				})
 			} else {
-				await this.props.$productSpec.create(data)
+				await this.props.$sku.create(data)
 			}
 			this.props.history.goBack()
 		} catch(e) {
@@ -104,7 +104,7 @@ class ViewProductSpecDetail extends Component {
 	render() {
 		const data = this.data
 		return (
-			<div className="view-productSpecDetail">
+			<div className="view-skuDetail">
 
 				<h1>产品规格管理</h1>
 				<Loading loading={this.data.loading}>
@@ -176,4 +176,4 @@ class ViewProductSpecDetail extends Component {
 	}
 }
 
-export default ViewProductSpecDetail
+export default ViewSkuDetail

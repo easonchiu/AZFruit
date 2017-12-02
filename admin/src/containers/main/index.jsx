@@ -7,16 +7,22 @@ import ViewBanner from 'src/views/banner'
 import ViewBannerDetail from 'src/views/bannerDetail'
 
 // 产品管理
-import ViewProduct from 'src/views/product'
-import ViewProductDetail from 'src/views/productDetail'
+import ViewGoods from 'src/views/goods'
+import ViewGoodsDetail from 'src/views/goodsDetail'
 
 // 产品规格管理
-import ViewProductSpec from 'src/views/productSpec'
-import ViewProductSpecDetail from 'src/views/productSpecDetail'
+import ViewSku from 'src/views/sku'
+import ViewSkuDetail from 'src/views/skuDetail'
 
 // 快捷入口管理
 import ViewQuick from 'src/views/quick'
 import ViewQuickDetail from 'src/views/quickDetail'
+
+// 快捷入口管理
+import ViewRanking from 'src/views/ranking'
+
+// 首页推荐管理
+import ViewRecom from 'src/views/recom'
 
 // 订单管理
 import ViewOrder from 'src/views/order'
@@ -45,14 +51,18 @@ const Main = ({children}) => {
 				<Route exact path="/category/list" component={ ViewCategory } />
 				<Route exact path="/category/detail/:id?" component={ ViewCategoryDetail } />
 
-				<Route exact path="/product/list" component={ ViewProduct } />
-				<Route exact path="/product/detail/:id?" component={ ViewProductDetail } />
+				<Route exact path="/goods/list" component={ ViewGoods } />
+				<Route exact path="/goods/detail/:id?" component={ ViewGoodsDetail } />
 
-				<Route exact path="/product/:pid/spec/list" component={ ViewProductSpec } />
-				<Route exact path="/product/:pid/spec/detail/:sid?" component={ ViewProductSpecDetail } />
+				<Route exact path="/goods/:pid/sku/list" component={ ViewSku } />
+				<Route exact path="/goods/:pid/sku/detail/:sid?" component={ ViewSkuDetail } />
 
 				<Route exact path="/quick/list" component={ ViewQuick } />
 				<Route exact path="/quick/detail/:id?" component={ ViewQuickDetail } />
+
+				<Route exact path="/ranking/list" component={ ViewRanking } />
+
+				<Route exact path="/recom/list" component={ ViewRecom } />
 
 				<Route exact path="/postage/list" component={ ViewPostage } />
 				<Route exact path="/postage/detail/:id?" component={ ViewPostageDetail } />

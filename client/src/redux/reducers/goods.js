@@ -5,7 +5,7 @@ const initialState = Immutable({
 	recommendList: [],
 	list: [],
 	top10List: [],
-	spec: [],
+	sku: [],
 	detail: {}
 })
 
@@ -35,9 +35,9 @@ const reducer = handleActions({
 			detail: action.payload
 		})
 	},
-	GOODS_FETCH_SPEC(state, action) {
+	GOODS_FETCH_SKU(state, action) {
 		return Immutable.merge(state, {
-			spec: action.payload
+			sku: action.payload
 		})
 	}
 }, initialState)

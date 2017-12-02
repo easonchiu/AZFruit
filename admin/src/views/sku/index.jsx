@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 
 @connect
 @reactStateData
-class ViewProductSpec extends Component {
+class ViewSku extends Component {
 	constructor(props) {
 		super(props)
 
@@ -43,7 +43,7 @@ class ViewProductSpec extends Component {
 
 	changePage = e => {
 		const skip = (e - 1) * 10
-		this.props.history.replace(`/product/${this.pid}/spec/list?skip=${skip}`)
+		this.props.history.replace(`/goods/${this.pid}/sku/list?skip=${skip}`)
 		this.fetch(skip)
 	}
 
@@ -51,18 +51,18 @@ class ViewProductSpec extends Component {
 		this.data.loading = true
 		try {
 			this.skip = skip
-			const res = await this.props.$product.fetchDetail({
+			const res = await this.props.$goods.fetchDetail({
 				id: this.pid
 			})
 			
 			this.data.pname = res.name
 			this.data.pdesc = res.desc
 
-			await this.props.$productSpec.fetchList({
+			await this.props.$sku.fetchList({
 				skip,
 				pid: this.pid
 			})
-			const count = this.props.$$productSpec.count
+			const count = this.props.$$sku.count
 			if (skip > 0 && skip >= count) {
 				this.changePage(Math.ceil(count / 10))
 			}
@@ -75,7 +75,7 @@ class ViewProductSpec extends Component {
 
 	remove = async e => {
 		try {
-			await this.props.$productSpec.remove({
+			await this.props.$sku.remove({
 				sid: e.id,
 				pid: this.pid
 			})
@@ -86,12 +86,12 @@ class ViewProductSpec extends Component {
 	}
 
 	submit = async e => {
-		this.props.history.push(`/product/${this.pid}/spec/detail`)
+		this.props.history.push(`/goods/${this.pid}/sku/detail`)
 	}
 
 	render() {
 		return (
-			<div className="view-productSpec">
+			<div className="view-sku">
 
 				<h1>产品规格管理</h1>
 				
@@ -161,7 +161,7 @@ class ViewProductSpec extends Component {
 							render: data => {
 								return (
 									<p className="console">
-										<Link to={`/product/${this.pid}/spec/detail/${data.id}`}>
+										<Link to={`/goods/${this.pid}/sku/detail/${data.id}`}>
 											编辑
 										</Link>
 										<a href="javascript:;" onClick={this.remove.bind(this, data)}>
@@ -172,7 +172,7 @@ class ViewProductSpec extends Component {
 							}
 						}
 					]}
-					data={this.props.$$productSpec.list}
+					data={this.props.$$sku.list}
 					rowClassName={e => e.online || e.FCLonline ? 'online' : 'offline'}
 					border={true} />
 
@@ -180,7 +180,7 @@ class ViewProductSpec extends Component {
 					<Pagination
 						layout="prev, pager, next"
 						currentPage={this.skip / 10 + 1}
-						total={this.props.$$productSpec.count}
+						total={this.props.$$sku.count}
 						onCurrentChange={this.changePage} />
 				</div>
 				</Loading>
@@ -196,4 +196,4 @@ class ViewProductSpec extends Component {
 	}
 }
 
-export default ViewProductSpec
+export default ViewSku

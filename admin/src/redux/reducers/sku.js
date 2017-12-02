@@ -9,7 +9,7 @@ const initialState = Immutable({
 })
 
 const reducer = handleActions({
-	PRODUCT_FETCH_LIST (state, action) {
+	SKU_FETCH_LIST (state, action) {
 		return Immutable.merge(state, {
 			list: action.payload.list,
 			count: action.payload.count,

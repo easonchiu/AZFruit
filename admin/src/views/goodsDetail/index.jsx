@@ -16,7 +16,7 @@ import 'react-mde/lib/styles/css/markdown-default-theme.css';
 
 @connect
 @reactStateData
-class ViewProductDetail extends Component {
+class ViewGoodsDetail extends Component {
 	constructor(props) {
 		super(props)
 
@@ -60,7 +60,7 @@ class ViewProductDetail extends Component {
 	async fetch(id) {
 		try {
 			if (id) {
-				const res = await this.props.$product.fetchDetail({
+				const res = await this.props.$goods.fetchDetail({
 					id
 				})
 
@@ -120,12 +120,12 @@ class ViewProductDetail extends Component {
 				online: this.data.online,
 			}
 			if (this.data.id) {
-				await this.props.$product.update({
+				await this.props.$goods.update({
 					id: this.data.id,
 					...data
 				})
 			} else {
-				await this.props.$product.create(data)
+				await this.props.$goods.create(data)
 			}
 			this.props.history.goBack()
 		} catch(e) {
@@ -261,7 +261,7 @@ class ViewProductDetail extends Component {
 		const onlineList = this.props.$$category.onlineList
 
 		return (
-			<div className="view-productDetail">
+			<div className="view-goodsDetail">
 
 				<h1>产品管理</h1>
 				<Loading loading={this.data.loading}>
@@ -464,4 +464,4 @@ class ViewProductDetail extends Component {
 	}
 }
 
-export default ViewProductDetail
+export default ViewGoodsDetail

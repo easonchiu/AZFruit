@@ -108,7 +108,7 @@ class ViewShoppingcart extends Component {
 	delete = async res => {
 		Alert.show({
 			className: 'delete',
-			desc: '确定要删除<' + res.name + '-' + res.specName + '>吗？',
+			desc: '确定要删除<' + res.name + '-' + res.skuName + '>吗？',
 			btnTextN: '取消',
 			btnTextY: '删除',
 			callback: async e => {
@@ -200,7 +200,7 @@ class ViewShoppingcart extends Component {
 					{res.name}
 				</h1>
 				<p>
-					{res.specName} 约{Math.round(res.weight/50)/10}斤
+					{res.skuName} 约{Math.round(res.weight/50)/10}斤
 				</p>
 				<strong>
 					￥{res.price / 100}元/{res.unit}

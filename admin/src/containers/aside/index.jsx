@@ -24,14 +24,24 @@ class Aside extends Component {
 			name: '分类管理',
 			badge: 'OK'
 		}, {
-			link: '/product/list',
-			match: '/product',
+			link: '/goods/list',
+			match: '/goods',
 			name: '产品管理',
 			badge: 'OK'
 		}, {
 			link: '/quick/list',
 			match: '/quick',
 			name: '首页快捷入口管理',
+			badge: 'OK'
+		}, {
+			link: '/ranking/list',
+			match: '/ranking',
+			name: '首页排行榜管理',
+			badge: 'OK'
+		}, {
+			link: '/recom/list',
+			match: '/recom',
+			name: '首页推荐管理',
 			badge: 'OK'
 		}, {
 			link: '/order/list',

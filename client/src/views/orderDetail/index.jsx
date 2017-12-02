@@ -80,7 +80,7 @@ class ViewOrder extends Component {
 						{data.name}
 					</h1>
 					<p>
-						{data.specName} 约{Math.round(data.weight/50)/10}斤
+						{data.skuName} 约{Math.round(data.weight/50)/10}斤
 					</p>
 					<strong>
 						￥{data.price / 100}元/{data.unit}
@@ -96,7 +96,7 @@ class ViewOrder extends Component {
 	
 	// 商品列表
 	renderGoods = e => {
-		const list = this.props.$$order.detail.productList || []
+		const list = this.props.$$order.detail.goodsList || []
 		
 		if (!list) {
 			return null

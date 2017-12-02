@@ -1,5 +1,5 @@
 var markdown = require('markdown').markdown
-var Product = require('../models/product')
+var GoodsModel = require('../models/goods')
 
 class Control {
 	
@@ -43,7 +43,7 @@ class Control {
 		}
 
 		try {
-			const res = await Product.create({
+			const res = await GoodsModel.create({
 				name: body.name,
 				cover: body.cover,
 				index: body.index,
@@ -78,11 +78,11 @@ class Control {
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
-			const count = await Product.count({})
+			const count = await GoodsModel.count({})
 			let list = []
 
 			if (count > 0) {
-				list = await Product
+				list = await GoodsModel
 					.aggregate([{
 						$sort: {
 							online: -1,
@@ -133,10 +133,152 @@ class Control {
 		}
 	}
 
+	// 后台获取排行榜数据
+	static async fetchRankingList(ctx, next) {
+		try {
+			const list = await GoodsModel
+				.aggregate([{
+					$match: {
+						online: true,
+						skuCount: {
+							'$gt': 0
+						}
+					}
+				}, {
+					$sort: {
+						ranking: -1,
+					}
+				}, {
+					$project: {
+						_id: 0,
+						name: 1,
+						cover: 1,
+						ranking: 1,
+						id: '$_id'
+					}
+				}])
+
+			return ctx.success({
+				data: list
+			})
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
+
+	// 后台获取推荐榜数据
+	static async fetchRecomList(ctx, next) {
+		try {
+			const list = await GoodsModel
+				.aggregate([{
+					$match: {
+						online: true,
+						skuCount: {
+							'$gt': 0
+						}
+					}
+				}, {
+					$sort: {
+						recom: -1,
+					}
+				}, {
+					$project: {
+						_id: 0,
+						name: 1,
+						cover: 1,
+						recom: 1,
+						id: '$_id'
+					}
+				}])
+
+			return ctx.success({
+				data: list
+			})
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
+
+	// 后台更新排行榜
+	static async updateRanking(ctx, next) {
+		try {
+			const body = ctx.request.body
+
+			if (!body.id) {
+				return ctx.error({
+					msg: '商品id不能为空'
+				})
+			}
+
+			if (body.ranking == undefined) {
+				return ctx.error({
+					msg: '商品排名不能为空'
+				})
+			}
+
+			if (body.ranking < 0 || body.ranking > 9999) {
+				return ctx.error({
+					msg: '商品排名权重不能小于0或大于9999'
+				})
+			}
+
+			const res = await GoodsModel.update({
+				_id: body.id
+			}, {
+				ranking: body.ranking
+			})
+
+			if (res) {
+				return ctx.success()
+			}
+
+			return ctx.error()
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
+
+	// 后台更新推荐榜
+	static async updateRecom(ctx, next) {
+		try {
+			const body = ctx.request.body
+
+			if (!body.id) {
+				return ctx.error({
+					msg: '商品id不能为空'
+				})
+			}
+
+			if (body.recom < 0 || body.recom > 9999) {
+				return ctx.error({
+					msg: '商品推荐权重不能小于0或大于9999'
+				})
+			}
+
+			const res = await GoodsModel.update({
+				_id: body.id
+			}, {
+				recom: body.recom
+			})
+
+			if (res) {
+				return ctx.success()
+			}
+
+			return ctx.error()
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
+
 	// 用户获取首页推荐列表
 	static async appFetchRecommendList(ctx, next) {
 		try {
-			const list = await Product
+			const list = await GoodsModel
 				.aggregate([{
 					$match: {
 						online: true,
@@ -190,7 +332,7 @@ class Control {
 		}
 
 		try {
-			const list = await Product
+			const list = await GoodsModel
 				.aggregate([{
 					$match: match
 				}, {
@@ -226,7 +368,7 @@ class Control {
 	// 用户获取top10列表
 	static async appFetchTop10List(ctx, next) {
 		try {
-			const list = await Product
+			const list = await GoodsModel
 				.aggregate([{
 					$match: {
 						online: true,
@@ -271,7 +413,7 @@ class Control {
 		try {
 			const { id } = ctx.params
 
-			const res = await Product.findOne({
+			const res = await GoodsModel.findOne({
 				_id: id
 			})
 			
@@ -313,7 +455,7 @@ class Control {
 		try {
 			const { id } = ctx.params
 
-			const res = await Product.findOne({
+			const res = await GoodsModel.findOne({
 				_id: id
 			})
 			
@@ -356,7 +498,7 @@ class Control {
 		try {
 			const { id } = ctx.params
 
-			let find = await Product.findOne({
+			let find = await GoodsModel.findOne({
 				_id: id
 			})
 
@@ -386,7 +528,7 @@ class Control {
 				})
 			}
 
-			await Product.update({
+			await GoodsModel.update({
 				_id: id
 			}, body)
 			

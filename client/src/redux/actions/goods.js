@@ -5,13 +5,13 @@ const _fetchRecommendList = createAction('GOODS_FETCH_RECOMMEND_LIST')
 const _fetchList = createAction('GOODS_FETCH_LIST')
 const _fetchTop10List = createAction('GOODS_FETCH_TOP10_LIST')
 const _fetchDetail = createAction('GOODS_FETCH_DETAIL')
-const _fetchSpec = createAction('GOODS_FETCH_SPEC')
+const _fetchSku = createAction('GOODS_FETCH_SKU')
 
 // 获取首页推荐的产品
 const fetchRecommendList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/product/recommend/list`,
+        url: `/goods/recommend/list`,
         params: {}
 	})
 	dispatch(_fetchRecommendList(res))
@@ -21,7 +21,7 @@ const fetchRecommendList = payload => async (dispatch, getState) => {
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/product/list`,
+        url: `/goods/list`,
         params: {
         	category: payload
         }
@@ -33,7 +33,7 @@ const fetchList = payload => async (dispatch, getState) => {
 const fetchTop10List = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/product/top10/list`,
+        url: `/goods/top10/list`,
         params: {
         	category: payload
         }
@@ -45,20 +45,20 @@ const fetchTop10List = payload => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/product/detail/${payload}`,
+        url: `/goods/detail/${payload}`,
         params: {}
 	})
 	dispatch(_fetchDetail(res))
 }
 
 // 获取产品规格
-const fetchSpec = payload => async (dispatch, getState) => {
+const fetchSku = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/product/spec/${payload}`,
+        url: `/goods/sku/${payload}`,
         params: {}
 	})
-	dispatch(_fetchSpec(res))
+	dispatch(_fetchSku(res))
 }
 
 // 清除产品列表
@@ -69,6 +69,6 @@ export default {
 	fetchList,
 	fetchTop10List,
 	fetchDetail,
-	fetchSpec,
+	fetchSku,
 	clear,
 }

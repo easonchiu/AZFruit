@@ -1,12 +1,12 @@
 import { createAction } from 'redux-actions'
 import http from 'src/assets/libs/http'
 
-const _fetchList = createAction('PRODUCT_SPEC_FETCH_LIST')
+const _fetchList = createAction('SKU_FETCH_LIST')
 
 const fetchList = (payload = {}) => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/product/spec/list`,
+        url: `/goods/sku/list`,
         params: {
         	skip: payload.skip || 0,
         	limit: payload.limit || 10,
@@ -19,7 +19,7 @@ const fetchList = (payload = {}) => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/product/spec/detail/${payload.sid}`,
+        url: `/goods/sku/detail/${payload.sid}`,
         params: {}
 	})
 	return res
@@ -28,7 +28,7 @@ const fetchDetail = payload => async (dispatch, getState) => {
 const update = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'patch',
-        url: `/product/spec/detail/${payload.sid}`,
+        url: `/goods/sku/detail/${payload.sid}`,
         data: payload
 	})
 }
@@ -36,7 +36,7 @@ const update = payload => async (dispatch, getState) => {
 const create = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'post',
-        url: `/product/spec`,
+        url: `/goods/sku`,
         data: payload
 	})
 }
@@ -44,7 +44,7 @@ const create = payload => async (dispatch, getState) => {
 const remove = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'delete',
-        url: `/product/spec/detail/${payload.sid}`,
+        url: `/goods/sku/detail/${payload.sid}`,
         data: payload
 	})
 }

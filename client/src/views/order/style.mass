@@ -57,7 +57,7 @@
 		}
 	}
 
-	.product-item {
+	.goods-item {
 		border-bottom: 1px solid #e5e5e5;
 		padding: 0.2rem;
 		display: -webkit-box;

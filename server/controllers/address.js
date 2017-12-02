@@ -111,11 +111,13 @@ class Control {
 	static async fetchList(ctx, next) {
 		try {
 			const {uid} = ctx.state.jwt
-
+			
+			// 查找用户的地址表
 			const find = await Address.findOne({
 				uid: uid
 			})
-
+			
+			// 如果没找到，返回空数据
 			if (!find) {
 				return ctx.success({
 					data: {
@@ -123,7 +125,8 @@ class Control {
 					}
 				})
 			}
-
+			
+			// 如果有找到，整理数据
 			const list = []
 			for (let i = 0; i < find.addressList.length; i++) {
 				const d = find.addressList[i]
@@ -137,7 +140,8 @@ class Control {
 					id: d._id
 				})
 			}
-
+			
+			// 返回整理后的数据与默认地址的id
 			ctx.success({
 				data: {
 					list,
@@ -186,11 +190,14 @@ class Control {
 				}
 			}
 
+			// 如果没找到相关的地址信息，报错
 			if (!res) {
 				ctx.error({
 					msg: '找不到相关信息'
 				})
-			} else {
+			}
+			// 否则，返回地址信息
+			else {
 				ctx.success({
 					data: res
 				})
@@ -212,7 +219,8 @@ class Control {
 			}
 
 			const {uid} = ctx.state.jwt
-
+			
+			// 找到并删除相关的那条地址信息
 			const final = await Address.update({
 				uid: uid,
 				'addressList._id': id
@@ -223,10 +231,12 @@ class Control {
 					}
 				}
 			})
-
+			
+			// 如果删除成功，返回成功
 			if (final) {
 				return ctx.success()
 			}
+			// 否则报错
 			else {
 				return ctx.error()
 			}
