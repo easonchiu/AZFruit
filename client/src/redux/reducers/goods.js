@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable'
 const initialState = Immutable({
 	recommendList: [],
 	list: [],
-	top10List: [],
+	recomList: [],
 	sku: [],
 	detail: {}
 })
@@ -25,9 +25,9 @@ const reducer = handleActions({
 			list: []
 		})
 	},
-	GOODS_FETCH_TOP10_LIST(state, action) {
+	GOODS_FETCH_RECOM_LIST(state, action) {
 		return Immutable.merge(state, {
-			top10List: action.payload
+			recomList: action.payload
 		})
 	},
 	GOODS_FETCH_DETAIL(state, action) {

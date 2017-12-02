@@ -3,7 +3,7 @@ import http from 'src/assets/libs/http'
 
 const _fetchRecommendList = createAction('GOODS_FETCH_RECOMMEND_LIST')
 const _fetchList = createAction('GOODS_FETCH_LIST')
-const _fetchTop10List = createAction('GOODS_FETCH_TOP10_LIST')
+const _fetchRecomList = createAction('GOODS_FETCH_RECOM_LIST')
 const _fetchDetail = createAction('GOODS_FETCH_DETAIL')
 const _fetchSku = createAction('GOODS_FETCH_SKU')
 
@@ -33,12 +33,12 @@ const fetchList = payload => async (dispatch, getState) => {
 const fetchTop10List = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/goods/top10/list`,
+        url: `/goods/recom/list`,
         params: {
         	category: payload
         }
 	})
-	dispatch(_fetchTop10List(res))
+	dispatch(_fetchRecomList(res))
 }
 
 // 获取产品详情
@@ -67,7 +67,7 @@ const clear = createAction('GOODS_CLEAR')
 export default {
 	fetchRecommendList,
 	fetchList,
-	fetchTop10List,
+	fetchRecomList,
 	fetchDetail,
 	fetchSku,
 	clear,
