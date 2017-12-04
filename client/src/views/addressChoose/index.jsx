@@ -102,7 +102,10 @@ class ViewAddressChoose extends Component {
 								))
 							}
 						</Cell> :
-						<p>暂无地址</p>
+						<div styleName="empty">
+							<i />
+							<p>还没有创建过地址哦~</p>
+						</div>
 					}
 
 				</Layout.Body>

@@ -40,7 +40,7 @@ router
 	// 用户端获取全部产品列表
 	.get(`${prefix.app}/goods/list`, goods.appFetchList)
 	// 用户端获取销量排行产品列表
-	.get(`${prefix.app}/goods/top10/list`, goods.appFetchTop10List)
+	.get(`${prefix.app}/goods/ranking/list`, goods.appFetchRankingList)
 	// 用户端获取产品详情
 	.get(`${prefix.app}/goods/detail/:id`, goods.appFetchDetail)
 	// 用户端获取产品规格

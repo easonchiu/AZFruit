@@ -282,14 +282,13 @@ class Control {
 				.aggregate([{
 					$match: {
 						online: true,
-						atIndex: true,
 						skuCount: {
 							'$gt': 0
 						}
 					}
 				}, {
 					$sort: {
-						index: 1,
+						recom: -1,
 					}
 				}, {
 					$project: {
@@ -366,7 +365,7 @@ class Control {
 	}
 
 	// 用户获取top10列表
-	static async appFetchTop10List(ctx, next) {
+	static async appFetchRankingList(ctx, next) {
 		try {
 			const list = await GoodsModel
 				.aggregate([{
@@ -378,7 +377,7 @@ class Control {
 					}
 				}, {
 					$sort: {
-						sellCount: -1,
+						ranking: -1,
 					}
 				}, {
 					$project: {
@@ -415,29 +414,14 @@ class Control {
 
 			const res = await GoodsModel.findOne({
 				_id: id
+			}, {
+				_id: 0,
+				__v: 0
 			})
 			
 			if (res) {
 				return ctx.success({
-					data: {
-						name: res.name,
-						cover: res.cover,
-						index: res.index,
-						desc: res.desc,
-						parameter: res.parameter,
-						isImport: res.isImport,
-						origin: res.origin,
-						category: res.category,
-						badge: res.badge,
-						badgeColor: res.badgeColor,
-						imgs: res.imgs,
-						detail: res.detail,
-						atIndex: res.atIndex,
-						online: res.online,
-						skuCount: res.skuCount,
-						createTime: res.createTime,
-						id: id
-					}
+					data: res
 				})
 			}
 			else {
@@ -457,30 +441,16 @@ class Control {
 
 			const res = await GoodsModel.findOne({
 				_id: id
+			}, {
+				_id: 0,
+				__v: 0
 			})
 			
 			if (res) {
 				const detail = markdown.toHTML(res.detail)
+				res.detail = detail
 				return ctx.success({
-					data: {
-						name: res.name,
-						cover: res.cover,
-						desc: res.desc,
-						parameter: res.parameter,
-						isImport: res.isImport,
-						origin: res.origin,
-						badge: res.badge,
-						badgeColor: res.badgeColor,
-						imgs: res.imgs,
-						detail: detail,
-						price: res.price,
-						prePrice: res.prePrice,
-						unit: res.unit,
-						parameter: res.parameter,
-						online: res.online,
-						skuCount: res.skuCount,
-						id: id
-					}
+					data: res
 				})
 			}
 			else {

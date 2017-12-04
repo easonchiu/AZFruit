@@ -16,7 +16,22 @@ class Aside extends Component {
 		const menu = [{
 			link: '/banner/list',
 			match: '/banner',
-			name: 'Banner管理',
+			name: '首页banner管理',
+			badge: 'OK'
+		}, {
+			link: '/quick/list',
+			match: '/quick',
+			name: '首页快捷入口管理',
+			badge: 'OK'
+		}, {
+			link: '/recom/list',
+			match: '/recom',
+			name: '首页推荐管理',
+			badge: 'OK'
+		}, {
+			link: '/ranking/list',
+			match: '/ranking',
+			name: '首页排行榜管理',
 			badge: 'OK'
 		}, {
 			link: '/category/list',
@@ -27,21 +42,6 @@ class Aside extends Component {
 			link: '/goods/list',
 			match: '/goods',
 			name: '产品管理',
-			badge: 'OK'
-		}, {
-			link: '/quick/list',
-			match: '/quick',
-			name: '首页快捷入口管理',
-			badge: 'OK'
-		}, {
-			link: '/ranking/list',
-			match: '/ranking',
-			name: '首页排行榜管理',
-			badge: 'OK'
-		}, {
-			link: '/recom/list',
-			match: '/recom',
-			name: '首页推荐管理',
 			badge: 'OK'
 		}, {
 			link: '/order/list',
@@ -58,7 +58,8 @@ class Aside extends Component {
 		}, {
 			link: '/coupon/list',
 			match: '/coupon',
-			name: '优惠券管理'
+			name: '优惠券管理',
+			badge: '下单完成核销'
 		}, {
 			link: '/postage/list',
 			match: '/postage',

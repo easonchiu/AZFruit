@@ -6,13 +6,17 @@ import cn from 'classnames'
 import qs from 'qs'
 
 import { Link } from 'react-router-dom'
-import { Button, Table, Pagination } from 'element-react'
+import { Button, Table, Pagination, Loading } from 'element-react'
 
 @connect
 @reactStateData
 class ViewOrder extends Component {
 	constructor(props) {
 		super(props)
+
+		this.setData({
+			loading: false,
+		})
 	}
 
 	shouldComponentUpdate(nProps, nState) {
@@ -39,6 +43,7 @@ class ViewOrder extends Component {
 	}
 
 	async fetch(skip = 0) {
+		this.data.loading = true
 		try {
 			this.skip = skip
 			await this.props.$order.fetchList({
@@ -51,6 +56,7 @@ class ViewOrder extends Component {
 		} catch(e) {
 			console.error(e)
 		}
+		this.data.loading = false
 	}
 
 	remove = async e => {
@@ -73,42 +79,46 @@ class ViewOrder extends Component {
 			<div className="view-order">
 
 				<h1>订单管理</h1>
+				
+				<Loading loading={this.data.loading}>
 
-				<Table
-					className="table"
-					columns={[
-						{
-							label: '订单号',
-							prop: 'orderNo',
-							width: 160,
-							align: 'center'
-						}, {
-							label: '下单时间',
-							prop: 'createTime',
-							width: 220,
-						}, {
-							label: '收货地址',
-							width: 220,
-							render(data) {
-								return data.city + data.area + data.address
+					<Table
+						className="table"
+						columns={[
+							{
+								label: '订单号',
+								prop: 'orderNo',
+								width: 160,
+								align: 'center'
+							}, {
+								label: '下单时间',
+								prop: 'createTime',
+								width: 220,
+							}, {
+								label: '收货地址',
+								width: 220,
+								render(data) {
+									return data.city + data.area + data.address
+								}
+							}, {
+								label: '订单状态',
+								render(data) {
+									return data.status
+								}
 							}
-						}, {
-							label: '订单状态',
-							render(data) {
-								return data.status
-							}
-						}
-					]}
-					data={this.props.$$order.list}
-					border={true} />
+						]}
+						data={this.props.$$order.list}
+						border={true} />
 
-				<div className="pager">
-					<Pagination
-						layout="prev, pager, next"
-						currentPage={this.skip / 10 + 1}
-						total={this.props.$$order.count}
-						onCurrentChange={this.changePage} />
-				</div>
+					<div className="pager">
+						<Pagination
+							layout="prev, pager, next"
+							currentPage={this.skip / 10 + 1}
+							total={this.props.$$order.count}
+							onCurrentChange={this.changePage} />
+					</div>
+
+				</Loading>
 				
 			</div>
 		)

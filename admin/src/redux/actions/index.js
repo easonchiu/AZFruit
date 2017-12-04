@@ -7,6 +7,7 @@ import $quick from './quick'
 import $postage from './postage'
 import $upload from './upload'
 import $user from './user'
+import $coupon from './coupon'
 
 
 export {
@@ -19,4 +20,5 @@ export {
 	$postage,
 	$upload,
 	$user,
+	$coupon,
 }

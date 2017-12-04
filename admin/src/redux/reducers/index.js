@@ -8,6 +8,8 @@ import $$category from './category'
 import $$quick from './quick'
 import $$postage from './postage'
 import $$upload from './upload'
+import $$user from './user'
+import $$coupon from './coupon'
 
 const reducers = {
 	$$banner,
@@ -18,6 +20,8 @@ const reducers = {
 	$$quick,
 	$$postage,
 	$$upload,
+	$$user,
+	$$coupon,
 }
 
 export default combineReducers({

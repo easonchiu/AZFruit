@@ -6,6 +6,7 @@ import $shoppingcart from './shoppingcart'
 import $user from './user'
 import $address from './address'
 import $order from './order'
+import $coupon from './coupon'
 
 export {
 	$category,
@@ -16,4 +17,5 @@ export {
 	$user,
 	$address,
 	$order,
+	$coupon,
 }

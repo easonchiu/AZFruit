@@ -30,6 +30,13 @@ import ViewOrder from 'src/views/order'
 // 评价管理
 import ViewComment from 'src/views/comment'
 
+// 优惠券管理
+import ViewCoupon from 'src/views/coupon'
+import ViewCouponDetail from 'src/views/couponDetail'
+
+// 满减规则管理
+import ViewDiscount from 'src/views/discount'
+
 // 分类管理
 import ViewCategory from 'src/views/category'
 import ViewCategoryDetail from 'src/views/categoryDetail'
@@ -70,6 +77,11 @@ const Main = ({children}) => {
 				<Route exact path="/order/list" component={ ViewOrder } />
 
 				<Route exact path="/comment/list" component={ ViewComment } />
+
+				<Route exact path="/coupon/list" component={ ViewCoupon } />
+				<Route exact path="/coupon/detail/:id?" component={ ViewCouponDetail } />
+				
+				<Route exact path="/discount/list" component={ ViewDiscount } />
 				
 				<Route exact path="/user/list" component={ ViewUser } />
 			</div>

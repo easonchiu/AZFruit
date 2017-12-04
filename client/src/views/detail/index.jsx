@@ -275,14 +275,14 @@ class ViewDetail extends Component {
 					</div>
 
 				</Layout.Body>
-				
-				{
-					sku.length ?
-					<Layout.Footer styleName="footer">
-						<Button onClick={this.addToCart}>加入购物车</Button>
-					</Layout.Footer> :
-					null
-				}
+
+				<Layout.Footer styleName="footer">
+					{
+						sku.length ?
+						<Button onClick={this.addToCart}>加入购物车</Button> :
+						<Button type="gray">库存不足</Button>
+					}
+				</Layout.Footer>
 				
 				{this.renderAddtoCartPopup()}
 

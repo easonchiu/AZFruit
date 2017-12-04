@@ -1,0 +1,83 @@
+@charset "utf-8";
+
+.view-coupon {
+	> h1 {
+		font-size: 30px;
+		margin-bottom: 20px;
+		color: #3c404c + 30;
+	}
+	.table {
+		margin-bottom: 10px;
+		img {
+			width: 120px;
+			height: 120px;
+			display: block;
+			margin: 10px 0;
+		}
+		.badge {
+			display: inline-block;
+			color: #fff;
+			padding: 0 10px;
+			border-radius: 3px;
+			font-size: 12px;
+		}
+		tr:hover {
+			.console {
+				opacity: 1;
+			}
+		}
+		.hover-row td {
+			background: #fffff0 !important;
+		}
+
+		.offline td {
+			background: #f7f9fc !important;
+			color: #999;
+		}
+		.status {
+			display: -webkit-box;
+			-webkit-box-align: center;
+			-webkit-box-pack: center;
+			i {
+				background: #ff4949;
+				display: block;
+				width: 8px;
+				height: 8px;
+				margin-right: 5px;
+				border-radius: 50%;
+				&.online {
+					background: #00bb44;
+				}
+			}
+			p {
+				margin-right: 10px;
+			}
+		}
+	}
+	.pager {
+		margin-bottom: 10px;
+		overflow: hidden;
+		> div {
+			float: right;
+			padding: 0;
+		}
+	}
+	.bodybtn {
+		margin: 0 auto;
+		display: block;
+		width: 200px;
+	}
+	.console {
+		text-align: center;
+		opacity: 0;
+		a {
+			display: inline-block;
+			margin: 0 5px;
+			color: #20a0ff;
+			opacity: 1;
+			&:hover {
+				opacity: 0.7;
+			}
+		}
+	}
+}

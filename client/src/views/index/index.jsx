@@ -38,7 +38,7 @@ class ViewIndex extends Component {
 				this.props.$quick.fetchList(),
 				this.props.$banner.fetchList(),
 				this.props.$goods.fetchRecommendList(),
-				this.props.$goods.fetchRecomList(),
+				this.props.$goods.fetchRankingList(),
 			])
 		} catch(e) {
 			console.error(e)
@@ -167,7 +167,7 @@ class ViewIndex extends Component {
 	}
 
 	renderGuestLoved() {
-		const list = this.props.$$goods.recomList
+		const list = this.props.$$goods.rankingList
 
 		return (
 			<div styleName="loved-list">

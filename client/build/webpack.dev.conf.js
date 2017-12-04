@@ -27,7 +27,8 @@ const webpackConfig = merge(baseWebpackConfig, {
 	    port: config.develop.port,
 	    proxy: {
 	    	'/proxy/*': {
-	            target: 'http://47.92.130.15/azfruitServer/app',
+	            // target: 'http://47.92.130.15/azfruitServer/app',
+	            target: 'http://localhost:8080/app',
 	            pathRewrite: {
 	            	'^/proxy/': '/'
 	            },

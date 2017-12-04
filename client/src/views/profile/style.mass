@@ -1,5 +1,11 @@
 @charset "utf-8";
 
 .view-profile {
-	border: 1px solid #999;
+	
+	.list {
+		margin-bottom: 0.3rem;
+		label {
+			display: block;
+		}
+	}
 }

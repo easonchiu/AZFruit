@@ -73,7 +73,7 @@ var OrderSchema = Schema({
 		required: true
 	},
 	// 商品
-	productList: [{}],
+	goodsList: [{}],
 	// 总重量
 	totalWeight: {
 		type: Number,
@@ -155,7 +155,7 @@ var OrderSchema = Schema({
 		type: Date,
 		default: Date.now
 	}
-} ,{
+}, {
 	toJSON: {
 		virtuals: true
 	}

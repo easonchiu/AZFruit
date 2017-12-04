@@ -16,6 +16,7 @@ import ViewShoppingcart from 'src/views/shoppingcart'
 import ViewAddress from 'src/views/address'
 import ViewAddressChoose from 'src/views/addressChoose'
 import ViewAddressDetail from 'src/views/addressDetail'
+import ViewCoupon from 'src/views/coupon'
 
 const LoginIfNeeded = View => need => props => {
 	const token = getToken()
@@ -41,12 +42,13 @@ const Routes = () => {
 				<Route exact path="/login" component={ ViewLogin }/>
 				<Route exact path="/order/:type?" component={ LoginIfNeeded(ViewOrder)(true) }/>
 				<Route exact path="/order/detail/:id" component={ LoginIfNeeded(ViewOrderDetail)(true) }/>
-				<Route exact path="/profile" component={ ViewProfile }/>
+				<Route exact path="/profile" component={ LoginIfNeeded(ViewProfile)(true) }/>
 				<Route exact path="/shoppingcart/:aid?" component={ LoginIfNeeded(ViewShoppingcart)(true) }/>
 				<Route exact path="/address" component={ LoginIfNeeded(ViewAddress)(true) }/>
 				<Route exact path="/address/choose/:id?" component={ LoginIfNeeded(ViewAddressChoose)(true) }/>
 				<Route exact path="/address/edit/:id" component={ LoginIfNeeded(ViewAddressDetail)(true) }/>
 				<Route exact path="/address/create/:first?" component={ LoginIfNeeded(ViewAddressDetail)(true) }/>
+				<Route exact path="/coupon/:id?" component={ LoginIfNeeded(ViewCoupon)(true) } />
 				<Redirect from="*" to="/" />
 			</Switch>
 		</Router>

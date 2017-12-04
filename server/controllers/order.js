@@ -216,14 +216,14 @@ class Control {
 	// 用户下单
 	static async create(ctx, next) {
 		try {
-			if (cache.get('lock')) {
+			if (cache.get('create_order_lock')) {
 				return ctx.error({
 					msg: '系统繁忙，请稍后再试'
 				})
 			}
 
 			// 上锁
-			cache.put('lock', true)
+			cache.put('create_order_lock', true)
 
 			const body = ctx.request.body
 
@@ -245,8 +245,6 @@ class Control {
 					const data = info.list[i]
 
 					if (data.stock < data.amount) {
-						// 解锁
-						cache.del('lock')
 						return ctx.error({
 							msg: '购物车中的' + data.name + '库存不够'
 						})
@@ -268,8 +266,6 @@ class Control {
 				}
 			}
 			else {
-				// 解锁
-				cache.del('lock')
 				return ctx.error({
 					msg: '购物车中没有可购买的产品'
 				})
@@ -345,7 +341,6 @@ class Control {
 					url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
 					data: xmlData
 				})
-				console.log(pre.data)
 			}
 			else {
 				return ctx.error({
@@ -357,8 +352,6 @@ class Control {
 			// 清空购物车
 			await ShoppingcartCon.removeAll(uid)
 			
-			// 解锁
-			cache.del('lock')
 			return ctx.success({
 				data: {
 					orderNo
@@ -366,9 +359,11 @@ class Control {
 			})
 		}
 		catch(e) {
-			// 解锁
-			cache.del('lock')
 			return ctx.error()
+		}
+		finally {
+			// 解锁
+			cache.del('create_order_lock')
 		}
 	}
 	

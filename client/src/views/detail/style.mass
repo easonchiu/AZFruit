@@ -294,6 +294,7 @@
 	.list {
 		-webkit-box-flex: 1;
 		margin-bottom: 0.3rem;
+		margin-right: -0.2rem;
 	}
 	.list-item {
 		display: -webkit-box;
@@ -301,6 +302,7 @@
 		border: 2px solid #f0f0f0 - 10;
 		background: #fff;
 		float: left;
+		margin-right: 0.2rem;
 		margin-bottom: 0.2rem;
 		border-radius: 0.08rem;
 		&:last-child {

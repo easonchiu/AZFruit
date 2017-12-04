@@ -6,7 +6,7 @@ import cn from 'classnames'
 import qs from 'qs'
 
 import { Link } from 'react-router-dom'
-import { Button, Table, Pagination, Loading } from 'element-react'
+import { Button, Table, Pagination, Loading, Message } from 'element-react'
 
 @connect
 @reactStateData
@@ -55,6 +55,7 @@ class ViewCategory extends Component {
 			}
 		} catch(e) {
 			console.error(e)
+			Message.error(e.msg)
 		}
 		this.data.loading = false
 	}
@@ -67,6 +68,7 @@ class ViewCategory extends Component {
 			this.fetch(this.skip)
 		} catch(e) {
 			console.error(e)
+			Message.error(e.msg)
 		}
 	}
 

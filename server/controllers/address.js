@@ -1,4 +1,4 @@
-var Address = require('../models/address')
+var UserModel = require('../models/user')
 var Reg = require('../utils/reg')
 var mongoose = require('../conf/mongoose')
 var amapLocation = require('../middlewares/amapLocation')
@@ -80,8 +80,8 @@ class Control {
 
 			// 查询地址数量判断是否是用户的第一个地址
 			// 如果是，那这条地址肯定是默认地址
-			const find = await Address.findOne({
-				uid: uid
+			const find = await UserModel.findOne({
+				_id: uid
 			}, 'addressList')
 
 			// 设为默认
@@ -90,8 +90,8 @@ class Control {
 			}
 			
 			// 存
-			const final = await Address.update({
-				uid: uid
+			const final = await UserModel.update({
+				_id: uid
 			}, newaddress, {
 				upsert: true
 			})
@@ -113,8 +113,8 @@ class Control {
 			const {uid} = ctx.state.jwt
 			
 			// 查找用户的地址表
-			const find = await Address.findOne({
-				uid: uid
+			const find = await UserModel.findOne({
+				_id: uid
 			})
 			
 			// 如果没找到，返回空数据
@@ -167,8 +167,8 @@ class Control {
 			}
 			
 			// 找到这个用户的所有地址
-			const find = await Address.findOne({
-				uid
+			const find = await UserModel.findOne({
+				_id: uid
 			})
 			
 			// 找到相应的那一条地址
@@ -221,8 +221,8 @@ class Control {
 			const {uid} = ctx.state.jwt
 			
 			// 找到并删除相关的那条地址信息
-			const final = await Address.update({
-				uid: uid,
+			const final = await UserModel.update({
+				_id: uid,
 				'addressList._id': id
 			}, {
 				$pull: {
@@ -322,8 +322,8 @@ class Control {
 			// 存
 			const {uid} = ctx.state.jwt
 
-			const final = await Address.update({
-				uid: uid,
+			const final = await UserModel.update({
+				_id: uid,
 				'addressList._id': body.id
 			}, newaddress)
 
@@ -343,8 +343,8 @@ class Control {
 	static getAddressById(uid, aid, def) {
 		return new Promise(async (resolve, reject) => {
 			// 查找相应的地址
-			const address = await Address.findOne({
-				uid: uid
+			const address = await UserModel.findOne({
+				_id: uid
 			})
 			
 			// 如果用户有地址数据，匹配
@@ -367,7 +367,7 @@ class Control {
 					choosedAddress = defaultAddress
 				}
 			} else {
-				reject()
+				resolve(null)
 			}
 			
 			// 如果匹配中地址，整理数据
@@ -387,7 +387,7 @@ class Control {
 					distance: choosedAddress.distance * 1.2 // 因为取的是直线距离，实际距离肯定是大于它的
 				})
 			} else {
-				reject()
+				resolve(null)
 			}
 		})
 	}

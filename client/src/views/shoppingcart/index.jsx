@@ -140,6 +140,7 @@ class ViewShoppingcart extends Component {
 			return null
 		}
 		const address = this.props.$$shoppingcart.address
+
 		if (!address) {
 			return (
 				<div styleName="address empty">
@@ -281,7 +282,7 @@ class ViewShoppingcart extends Component {
 		this.props.history.push('/')
 	}
 
-	payment = async aid => {
+	payment = async (address = {}) => {
 		// 如果没有openid，去授权
 		// 一般情况下这里不会丢失本地openid，都是人工干预的
 
@@ -297,8 +298,8 @@ class ViewShoppingcart extends Component {
 		Loading.show()
 		try {
 			const res = await this.props.$order.create({
-				addressid: aid,
-				openid: 'testopenid'
+				addressid: address.id,
+				openid: 'testtesttesttesttesttesttesttesttestopenid'
 			})
 
 			// return false
@@ -391,8 +392,8 @@ class ViewShoppingcart extends Component {
 						</p>
 					</div>
 
-					<Button disabled={!address.id}
-						onClick={this.payment.bind(this, address.id)}>
+					<Button disabled={!address || !address.id}
+						onClick={this.payment.bind(this, address)}>
 						结算
 					</Button>
 				</Layout.Footer>

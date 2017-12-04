@@ -251,7 +251,7 @@ class Control {
 			.findOne({
 				_id: pid
 			})
-		
+
 		// 如果没找到产品信息或没找到规格信息，提示用户没相关产品
 		if (!skuInfo || !goodsInfo) {
 			return false
@@ -294,7 +294,7 @@ class Control {
 			
 			// 获取地址
 			const resAddress = await AddressCon.getAddressById(uid, aid, true)
-			
+
 			// 先获取购物车中的所以商品
 			const find = await ShoppingcartModel.find({
 				uid: uid
@@ -304,7 +304,7 @@ class Control {
 				amount: 1,
 				_id: 1
 			})
-			
+
 			// 如果没有商品，返回空数据
 			if (!find) {
 				return {

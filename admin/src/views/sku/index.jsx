@@ -97,92 +97,92 @@ class ViewSku extends Component {
 				
 				<Loading loading={this.data.loading}>
 
-				<h6>{this.data.pname} - {this.data.pdesc}</h6>
+					<h6>{this.data.pname} - {this.data.pdesc}</h6>
 
-				<Table
-					className="table"
-					columns={[
-						{
-							label: '规格描述',
-							prop: 'desc',
-						}, {
-							label: '销量',
-							width: 100,
-							align: 'center',
-							prop: 'sellCount',
-						}, {
-							label: '库存',
-							width: 100,
-							align: 'center',
-							prop: 'stock'
-						}, {
-							label: '重量',
-							width: 100,
-							align: 'center',
-							prop: 'weight'
-						}, {
-							label: '计量单位',
-							width: 120,
-							align: 'center',
-							prop: 'unit'
-						}, {
-							label: '价格',
-							width: 150,
-							align: 'center',
-							render: data => data.price / 100 + '元'
-						}, {
-							label: '原价',
-							width: 150,
-							align: 'center',
-							render: data => data.prePrice / 100 + '元'
-						}, {
-							label: '上下架',
-							width: 100,
-							align: 'center',
-							render: data => {
-								return (
-									<div className="status">
-									{
-										data.online ?
-										<i className="online" /> :
-										<i className="offline" />
-									}
-									{
-										data.online ?
-										'上架' :
-										'下架'
-									}
-									</div>
-								)
+					<Table
+						className="table"
+						columns={[
+							{
+								label: '规格描述',
+								prop: 'desc',
+							}, {
+								label: '销量',
+								width: 100,
+								align: 'center',
+								prop: 'sellCount',
+							}, {
+								label: '库存',
+								width: 100,
+								align: 'center',
+								prop: 'stock'
+							}, {
+								label: '重量',
+								width: 100,
+								align: 'center',
+								prop: 'weight'
+							}, {
+								label: '计量单位',
+								width: 120,
+								align: 'center',
+								prop: 'unit'
+							}, {
+								label: '价格',
+								width: 150,
+								align: 'center',
+								render: data => data.price / 100 + '元'
+							}, {
+								label: '原价',
+								width: 150,
+								align: 'center',
+								render: data => data.prePrice / 100 + '元'
+							}, {
+								label: '上下架',
+								width: 100,
+								align: 'center',
+								render: data => {
+									return (
+										<div className="status">
+										{
+											data.online ?
+											<i className="online" /> :
+											<i className="offline" />
+										}
+										{
+											data.online ?
+											'上架' :
+											'下架'
+										}
+										</div>
+									)
+								}
+							}, {
+								label: '',
+								width: 150,
+								render: data => {
+									return (
+										<p className="console">
+											<Link to={`/goods/${this.pid}/sku/detail/${data.id}`}>
+												编辑
+											</Link>
+											<a href="javascript:;" onClick={this.remove.bind(this, data)}>
+												删除
+											</a>
+										</p>
+									)
+								}
 							}
-						}, {
-							label: '',
-							width: 150,
-							render: data => {
-								return (
-									<p className="console">
-										<Link to={`/goods/${this.pid}/sku/detail/${data.id}`}>
-											编辑
-										</Link>
-										<a href="javascript:;" onClick={this.remove.bind(this, data)}>
-											删除
-										</a>
-									</p>
-								)
-							}
-						}
-					]}
-					data={this.props.$$sku.list}
-					rowClassName={e => e.online || e.FCLonline ? 'online' : 'offline'}
-					border={true} />
+						]}
+						data={this.props.$$sku.list}
+						rowClassName={e => e.online || e.FCLonline ? 'online' : 'offline'}
+						border={true} />
 
-				<div className="pager">
-					<Pagination
-						layout="prev, pager, next"
-						currentPage={this.skip / 10 + 1}
-						total={this.props.$$sku.count}
-						onCurrentChange={this.changePage} />
-				</div>
+					<div className="pager">
+						<Pagination
+							layout="prev, pager, next"
+							currentPage={this.skip / 10 + 1}
+							total={this.props.$$sku.count}
+							onCurrentChange={this.changePage} />
+					</div>
 				</Loading>
 
 				<div className="btns">

@@ -1,0 +1,96 @@
+@charset "utf-8";
+
+.view-coupon {
+
+	.header-tabs {
+		margin-top: -0.2rem;
+		height: 0.8rem;
+		a {
+			-webkit-box-align: start;
+			line-height: 0.5rem;
+		}
+	}
+
+	.list {
+		display: block;
+		margin-top: -0.1rem;
+	}
+
+	.item {
+		display: block;
+		margin-bottom: 0.2rem;
+
+		margin-left: -0.1rem;
+		margin-right: -0.1rem;
+		box-shadow: 0 0 0.08rem rgba(0,0,0,0.06);
+		border-radius: 0.1rem;
+		background: url('../../assets/imgs/bg-coupon.png');
+		background-size: 100% 100%;
+		overflow: hidden;
+
+		h2 {
+			font-size: 0.34rem;
+			padding: 0.3rem 0 0 0.3rem;
+			margin-bottom: 0.1rem;
+			color: #fff;
+		}
+		p {
+			padding: 0 0.3rem;
+			display: block;
+			font-size: 0.26rem;
+			margin-bottom: 0.5rem;
+			color: #fff;
+		}
+		h6 {
+			display: -webkit-box;
+			-webkit-box-align: center;
+			padding: 0.2rem 0.3rem;
+			background: #fafafa;
+			font-weight: normal;
+		}
+		em {
+			display: block;
+			font-size: 0.24rem;
+			color: #ddd;
+			font-style: normal;
+		}
+		span {
+			display: block;
+			font-size: 0.24rem;
+			color: #999;
+			-webkit-box-flex: 1;
+		}
+
+		&.used {
+			background: url('../../assets/imgs/bg-coupon-used.png');
+			background-size: 100% 100%;
+			box-shadow: 0 0 0.08rem rgba(0,0,0,0.03);
+		}
+	}
+
+	.empty {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		display: -webkit-box;
+		-webkit-box-pack: center;
+		-webkit-box-align: center;
+		-webkit-box-orient: vertical;
+		i {
+			display: block;
+			width: 1rem;
+			height: 1rem;
+			background: url('../../assets/imgs/icon-empty.png');
+			background-size: 100% 100%;
+			margin-top: -0.8rem;
+		}
+		> p {
+			line-height: 1rem;
+			font-size: 0.28rem;
+			color: #999;
+		}
+	}
+
+}

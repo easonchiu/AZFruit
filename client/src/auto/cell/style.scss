@@ -26,16 +26,18 @@
 	}
 	&--arrow {
 		padding-right: 0.6rem;
-	}
-	.x-cell__arrow {
-		display: block;
-		line-height: 1;
-		margin-top: -0.02rem;
-		font-size: 0.32rem;
-		position: absolute;
-		right: 0.25rem;
-		top: 50%;
-		color: #ccc;
-		-webkit-transform: translate(0,-50%);
+		position: relative;
+		&:after {
+			display: block;
+			content: "";
+			width: 0.4rem;
+			height: 0.4rem;
+			position: absolute;
+			right: 0.3rem;
+			margin-top: -0.2rem;
+			top: 50%;
+			background: url('./arrow.png') right center no-repeat;
+			background-size: 100%;
+		}
 	}
 }
