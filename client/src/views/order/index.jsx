@@ -109,7 +109,13 @@ class ViewOrder extends Component {
 					}
 				</div>
 				<div styleName="ft">
-					总计：<span>￥{data.totalPrice / 100}元</span>
+					总计
+					{
+						data.needPayment > data.totalPrice ?
+						'（不含运费）：' :
+						'（免运费）：'
+					}
+					<span>￥{data.totalPrice / 100}元</span>
 				</div>
 			</Panel>
 		)

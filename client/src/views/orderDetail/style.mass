@@ -17,8 +17,7 @@
 	// 商品列表
 	.goods-list {
 		display: block;
-		margin-bottom: 0.2rem;
-		margin-top: -0.1rem;
+		margin: 0 0 0.2rem 0;
 	}
 
 	// 单个产品
@@ -84,8 +83,11 @@
 
 	.panel {
 		display: block;
-		margin-bottom: 0.2rem;
+		margin: 0 0 0.2rem 0;
 		padding: 0.3rem 0.3rem 0.1rem 0.3rem;
+		&:last-child {
+			margin-bottom: 0;
+		}
 		h2 {
 			font-size: 0.3rem;
 			margin-bottom: 0.2rem;
@@ -128,8 +130,27 @@
 		}
 	}
 
-	.order-panel {
-		margin-bottom: 0;
+	.discount-panel {
+		a {
+			border-top: 1px solid #e5e5e5;
+			display: -webkit-box;
+			padding: 0.2rem 0;
+			&:active {
+				opacity: 0.6;
+			}
+		}
+		label {
+			display: block;
+		}
+		span {
+			display: block;
+			-webkit-box-flex: 1;
+			text-align: right;
+			color: #00bb55;
+			background: url('../../assets/imgs/icon-arrow.png') right center no-repeat;
+			background-size: 0.4rem;
+			padding-right: 0.3rem;
+		}
 	}
 
 	.footer {
@@ -140,4 +161,83 @@
 
 :global(.cancel-order .x-alert__btn-y) {
 	color: #ff4949 !important;
+}
+
+.coupon-popup {
+	:global(.x-popup__inner) {
+		padding-bottom: 0;
+	}
+	:global(.x-popup__inscroller) {
+		padding-bottom: 0.3rem;
+	}
+	.close {
+		position: absolute;
+		right: 0.3rem;
+		top: 0.4rem;
+		color: #333;
+		display: block;
+		background: url('../../assets/imgs/icon-close.png') 0 center no-repeat;
+		background-size: 0.34rem;
+		padding-left: 0.25rem;
+		opacity: 0.5;
+		&:active {
+			opacity: 0.3;
+		}
+	}
+	h1 {
+		text-align: center;
+		font-size: 0.32rem;
+		padding-top: 0.1rem;
+		margin-bottom: 0.3rem;
+	}
+	.coupon {
+		display: block;
+		margin-bottom: 0.2rem;
+		position: relative;
+		border-radius: 0.1rem;
+		background: url('../../assets/imgs/bg-coupon.png');
+		background-size: 100% 100%;
+		overflow: hidden;
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		h2 {
+			font-size: 0.34rem;
+			padding: 0.3rem 0 0 0.3rem;
+			margin-bottom: 0.1rem;
+			color: #fff;
+		}
+		p {
+			padding: 0 0.3rem;
+			display: block;
+			font-size: 0.26rem;
+			margin-bottom: 0.5rem;
+			color: #fff;
+		}
+		h6 {
+			display: -webkit-box;
+			-webkit-box-align: center;
+			border: 0.02rem solid #70cb8d;
+			border-top: none;
+			border-bottom-left-radius: 0.1rem;
+			border-bottom-right-radius: 0.1rem;
+			padding: 0 0.3rem;
+			background: #fafafa;
+			font-weight: normal;
+			height: 0.7rem;
+		}
+		em {
+			display: block;
+			font-size: 0.24rem;
+			color: #ddd;
+			font-style: normal;
+		}
+		span {
+			display: block;
+			font-size: 0.24rem;
+			color: #999;
+			-webkit-box-flex: 1;
+		}
+	}
 }

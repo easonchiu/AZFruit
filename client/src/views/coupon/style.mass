@@ -13,20 +13,17 @@
 
 	.list {
 		display: block;
-		margin-top: -0.1rem;
 	}
 
 	.item {
 		display: block;
 		margin-bottom: 0.2rem;
-
-		margin-left: -0.1rem;
-		margin-right: -0.1rem;
+		position: relative;
 		box-shadow: 0 0 0.08rem rgba(0,0,0,0.06);
 		border-radius: 0.1rem;
+		overflow: hidden;
 		background: url('../../assets/imgs/bg-coupon.png');
 		background-size: 100% 100%;
-		overflow: hidden;
 
 		h2 {
 			font-size: 0.34rem;
@@ -44,9 +41,14 @@
 		h6 {
 			display: -webkit-box;
 			-webkit-box-align: center;
-			padding: 0.2rem 0.3rem;
+			padding: 0 0.3rem;
+			border: 0.02rem solid #70cb8d;
+			border-top: none;
+			border-bottom-left-radius: 0.1rem;
+			border-bottom-right-radius: 0.1rem;
 			background: #fafafa;
 			font-weight: normal;
+			height: 0.7rem;
 		}
 		em {
 			display: block;

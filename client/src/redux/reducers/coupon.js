@@ -2,7 +2,8 @@ import { handleActions } from 'redux-actions'
 import Immutable from 'seamless-immutable'
 
 const initialState = Immutable({
-	list: []
+	list: [],
+	used: []
 })
 
 const reducer = handleActions({

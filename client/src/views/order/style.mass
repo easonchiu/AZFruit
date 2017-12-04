@@ -13,12 +13,11 @@
 
 	.list {
 		display: block;
-		margin: -0.1rem 0;
 	}
 
 	.item {
 		background: #fff;
-		margin-bottom: 0.2rem;
+		margin: 0 0 0.2rem 0;
 		display: block;
 		&:last-child {
 			margin-bottom: 0;

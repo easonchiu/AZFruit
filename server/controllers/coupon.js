@@ -61,7 +61,7 @@ class Control {
 	static async appFetchList(ctx, next) {
 		try {
 			const {uid} = ctx.state.jwt
-			
+
 			// 查找用户的地址表
 			const find = await UserModel.findOne({
 				_id: uid
@@ -79,9 +79,17 @@ class Control {
 			}
 			
 			// 找到，返回数据
+			const list = find.couponList.filter(res => {
+				const now = new Date()
+				// 如果在有效期内且没使用
+				if (!res.used && now < res.expiredTime) {
+					return true
+				}
+				return false
+			})
 			ctx.success({
 				data: {
-					list: find.couponList,
+					list: list,
 				}
 			})
 		}
@@ -109,7 +117,7 @@ class Control {
 			}
 			else {
 				return ctx.error({
-					msg: '找不到该商品'
+					msg: '找不到该优惠券'
 				})
 			}
 		} catch(e) {
@@ -194,7 +202,7 @@ class Control {
 		}
 	}
 
-	// 更新
+	// 更新（只支持是否使用中的更新）
 	static async update(ctx, next) {
 		try {
 			const body = ctx.request.body
@@ -244,13 +252,14 @@ class Control {
 
 				// 如果还有没发完的优惠券，给该用户
 				if (data.handOutAmount < data.amount) {
-					const expiredTime = (new Date().getTime()) + 60 * 60 * 1000 * 24 * data.expiredTime
+					const date = (new Date().getTime()) + 60 * 60 * 1000 * 24 * data.expiredTime
+					const dt = new Date(date)
 					list.push({
 						name: data.name,
 						batch: data.batch + '_' + (data.handOutAmount + 1),
 						condition: data.condition,
 						worth: data.worth,
-						expiredTime: new Date(expiredTime),
+						expiredTime: new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 23, 59, 59),
 					})
 
 					// 已发放数量+1
@@ -277,8 +286,6 @@ class Control {
 					})
 				}
 			}
-
-			console.log(list)
 
 			resolve(list)
 		})

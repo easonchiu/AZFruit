@@ -93,6 +93,7 @@
 
 	.box {
 		padding: 0 0.3rem;
+		margin: 0;
 		&.empty {
 			min-height: 3rem;
 			line-height: 3rem;

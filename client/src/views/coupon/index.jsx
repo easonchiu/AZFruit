@@ -32,41 +32,70 @@ class ViewCoupon extends Component {
 		this.fetch()
 	}
 
-	async fetch() {
+	async fetch(flag = 1) {
 		this.data.loading = true
 		try {
-			await this.props.$coupon.fetchList()
+			await this.props.$coupon.fetchList({
+				flag
+			})
 		} catch(e) {
 			console.error(e)
 			this.data.errorInfo = e.msg
 		}
 		this.data.loading = false
 	}
+	
+	// 渲染优惠券列表
+	renderList() {
+		const data = this.props.$$coupon.list
 
-	tabsClick = e => {
-		if (this.data.tabsActive !== e) {
-			this.props.history.replace(`/coupon/${e}`)
-			this.data.tabsActive = e
-			this.fetch(e)
+		if (!data.length) {
+			return (
+				<div styleName="empty">
+					<i />
+					<p>没有优惠券哦~</p>
+				</div>
+			)
 		}
-	}
-
-	renderTabs() {
+			
 		return (
-			<Tabs
-				onClick={this.tabsClick}
-				active={this.data.tabsActive}
-				styleName="header-tabs"
-			>
-				<Tabs.Item value={1}>未使用</Tabs.Item>
-				<Tabs.Item value={2}>已使用</Tabs.Item>
-			</Tabs>
+			<div styleName="list">
+				{
+					data.map(res => (
+						<div
+							styleName={
+								res.used ? 'item used' : 'item'
+							}
+							key={res._id}>
+							<h2>{res.name}</h2>
+							<p>
+								可抵扣{res.worth}元
+								{
+									res.condition ?
+									`（满200元可用）` :
+									null
+								}
+							</p>
+							<h6>
+								{
+									res.expiredTime ?
+									<span>
+										{
+											new Date(res.expiredTime).format('使用期限 yyyy年 M月d日前')
+										}
+									</span> :
+									null
+								}
+								<em>{res.batch}</em>
+							</h6>
+						</div>
+					))
+				}
+			</div>
 		)
 	}
 
 	render() {
-		const data = this.props.$$coupon.list
-
 		return (
 			<Layout styleName="view-coupon">
 				
@@ -79,47 +108,13 @@ class ViewCoupon extends Component {
 							onClick={this.backClick}
 						/>
 					}
-					addonBottom={
-						this.renderTabs()
-					}
 				/>
 
 				<Layout.Body
 					errorInfo={this.data.errorInfo}
 					loading={this.data.loading}>
 					
-					{
-						data.length ?
-						<div styleName="list">
-							{
-								data.map(res => (
-									<div
-										styleName={
-											res.used ? 'item used' : 'item'
-										}
-										key={res._id}>
-										<h2>{res.name}</h2>
-										<p>
-											可抵扣{res.worth}元
-											{
-												res.condition ?
-												`（满200元可用）` :
-												null
-											}
-										</p>
-										<h6>
-											<span>使用期限 {res.expiredTime}</span>
-											<em>{res.batch}</em>
-										</h6>
-									</div>
-								))
-							}
-						</div> :
-						<div styleName="empty">
-							<i />
-							<p>没有优惠券哦~</p>
-						</div>
-					}
+					{this.renderList()}
 
 				</Layout.Body>
 			</Layout>

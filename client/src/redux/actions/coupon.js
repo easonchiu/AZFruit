@@ -7,9 +7,12 @@ const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
         url: `/coupon/list`,
-        params: {}
+        params: payload
 	})
-	dispatch(_fetchList(res))
+	dispatch(_fetchList({
+		...res,
+		flag: payload.flag
+	}))
 }
 
 export default {

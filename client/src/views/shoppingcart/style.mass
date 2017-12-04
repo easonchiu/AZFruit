@@ -2,13 +2,13 @@
 
 .view-shoppingcart {
 	.body {
-		padding: 0.2rem 0 0 0;
+		padding: 0.3rem 0 0 0;
 	}
 	
 	// 地址模块
 	.address {
 		background: #fff;
-		padding: 0 0.3rem 0.35rem 0.3rem;
+		padding: 0 0.4rem 0.35rem 0.4rem;
 		position: relative;
 		margin-top: -0.1rem;
 		&:after {
@@ -52,7 +52,7 @@
 		// 更换地址按钮
 		.change {
 			position: absolute;
-			right: 0.3rem;
+			right: 0.4rem;
 			top: 0;
 			height: 0.45rem;
 			line-height: 0.45rem;
@@ -85,7 +85,7 @@
 	// 列表容器
 	.list {
 		margin-bottom: 0.3rem;
-		padding: 0 0.3rem;
+		padding: 0 0.4rem;
 	}
 	
 	// 产品列表的每项

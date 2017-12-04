@@ -33,6 +33,7 @@ class Control {
 					goodsList: 1,
 					totalWeight: 1,
 					totalPrice: 1,
+					needPayment: 1,
 					status: 1,
 					createTime: 1,
 				}
@@ -287,7 +288,7 @@ class Control {
 			// 订单需要30分钟内支付
 			const after30m = new Date(now.getTime() + 1000 * 60 * 30)
 
-			// 生成订单
+			// 生成订单（注意生成的订单中不包含优惠券）
 			const res = await OrderModel.create({
 				orderNo,
 				wxOrderNo: '',
@@ -305,8 +306,7 @@ class Control {
 				totalWeight: info.totalWeight,
 				totalPrice: info.totalPrice,
 				postage: info.postagePrice,
-				needPayment: info.totalPrice,
-				finalPayment: 0,
+				needPayment: info.totalPrice + info.postagePrice,
 				status: 1,
 				goodsList: info.list,
 				paymentTimeout: after30m
@@ -331,7 +331,6 @@ class Control {
 				// 将请求的值转为xml形式
 				let xmlData = ''
 				for (let i in data) {
-					console.log(i)
 					xmlData += '<' + i + '>' + data[i] + '</' + i + '>'
 				}
 

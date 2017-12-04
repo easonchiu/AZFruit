@@ -114,11 +114,6 @@ var OrderSchema = Schema({
 		type: Number,
 		default: 0
 	},
-	// 实际支付
-	finalPayment: {
-		type: Number,
-		default: 0
-	},
 	// 状态 
 	// 1: 待支付
 	// 11: 已支付

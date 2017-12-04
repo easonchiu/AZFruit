@@ -11,6 +11,7 @@ import Panel from 'src/auto/panel'
 import Loading from 'src/auto/loading'
 import Toast from 'src/auto/toast'
 import Alert from 'src/auto/alert'
+import Popup from 'src/auto/popup'
 
 @connect
 @mass(style)
@@ -179,7 +180,7 @@ class ViewOrder extends Component {
 		}
 
 		return (
-			<Panel styleName="panel order-panel">
+			<Panel styleName="panel">
 				<h2>订单信息</h2>
 				{
 					data.status === 1 ?
@@ -255,6 +256,51 @@ class ViewOrder extends Component {
 			</Panel>
 		)
 	}
+
+	// 减免信息
+	renderDiscountInfo() {
+		const data = this.props.$$order.detail
+
+		if (!data) {
+			return null
+		}
+
+		return (
+			<Panel styleName="panel discount-panel">
+				<h2>优惠券</h2>
+				<a>
+					<label>什么什么券</label>
+					<span>-30元</span>
+				</a>
+				<Popup styleName="coupon-popup" visible={false} height={100}>
+					<h1>我的优惠券</h1>
+					<a href="javascript:;" styleName="close">
+						不使用
+					</a>
+					<Popup.Scroller>
+						{
+							[1,2,3,4,5].map(res => (
+								<div styleName="coupon" key={res}>
+									<h2>优惠券名称</h2>
+									<p>
+										可抵扣20元（满200元可用）
+									</p>
+									<h6>
+										<span>
+											{
+												new Date().format('使用期限 yyyy年 M月d日前')
+											}
+										</span>
+										<em>badddddd_1233</em>
+									</h6>
+								</div>
+							))
+						}
+					</Popup.Scroller>
+				</Popup>
+			</Panel>
+		)
+	}
 	
 	// 取消订单
 	cancelOrder = e => {
@@ -317,18 +363,13 @@ class ViewOrder extends Component {
 					loading={this.data.loading}
 					errorInfo={this.data.errorInfo}>
 					
-					{
-						this.renderGoods()
-					}
-					
-					{
-						this.renderDeliveryInfo()
-					}
+					{this.renderGoods()}
 
-					{
-						this.renderOrderInfo()
-					}
-					
+					{this.renderDiscountInfo()}
+
+					{this.renderOrderInfo()}
+
+					{this.renderDeliveryInfo()}
 
 				</Layout.Body>
 
