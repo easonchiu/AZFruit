@@ -3,6 +3,7 @@ import React, { PureComponent as Component } from 'react'
 import connect from 'src/redux/connect'
 import mass from 'mass'
 import stateData from 'react-state-data'
+import cn from 'classnames'
 
 import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
@@ -24,26 +25,38 @@ class ViewOrder extends Component {
 			loading: false,
 			errorInfo: '',
 			timeout: 0,
+			couponPopupVisible: false,
+			activeCoupon: ''
 		})
 	}
 
 	componentDidMount() {
 		const id = this.props.match.params.id
-		this.fetch(id)
+		const couponId = this.props.match.params.couponId
+		this.fetch(id, couponId, true)
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.timer)
 	}
 
-	async fetch(id) {
-		this.data.loading = true
+	async fetch(id, couponId = '', first) {
+		if (first) {
+			this.data.loading = true
+		}
+		else {
+			Loading.show()
+		}
 		try {
-			await this.props.$order.fetchDetail(id)
+			await this.props.$order.fetchDetail({
+				id,
+				couponId
+			})
 			const data = this.props.$$order.detail
-			
+
 			this.setState({
-				timeout: data.paymentTimeoutSec
+				timeout: data.paymentTimeoutSec,
+				activeCoupon: data.usedCoupon ? data.usedCoupon.id : ''
 			})
 			
 			if (data.paymentTimeoutSec > 0) {
@@ -63,6 +76,7 @@ class ViewOrder extends Component {
 			this.data.errorInfo = e.msg
 		}
 		this.data.loading = false
+		Loading.hide()
 	}
 
 	backClick = e => {
@@ -257,46 +271,119 @@ class ViewOrder extends Component {
 		)
 	}
 
+	// 优惠券弹层
+	openCouponPopup = e => {
+		this.setState({
+			couponPopupVisible: true
+		})
+	}
+
+	closeCouponPopup = e => {
+		this.setState({
+			couponPopupVisible: false
+		})
+	}
+
+	// 优惠券点击
+	couponClick = couponId => {
+		const id = this.props.match.params.id
+		this.props.history.replace(`/order/detail/${id}/${couponId}`)
+		this.fetch(id, couponId)
+
+		this.closeCouponPopup()
+	}
+
+	// 优惠券弹层里优惠券列表
+	renderCoupons() {
+		const data = this.props.$$order.detail
+
+		if (!data || !data.couponList || !data.couponList.length) {
+			return null
+		}
+
+		return (
+			<div>
+				{
+					data.couponList.map(res => (
+						<div
+							key={res.id}
+							styleName={
+								cn('item', {
+									active: res.id == this.state.activeCoupon
+								})
+							}
+							onClick={
+								this.couponClick.bind(this, res.id)
+							}
+						>
+							<i />
+							<div styleName="coupon" key={res._id}>
+								<h2>{res.name}</h2>
+								<p>
+									可抵扣{res.worth / 100}元
+									{
+										res.condition ?
+										`（满${res.condition / 100}元可用）` :
+										null
+									}
+								</p>
+								<h6>
+									{
+										res.expiredTime ?
+										<span>
+											{
+												new Date(res.expiredTime).format('使用期限 yyyy年 M月d日前')
+											}
+										</span> :
+										null
+									}
+									<em>{res.batch}</em>
+								</h6>
+							</div>
+						</div>
+					))
+				}
+			</div>
+		)
+	}
+
 	// 减免信息
 	renderDiscountInfo() {
 		const data = this.props.$$order.detail
 
-		if (!data) {
+		if (!data || !data.usedCoupon) {
 			return null
 		}
 
 		return (
 			<Panel styleName="panel discount-panel">
 				<h2>优惠券</h2>
-				<a>
-					<label>什么什么券</label>
-					<span>-30元</span>
+				<a href="javascript:;" onClick={this.openCouponPopup}>
+					<label>{data.usedCoupon.name}</label>
+					<span>-{data.usedCoupon.worth / 100}元</span>
 				</a>
-				<Popup styleName="coupon-popup" visible={false} height={100}>
-					<h1>我的优惠券</h1>
-					<a href="javascript:;" styleName="close">
-						不使用
-					</a>
-					<Popup.Scroller>
-						{
-							[1,2,3,4,5].map(res => (
-								<div styleName="coupon" key={res}>
-									<h2>优惠券名称</h2>
-									<p>
-										可抵扣20元（满200元可用）
-									</p>
-									<h6>
-										<span>
-											{
-												new Date().format('使用期限 yyyy年 M月d日前')
-											}
-										</span>
-										<em>badddddd_1233</em>
-									</h6>
-								</div>
-							))
-						}
-					</Popup.Scroller>
+				<Popup
+					styleName="coupon-popup"
+					visible={this.state.couponPopupVisible}
+					height={100}
+				>
+					<Layout>
+						<Layout.Header
+							title="选择优惠券"
+							addonAfter={
+								<a
+									href="javascript:;"
+									className="close"
+									onClick={this.closeCouponPopup}
+								>
+									关闭
+								</a>
+							}
+						/>
+						<Layout.Body>
+							{this.renderCoupons()}
+						</Layout.Body>
+					</Layout>
 				</Popup>
 			</Panel>
 		)
@@ -361,7 +448,9 @@ class ViewOrder extends Component {
 
 				<Layout.Body
 					loading={this.data.loading}
-					errorInfo={this.data.errorInfo}>
+					errorInfo={this.data.errorInfo}
+					styleName="body"
+				>
 					
 					{this.renderGoods()}
 

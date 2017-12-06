@@ -13,6 +13,10 @@
 			}
 		}
 	}
+
+	.body {
+		padding: 0.2rem;
+	}
 	
 	// 商品列表
 	.goods-list {
@@ -146,7 +150,7 @@
 			display: block;
 			-webkit-box-flex: 1;
 			text-align: right;
-			color: #00bb55;
+			color: #5fc37f;
 			background: url('../../assets/imgs/icon-arrow.png') right center no-repeat;
 			background-size: 0.4rem;
 			padding-right: 0.3rem;
@@ -165,42 +169,60 @@
 
 .coupon-popup {
 	:global(.x-popup__inner) {
-		padding-bottom: 0;
+		padding: 0;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
 	}
-	:global(.x-popup__inscroller) {
-		padding-bottom: 0.3rem;
-	}
-	.close {
+	:global(.x-app) {
 		position: absolute;
-		right: 0.3rem;
-		top: 0.4rem;
-		color: #333;
+		left: 0;
+		top: 0;
+		right: 0;
+		bottom: 0;
+	}
+	:global(.close) {
 		display: block;
-		background: url('../../assets/imgs/icon-close.png') 0 center no-repeat;
-		background-size: 0.34rem;
-		padding-left: 0.25rem;
-		opacity: 0.5;
+		color: #666;
+		font-size: 0.28rem;
+		line-height: 0.8rem;
 		&:active {
-			opacity: 0.3;
+			opacity: 0.7;
 		}
 	}
-	h1 {
-		text-align: center;
-		font-size: 0.32rem;
-		padding-top: 0.1rem;
-		margin-bottom: 0.3rem;
+	.item {
+		margin: 0 -0.05rem 0.2rem -0.05rem;
+		display: -webkit-box;
+		-webkit-box-align: center;
+		> i {
+			display: block;
+			width: 0.35rem;
+			height: 0.35rem;
+			margin-right: 0.2rem;
+			border-radius: 50%;
+			background: #eee;
+		}
+		&.active {
+			> i {
+				background: #5fc37f url('../../assets/imgs/icon-checked.png') center center no-repeat;
+				background-size: 0.15rem;
+			}
+		}
+		&:last-child {
+			margin-bottom: 0;
+		}
+		&:active {
+			opacity: 0.7;
+		}
 	}
 	.coupon {
+		-webkit-box-flex: 1;
 		display: block;
-		margin-bottom: 0.2rem;
 		position: relative;
 		border-radius: 0.1rem;
 		background: url('../../assets/imgs/bg-coupon.png');
 		background-size: 100% 100%;
 		overflow: hidden;
-		&:last-child {
-			margin-bottom: 0;
-		}
 
 		h2 {
 			font-size: 0.34rem;

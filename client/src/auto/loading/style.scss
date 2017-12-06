@@ -15,7 +15,7 @@
 		padding-top: 1rem;
 		p {
 			font-size: 0.24rem;
-			color: #00bb44;
+			color: #5fc37f;
 		}
 	}
 	.x-loading__spin {
@@ -40,7 +40,7 @@
 		&_path {
 			stroke-dasharray: 1, 200;
 			stroke-dashoffset: 0;
-			stroke: #00bb44;
+			stroke: #5fc37f;
 			-webkit-animation: '__x_loading_dash' 1.5s ease-in-out infinite;
 			stroke-linecap: round;
 		}

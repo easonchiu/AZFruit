@@ -1,6 +1,8 @@
 var OrderModel = require('../models/order')
 var ShoppingcartCon = require('./shoppingcart')
 var SkuModel = require('../models/sku')
+var UserModel = require('../models/user')
+
 var cache = require('memory-cache')
 var axios = require('axios')
 var WX = require('../conf/wx')
@@ -159,22 +161,83 @@ class Control {
 			const {uid} = ctx.state.jwt
 
 			const id = ctx.params.id
+			const couponId = ctx.query.couponId
 
 			const res = await OrderModel.findOne({
 				uid,
 				orderNo: id
 			}, {
 				__v: 0,
-				_id: 0,
+				_id: 0
 			})
 
 			if (res) {
 				// 待支付的订单
 				if (res.status === 1) {
+					// 如果是待支付的话，计算剩余支付时间
+					const now = new Date()
+					const timeout = Math.round((res.paymentTimeout.getTime() - now.getTime()) / 1000)
+
 					// 如果还在支付时间内
-					if (res.paymentTimeoutSec > 0) {
+					if (timeout > 0) {
+						
+						// 查找可用的优惠券
+						const coupons = await UserModel.findOne({
+							_id: uid
+						}, 'couponList')
+
+						// 算出可用的coupon
+						let resCoupons = []
+						let choosedCoupon
+						if (coupons && coupons.couponList) {
+							resCoupons = coupons.couponList.filter(c => {
+								const now = new Date()
+								if (c.condition < res.totalPrice && c.expiredTime > now) {
+									return true
+								}
+								return false
+							})
+
+							// 把_id改为id
+							resCoupons = resCoupons.map(c => {
+								var resc = Object.assign({}, c._doc)
+								resc.id = resc._id
+								
+								// 如果有选择coupon，找到匹配中的
+								if (couponId && couponId == resc.id) {
+									choosedCoupon = resc
+								}
+
+								delete resc._id
+								return resc
+							})
+						}
+						
+						let usedCoupon
+						// 如果有优惠券，排序，并拿价值最高的作为默认使用券
+						if (resCoupons.length) {
+							resCoupons.sort((a, b) => a.worth > b.worth ? -1 : 1)
+							usedCoupon = choosedCoupon ? choosedCoupon : resCoupons[0]
+						}
+						
+						// 计算优惠券的价值
+						let couponWorth = 0
+						if (usedCoupon) {
+							couponWorth = usedCoupon.worth
+						}
+						let needPayment = res._doc.needPayment - couponWorth
+						if (needPayment < 1) {
+							needPayment = 1
+						}
+						
+						// 在返回参数中添加值
+						res._doc.couponList = resCoupons
+						res._doc.paymentTimeoutSec = timeout
+						res._doc.needPayment = needPayment
+						res._doc.usedCoupon = usedCoupon
+
 						return ctx.success({
-							data: res
+							data: res._doc
 						})
 					}
 					// 如果已经过了支付时间

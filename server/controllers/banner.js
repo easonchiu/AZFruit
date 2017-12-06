@@ -1,4 +1,4 @@
-var Banner = require('../models/banner')
+var BannerModel = require('../models/banner')
 
 class Control {
 	
@@ -28,7 +28,7 @@ class Control {
 		}
 		
 		try {
-			await Banner.create({
+			await BannerModel.create({
 				uri: body.uri,
 				index: body.index,
 				link: body.link,
@@ -45,7 +45,7 @@ class Control {
 	static async remove(ctx, next) {
 		try {
 			const { id } = ctx.params
-			await Banner.remove({
+			await BannerModel.remove({
 				_id: id
 			})
 			return ctx.success()
@@ -61,11 +61,11 @@ class Control {
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
-			const count = await Banner.count({})
+			const count = await BannerModel.count({})
 			let list = []
 
 			if (count > 0) {
-				list = await Banner
+				list = await BannerModel
 					.aggregate([{
 						$sort: {
 							online: -1,
@@ -107,20 +107,12 @@ class Control {
 		try {
 			const { id } = ctx.params
 
-			const res = await Banner.findOne({
+			const res = await BannerModel.findOne({
 				_id: id
 			})
 
 			return ctx.success({
-				data: {
-					uri: res.uri,
-					index: res.index,
-					link: res.link,
-					online: res.online,
-					desc: res.desc,
-					createTime: res.createTime,
-					id: id
-				}
+				data: res
 			})
 		} catch(e) {
 			return ctx.error()
@@ -132,7 +124,7 @@ class Control {
 		try {
 			const { id } = ctx.params
 			
-			let find = await Banner.findOne({
+			let find = await BannerModel.findOne({
 				_id: id
 			})
 
@@ -156,7 +148,7 @@ class Control {
 				})
 			}
 
-			await Banner.update({
+			await BannerModel.update({
 				_id: id
 			}, body)
 
@@ -169,7 +161,7 @@ class Control {
 	// 前端获取banner列表
 	static async appFetchList(ctx, next) {
 		try {
-			const list = await Banner
+			const list = await BannerModel
 				.aggregate([{
 					$match: {
 						online: true

@@ -2,13 +2,13 @@
 
 .view-shoppingcart {
 	.body {
-		padding: 0.3rem 0 0 0;
+		padding: 0.2rem 0 0 0;
 	}
 	
 	// 地址模块
 	.address {
 		background: #fff;
-		padding: 0 0.4rem 0.35rem 0.4rem;
+		padding: 0 0.3rem 0.3rem 0.3rem;
 		position: relative;
 		margin-top: -0.1rem;
 		&:after {
@@ -52,12 +52,12 @@
 		// 更换地址按钮
 		.change {
 			position: absolute;
-			right: 0.4rem;
+			right: 0.3rem;
 			top: 0;
 			height: 0.45rem;
 			line-height: 0.45rem;
 			font-size: 0.24rem;
-			background: #ff9900;
+			background: #ffab2d;
 			color: #fff;
 			padding: 0 0.1rem;
 			border-radius: 0.05rem;
@@ -84,8 +84,8 @@
 	
 	// 列表容器
 	.list {
-		margin-bottom: 0.3rem;
-		padding: 0 0.4rem;
+		margin-bottom: 0.2rem;
+		padding: 0 0.3rem;
 	}
 	
 	// 产品列表的每项
@@ -147,7 +147,7 @@
 				width: 0.7rem;
 				height: 0.7rem;
 				font-size: 0.3rem;
-				background: #00bb55;
+				background: #5fc37f;
 				border-radius: 50%;
 				color: #fff;
 				margin: 0 0.1rem;
@@ -156,7 +156,7 @@
 				}
 				&.disabled {
 					opacity: 0.3;
-					background: #00bb55;
+					background: #5fc37f;
 					pointer-events: none;
 				}
 			}
@@ -220,10 +220,10 @@
 			}
 		}
 		.normal {
-			background: #ff9900;
+			background: #ffab2d;
 		}
 		.save {
-			background: #00bb44;
+			background: #5fc37f;
 		}
 	}
 	

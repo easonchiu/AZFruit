@@ -62,7 +62,7 @@
 		-webkit-box-pack: center;
 		height: 100%;
 		font-size: 0.26rem;
-		color: #00bb44;
+		color: #5fc37f;
 		&:active {
 			opacity: 0.6;
 		}

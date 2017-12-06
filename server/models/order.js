@@ -84,26 +84,6 @@ var OrderSchema = Schema({
 		type: Number,
 		default: 0
 	},
-	// 满减
-	discount: {
-		type: Number,
-		default: 0
-	},
-	// 满减名称
-	discountName: {
-		type: String,
-		default: 0
-	},
-	// 优惠券减免
-	coupon: {
-		type: Number,
-		default: 0
-	},
-	// 优惠券名称
-	couponName: {
-		type: String,
-		default: 0
-	},
 	// 邮费
 	postage: {
 		type: Number,
@@ -150,21 +130,6 @@ var OrderSchema = Schema({
 		type: Date,
 		default: Date.now
 	}
-}, {
-	toJSON: {
-		virtuals: true
-	}
-})
-
-// 计算超时时间
-OrderSchema.virtual('paymentTimeoutSec').get(function() {
-	// 如果是待支付的话，计算剩余支付时间
-	let timeout = -1
-	if (this.status === 1) {
-		const now = new Date()
-		timeout = Math.round((this.paymentTimeout.getTime() - now.getTime()) / 1000)
-	}
-    return timeout
 })
 
 const model = mongoose.model('Order', OrderSchema)

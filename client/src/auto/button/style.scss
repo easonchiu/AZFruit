@@ -19,11 +19,11 @@
 		color: #fff;
 	}
 	&--primary {
-		background: #00bb55;
-		border: 2px solid #00bb55;
+		background: #5fc37f;
+		border: 2px solid #5fc37f;
 		&:active {
-			background: #00bb55 - 10;
-			border: 2px solid #00bb55 - 10;
+			background: #5fc37f - 10;
+			border: 2px solid #5fc37f - 10;
 		}
 	}
 	&--danger {
@@ -41,15 +41,15 @@
 		pointer-events: none;
 	}
 	&--default {
-		border: 2px solid #00bb55;
+		border: 2px solid #5fc37f;
 		background: #fff;
-		color: #00bb55;
+		color: #5fc37f;
 		&:active {
 			background: #f0fff7;
-			color: #00bb55;
+			color: #5fc37f;
 		}
 		i.x-icon {
-			color: #00bb55;
+			color: #5fc37f;
 		}
 	}
 	&--mini {

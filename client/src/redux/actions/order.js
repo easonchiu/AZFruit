@@ -28,7 +28,10 @@ const fetchList = payload => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/order/detail/${payload}`,
+        url: `/order/detail/${payload.id}`,
+        params: {
+        	couponId: payload.couponId
+        }
 	})
 	dispatch(_fetchDetail(res))
 }

@@ -64,7 +64,7 @@
 	}
 	
 	.close {
-		color: #00bb44;
+		color: #5fc37f;
 		display: block;
 		line-height: 0.8rem;
 		&:active {

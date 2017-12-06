@@ -181,15 +181,12 @@ class Control {
 				flag: body.flag,
 				batch: body.batch,
 				amount: body.amount,
-				payment: body.payment,
-				worth: body.worth,
-				condition: body.condition,
-				expiredTime: body.expiredTime,
+				worth: body.worth * 100, // 优惠券价值
+				condition: body.condition * 100, // 优惠券使用条件，即满足多少钱
+				expiredTime: body.expiredTime, // 过期时间，n天
 				online: !!body.online
 			})
 
-			console.log(res)
-			
 			if (res) {
 				return ctx.success()
 			}

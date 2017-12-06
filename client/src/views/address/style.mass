@@ -13,7 +13,7 @@
 		}
 		strong {
 			margin-right: 0.1rem;
-			color: #00bb44;
+			color: #5fc37f;
 			font-size: 0.26rem;
 			font-weight: normal;
 		}
