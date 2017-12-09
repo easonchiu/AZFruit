@@ -3,8 +3,8 @@ var jwtKey = require('../conf/clientJwtKey')
 
 var UserModel = require('../models/user')
 var CouponCon = require('./coupon')
-var Reg = require('../utils/reg')
-
+var isMobile = require('../utils/reg').isMobile
+var Sms = require('../utils/sms')
 
 class Control {
 	// 获取用户列表
@@ -13,11 +13,17 @@ class Control {
 			let { skip = 0, limit = 10 } = ctx.query
 			skip = parseInt(skip)
 			limit = parseInt(limit)
-
+			
+			// 获取总用户数
 			const count = await UserModel.count({})
+			
+			// 初始化用户列表
 			let list = []
-
+			
+			// 如果有数据
 			if (count > 0) {
+
+				// 查找用户数据
 				list = await UserModel
 					.aggregate([{
 						$sort: {
@@ -38,7 +44,8 @@ class Control {
 						$limit: limit
 					}])
 			}
-
+			
+			// 返回成功
 			return ctx.success({
 				data: {
 					list,
@@ -68,25 +75,25 @@ class Control {
 			const now = new Date()
 			const after30s = new Date(now.getTime() + 1000 * 30)
 
-			if (!Reg.isMobile(body.mobile)) {
+			if (!isMobile(body.mobile)) {
 				return ctx.error({
 					msg: '请输入正确的手机手机号码'
 				})
 			}
 
 			// 先找该用户
-			let find = await UserModel.findOne({
+			let $user = await UserModel.findOne({
 				mobile: body.mobile
 			})
 
 			// 如果是新用户
-			if (!find) {
-				find = await UserModel.create({
+			if (!$user) {
+				$user = await UserModel.create({
 					mobile: body.mobile,
 					verifcodeTimeout: after30s
 				})
 			} else {
-				const timeout = find.verifcodeTimeout
+				const timeout = $user.verifcodeTimeout
 
 				// 短信验证码发送间隔时间未过
 				if (timeout > now) {
@@ -96,24 +103,25 @@ class Control {
 				}
 			}
 
-			// 创建一个短信验证码
-			const smskey = Control.createRandomNum(12, 36)
-
 			// 创建一个防刷码
-			const verifcode = Control.createRandomNum(6)
+			const smskey = String(Math.random() * 10000)
 
+			// 创建一个短信验证码并发给用户
+			const verifcode = await Sms.sendVerifcode($user.mobile)
+
+			// 更新用户表
 			await UserModel.update({
-				_id: find._id
+				_id: $user._id
 			}, {
 				verifcode: verifcode,
 				smskey: smskey,
 				verifcodeTimeout: after30s
 			})
-
+			
+			// 返回成功
 			return ctx.success({
 				data: {
-					verifcode: verifcode,
-					smskey: smskey,
+					smskey: smskey
 				}
 			})
 		} catch(e) {
@@ -126,7 +134,7 @@ class Control {
 		try {
 			const body = ctx.request.body
 
-			if (!Reg.isMobile(body.mobile)) {
+			if (!isMobile(body.mobile)) {
 				return ctx.error({
 					msg: '请输入正确的手机手机号码'
 				})
@@ -145,66 +153,78 @@ class Control {
 			}
 			
 			// 先找该用户
-			const find = await UserModel.findOne({
+			const $user = await UserModel.findOne({
 				mobile: body.mobile,
 				smskey: body.smskey
 			})
 			
 			// 找到用户（如果发送过验证码，用户是一定在的）
-			if (find) {
-
-				if (find.verifcode !== body.verifcode) {
+			if ($user) {
+				
+				// 先判断验证码是否正确
+				if ($user.verifcode !== body.verifcode) {
 					return ctx.error({
 						msg: '验证码错误'
 					})
 				}
-
+				
+				// 获取系统时间
 				const now = new Date()
 				
 				// 过期时间为半小时
 				const timeout = new Date(now.getTime() - 1000 * 60 * 30)
 
-				if (find.verifcodeTimeout < timeout) {
+				if ($user.verifcodeTimeout < timeout) {
 					return ctx.error({
 						msg: '验证码已过期'
 					})
 				}
 				
-				const userToken = Control.createRandomNum(12, 36)
-
-				const updateinfo = {
-					token: userToken,
-					valid: true
-				}
+				// 初始化需要更新的用户信息
+				const updateinfo = {}
 				
 				// 如果是新用户
-				if (!find.valid) {
+				if (!$user.valid) {
 					// 把createtime设置为当前
 					updateinfo.createTime = now
 
 					// 查找是不是有注册就给的优惠券
-					const find = await CouponCon.getCouponAtRegisterSuccess()
+					const coupons = await CouponCon.getCouponAtRegisterSuccess()
 					
-					// 如果有找到可用的
-					if (find.length) {
+					// 如果有找到可用的，给该用户
+					if (coupons.length) {
 						updateinfo.$push = {
 							couponList: {
-								$each: find
+								$each: coupons
 							}
 						}
 					}
 				}
 
+				// 清空短信验证码
+				updateinfo.verifcode = ''
+				updateinfo.smskey = ''
+
+				// 设置为有效用户
+				updateinfo.valid = true
+
+				// 添加token(暂时无用)
+				const userToken = String(Math.random() * 10000)
+				updateinfo.token = userToken
+				
+				// 更新用户表
 				await UserModel.update({
-					_id: find._id
+					_id: $user._id
 				}, updateinfo)
 
+				// 生成jwt
 				const token = jwt.sign({
 			        mobile: body.mobile,
-			        uid: find._id,
+			        uid: $user._id,
 			        token: userToken
 			    }, jwtKey)
-
+				
+				// 返回成功
 				return ctx.success({
 					data: {
 						mobile: body.mobile,
@@ -217,11 +237,6 @@ class Control {
 		}
 	}
 
-	// 生成随机数
-	static createRandomNum(len, str = 10) {
-		const strNum = Math.round(Math.random() * 10000000000000000).toString(str)
-		return strNum.substr(1, len)
-	}
 }
 
 module.exports = Control

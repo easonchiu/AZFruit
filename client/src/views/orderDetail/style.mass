@@ -181,15 +181,6 @@
 		right: 0;
 		bottom: 0;
 	}
-	:global(.close) {
-		display: block;
-		color: #666;
-		font-size: 0.28rem;
-		line-height: 0.8rem;
-		&:active {
-			opacity: 0.7;
-		}
-	}
 	.item {
 		margin: 0 -0.05rem 0.2rem -0.05rem;
 		display: -webkit-box;

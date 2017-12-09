@@ -28,12 +28,13 @@ const LoginIfNeeded = View => need => props => {
 	}
 }
 
+
 // render to #root
 render(
 	<Provider store={store}>
 		<Router>
 			<Switch>
-				<Route path="/login"  component={ LoginIfNeeded(ViewLogin)(false) } />
+				<Route path="/login" component={ LoginIfNeeded(ViewLogin)(false) } />
 				<Route component={ LoginIfNeeded(ViewIndex)(true) } />
 			</Switch>
 		</Router>

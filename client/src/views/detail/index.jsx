@@ -276,7 +276,10 @@ class ViewDetail extends Component {
 
 				</Layout.Body>
 
-				<Layout.Footer styleName="footer">
+				<Layout.Footer
+					styleName="footer"
+					visible={!this.data.loading && this.data.errorInfo === ''}
+				>
 					{
 						sku.length ?
 						<Button onClick={this.addToCart}>加入购物车</Button> :

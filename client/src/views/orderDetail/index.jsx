@@ -302,48 +302,44 @@ class ViewOrder extends Component {
 		}
 
 		return (
-			<div>
-				{
-					data.couponList.map(res => (
-						<div
-							key={res.id}
-							styleName={
-								cn('item', {
-									active: res.id == this.state.activeCoupon
-								})
+			data.couponList.map(res => (
+				<div
+					key={res.id}
+					styleName={
+						cn('item', {
+							active: res.id == this.state.activeCoupon
+						})
+					}
+					onClick={
+						this.couponClick.bind(this, res.id)
+					}
+				>
+					<i />
+					<div styleName="coupon" key={res._id}>
+						<h2>{res.name}</h2>
+						<p>
+							可抵扣{res.worth / 100}元
+							{
+								res.condition ?
+								`（满${res.condition / 100}元可用）` :
+								null
 							}
-							onClick={
-								this.couponClick.bind(this, res.id)
+						</p>
+						<h6>
+							{
+								res.expiredTime ?
+								<span>
+									{
+										new Date(res.expiredTime).format('使用期限 yyyy年 M月d日前')
+									}
+								</span> :
+								null
 							}
-						>
-							<i />
-							<div styleName="coupon" key={res._id}>
-								<h2>{res.name}</h2>
-								<p>
-									可抵扣{res.worth / 100}元
-									{
-										res.condition ?
-										`（满${res.condition / 100}元可用）` :
-										null
-									}
-								</p>
-								<h6>
-									{
-										res.expiredTime ?
-										<span>
-											{
-												new Date(res.expiredTime).format('使用期限 yyyy年 M月d日前')
-											}
-										</span> :
-										null
-									}
-									<em>{res.batch}</em>
-								</h6>
-							</div>
-						</div>
-					))
-				}
-			</div>
+							<em>{res.batch}</em>
+						</h6>
+					</div>
+				</div>
+			))
 		)
 	}
 
@@ -370,14 +366,12 @@ class ViewOrder extends Component {
 					<Layout>
 						<Layout.Header
 							title="选择优惠券"
-							addonAfter={
+							addonBefore={
 								<a
 									href="javascript:;"
 									className="close"
 									onClick={this.closeCouponPopup}
-								>
-									关闭
-								</a>
+								/>
 							}
 						/>
 						<Layout.Body>

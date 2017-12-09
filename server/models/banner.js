@@ -15,9 +15,8 @@ var BannerSchema = Schema({
 	online: { type: Boolean, defaut: true },
 	// 排序
 	index: { type: Number, required: true },
-	// 创建时间
-	createTime: { type: Date, default: Date.now }
 })
+
 
 const model = mongoose.model('Banner', BannerSchema)
 module.exports = model

@@ -6,35 +6,15 @@ var Schema = mongoose.Schema
 // 创建一个schema实例
 var CategorySchema = Schema({
 	// 分类名
-	name: {
-		type: String,
-		required: true
-	},
+	name: { type: String, required: true },
 	// 是否使用中
-	online: {
-		type: Boolean,
-		defaut: true
-	},
+	online: { type: Boolean, defaut: true },
 	// 标签
-	badge: {
-		type: String,
-		default: ''
-	},
+	badge: { type: String, default: '' },
 	// 标签底色
-	badgeColor: {
-		type: String,
-		default: ''
-	},
+	badgeColor: { type: String, default: '' },
 	// 排序
-	index: {
-		type: Number,
-		required: true
-	},
-	// 创建时间
-	createTime: {
-		type: Date,
-		default: Date.now
-	}
+	index: { type: Number, required: true },
 })
 
 const model = mongoose.model('Category', CategorySchema)

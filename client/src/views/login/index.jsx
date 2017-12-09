@@ -77,7 +77,7 @@ class ViewLogin extends Component {
 				smskey: res.smskey,
 				timeout: 60
 			}, this.runTimer)
-			Alert.show('您的验证码(上线后该提示应为短信)=' + res.verifcode)
+			Toast.show('验证码已发送到您的手机，请注意查收~')
 		} catch(e) {
 			Toast.show(e.msg)
 		}

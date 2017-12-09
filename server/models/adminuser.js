@@ -6,20 +6,9 @@ var Schema = mongoose.Schema
 // 创建一个schema实例
 var AdminUserSchema = Schema({
 	// 用户名
-	username: {
-		type: String,
-		required: true
-	},
+	username: { type: String, required: true },
 	// 密码
-	password: {
-		type: String,
-		required: true
-	},
-	// 创建时间
-	createTime: {
-		type: Date,
-		default: Date.now
-	}
+	password: { type: String, required: true }
 })
 
 module.exports = mongoose.model('AdminUser', AdminUserSchema)
