@@ -26,7 +26,6 @@ class ViewLogin extends Component {
 
 	componentWillUnmount() {
 		clearTimeout(this.timer)
-		console.log(123123)
 	}
 
 	mobileChange = e => {
@@ -70,7 +69,7 @@ class ViewLogin extends Component {
 
 		Loading.show()
 		try {
-			const res = await this.props.$user.verifcode({
+			const res = await this.props.$user.sendVerifcode({
 				mobile
 			})
 			this.setState({
@@ -139,7 +138,8 @@ class ViewLogin extends Component {
 						onChange={this.mobileChange}
 						styleName="mobile"
 						addonBefore={<i />}
-						placeholder="请输入手机号" />
+						placeholder="请输入手机号"
+					/>
 					
 					<Input
 						type="number"
@@ -163,10 +163,12 @@ class ViewLogin extends Component {
 								}
 							</a>
 						}
-						placeholder="请输入验证码" />
+						placeholder="请输入验证码"
+					/>
 
 					<Button styleName="button"
-						onClick={this.submit}>
+						onClick={this.submit}
+					>
 						登录
 					</Button>
 

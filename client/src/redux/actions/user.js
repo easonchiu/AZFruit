@@ -13,7 +13,7 @@ const login = payload => async (dispatch, getState) => {
 	return getToken()
 }
 
-const verifcode = payload => async (dispatch, getState) => {
+const sendVerifcode = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'post',
         url: `/user/verifcode`,
@@ -24,5 +24,5 @@ const verifcode = payload => async (dispatch, getState) => {
 
 export default {
 	login,
-	verifcode,
+	sendVerifcode,
 }
