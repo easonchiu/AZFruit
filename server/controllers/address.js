@@ -1,8 +1,8 @@
 var UserModel = require('../models/user')
 var Reg = require('../utils/reg')
 var mongoose = require('../conf/mongoose')
-var amapLocation = require('../middlewares/amapLocation')
-var amapDistance = require('../middlewares/amapDistance')
+var amapLocation = require('../utils/amapLocation')
+var amapDistance = require('../utils/amapDistance')
 
 class Control {
 	

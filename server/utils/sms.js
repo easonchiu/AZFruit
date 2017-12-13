@@ -14,7 +14,14 @@ class Sms {
 		return this._sendSms(mobile, '您的验证码为：' + code, code)
 	}
 
-	static async _sendSms(mobile, content, callback_res) {
+	// 下单成功发送短信
+	static async sendFinishedShoppingMsg(mobile, goods) {
+		// 发送
+		return this._sendSms(mobile, '您购买的' + goods + '已经ok啦~正在为您打包发货')
+	}
+
+	// 调用短信发送平台
+	static async _sendSms(mobile, content, callback_res = '') {
 		return new Promise(async (resolve, reject) => {
 			// 发验证码短信
 			axios.request({
@@ -42,7 +49,7 @@ class Sms {
 		})
 	}
 
-	// 随机数
+	// 生成随机数
 	static randomCreator(len) {
 		var num = ''
 		for (var i = 0; i < len; i++) {

@@ -4,6 +4,6 @@
 // }
 
 module.exports = {
-	api: '/azfruitServer/api',
-	app: '/azfruitServer/app'
+	api: '/appserver/api',
+	app: '/appserver/app'
 }
