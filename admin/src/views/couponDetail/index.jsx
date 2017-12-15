@@ -52,8 +52,8 @@ class ViewCouponDetail extends Component {
 			data.batch = res.batch
 			data.amount = res.amount
 			data.payment = res.payment
-			data.worth = res.worth
-			data.condition = res.condition
+			data.worth = res.worth / 100
+			data.condition = res.condition / 100
 			data.expiredTime = res.expiredTime
 			data.online = res.online
 
@@ -144,6 +144,7 @@ class ViewCouponDetail extends Component {
 								disabled={this.data.id != ''}
 								onChange={this.valueChange.bind(this, 'worth')}
 							/>
+							<em>单位：元</em>
 						</Form.Item>
 
 						<Form.Item label="使用条件">

@@ -18,5 +18,15 @@ var BannerSchema = Schema({
 })
 
 
+BannerSchema.statics.test = function () {
+	return this.aggregate([
+		{ $sort: { online: 1 } }
+	]).then(res => {
+		if (!res || res.length === 0) return Promise.reject()
+		return Promise.resolve(res)
+	}).catch(err => Promise.reject(err))
+}
+
+
 const model = mongoose.model('Banner', BannerSchema)
 module.exports = model

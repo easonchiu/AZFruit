@@ -43,6 +43,7 @@ import ViewCategoryDetail from 'src/views/categoryDetail'
 
 // 用户管理
 import ViewUser from 'src/views/user'
+import ViewUserDetail from 'src/views/userDetail'
 
 // 运费管理
 import ViewPostage from 'src/views/postage'
@@ -84,6 +85,7 @@ const Main = ({children}) => {
 				<Route exact path="/discount/list" component={ ViewDiscount } />
 				
 				<Route exact path="/user/list" component={ ViewUser } />
+				<Route exact path="/user/detail/:id?" component={ ViewUserDetail } />
 			</div>
 		</div>
 	)

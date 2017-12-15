@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+.view-userDetail {
+	> h1 {
+		font-size: 30px;
+		margin-bottom: 20px;
+		color: #3c404c + 30;
+	}
+	.inte {
+		p, a {
+			float: left;
+			margin-right: 20px;
+		}
+		a {
+			color: #00bb55;
+		}
+	}
+	.item {
+		border-bottom: 1px solid #dfe6ec;
+		padding: 10px 0;
+		span {
+			display: inline-block;
+			width: 100px;
+			color: #999;
+		}
+	}
+}

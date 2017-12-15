@@ -106,12 +106,12 @@ class ViewCoupon extends Component {
 								label: '可抵扣',
 								width: 90,
 								align: 'center',
-								render: data => data.worth + '元'
+								render: data => data.worth / 100 + '元'
 							}, {
 								label: '使用条件',
 								width: 100,
 								align: 'center',
-								render: data => data.condition + '元'
+								render: data => data.condition / 100 + '元'
 							}, {
 								label: '过期期限',
 								width: 100,

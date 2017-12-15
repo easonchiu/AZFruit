@@ -65,6 +65,10 @@ class Control {
 			let list = []
 
 			if (count > 0) {
+				//list = await BannerModel.test()
+
+				//console.log('finally', list)
+				
 				list = await BannerModel
 					.aggregate([{
 						$sort: {
@@ -87,6 +91,7 @@ class Control {
 					}, {
 						$limit: limit
 					}])
+
 			}
 
 			return ctx.success({
@@ -98,6 +103,7 @@ class Control {
 				}
 			})
 		} catch(e) {
+			console.log(e)
 			return ctx.error()
 		}
 	}

@@ -39,7 +39,6 @@ app
 	.use(helmet())
 	.use(response())
 
-
 // 加载路由
 app
 	.use(adminUserRoute.routes(), adminUserRoute.allowedMethods())
@@ -56,10 +55,18 @@ app
 	.use(addressRoute.routes(), addressRoute.allowedMethods())
 	.use(wxRoute.routes(), wxRoute.allowedMethods())
 
+// 引入计划任务
+var taskOrder = require('./schedule/order')
 
 // 起一个服务
 const server = http.createServer(app.callback())
-server.listen(port, () => console.log(`✅  The server is running at http://localhost:${port}/`))
+server.listen(port, () => {
+	console.log(`✅  The server is running at http://localhost:${port}/`)
+	taskOrder()
+})
+
+
+
 
 
 

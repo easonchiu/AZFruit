@@ -283,6 +283,10 @@ class ViewShoppingcart extends Component {
 	}
 
 	payment = async (address = {}) => {
+		if (!address || !address.id) {
+			Toast.show('您还没有收货地址哦')
+			return
+		}
 		// 如果没有openid，去授权
 		// 一般情况下这里不会丢失本地openid，都是人工干预的
 
@@ -392,8 +396,7 @@ class ViewShoppingcart extends Component {
 						</p>
 					</div>
 
-					<Button disabled={!address || !address.id}
-						onClick={this.payment.bind(this, address)}>
+					<Button onClick={this.payment.bind(this, address)}>
 						结算
 					</Button>
 				</Layout.Footer>

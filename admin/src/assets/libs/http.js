@@ -2,13 +2,13 @@ import axios from 'axios'
 import { getToken, setToken, clearToken} from './token'
 
 const config = {
-	production: '/azfruitServer/api',
+	production: '/appserver/api',
 	develop: 'api',
-	test1: '/azfruitServer/api',
-	test2: '/azfruitServer/api',
-	test3: '/azfruitServer/api',
-	test4: '/azfruitServer/api',
-	test5: '/azfruitServer/api',
+	test1: '/appserver/api',
+	test2: '/appserver/api',
+	test3: '/appserver/api',
+	test4: '/appserver/api',
+	test5: '/appserver/api',
 }
 
 const baseUrl = config[process.env.ENV_NAME] || config['develop']

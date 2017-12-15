@@ -61,10 +61,30 @@ class Control {
 	
 	// 获取用户详情
 	static async fetchDetail(ctx, next) {
+		try {
+			const { id } = ctx.params
 
-		const res = await UserModel.find({
-			
-		})
+			const res = await UserModel.findOne({
+				_id: id
+			}, {
+				_id: 0,
+				__v: 0
+			})
+
+			if (res) {
+				return ctx.success({
+					data: res
+				})
+			}
+			else {
+				return ctx.error({
+					msg: '找不到相关的用户'
+				})
+			}
+		}
+		catch (e) {
+			return ctx.error()
+		}
 		
 	}
 

@@ -57,5 +57,44 @@ var SkuSchema = Schema({
 	}
 })
 
+
+// 批量占用库存
+SkuSchema.statics.occupyStock = function(list) {
+	return new Promise(async (resolve, reject) => {
+		for (let i = 0; i < list.length; i++) {
+			const data = list[i]
+			await this.update({
+				_id: data.skuId
+			}, {
+				$inc: {
+					stock: -data.amount,
+					sellCount: data.amount,
+				}
+			})
+		}
+
+		resolve()
+	})
+}
+
+// 批量归还库存
+SkuSchema.statics.revertStock = function(list) {
+	return new Promise(async (resolve, reject) => {
+		for (let i = 0; i < list.length; i++) {
+			const data = list[i]
+			await this.update({
+				_id: data.skuId
+			}, {
+				$inc: {
+					stock: data.amount,
+					sellCount: -data.amount,
+				}
+			})
+		}
+
+		resolve()
+	})
+}
+
 const model = mongoose.model('Sku', SkuSchema)
 module.exports = model

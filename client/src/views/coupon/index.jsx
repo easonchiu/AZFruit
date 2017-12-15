@@ -69,10 +69,10 @@ class ViewCoupon extends Component {
 							key={res._id}>
 							<h2>{res.name}</h2>
 							<p>
-								可抵扣{res.worth}元
+								可抵扣{res.worth / 100}元
 								{
 									res.condition ?
-									`（满200元可用）` :
+									`（满${res.condition / 100}元可用）` :
 									null
 								}
 							</p>

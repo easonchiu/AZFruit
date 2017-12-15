@@ -133,9 +133,6 @@ class Control {
 						status: 90
 					}
 				})
-				
-				// 还库存
-				await Control.revertStock(res.goodsList)
 
 				return ctx.success()
 			}
@@ -242,19 +239,6 @@ class Control {
 					}
 					// 如果已经过了支付时间
 					else {
-						// 要将订单状态改为交易关闭
-						await OrderModel.update({
-							uid,
-							orderNo: id
-						}, {
-							$set: {
-								status: 90
-							}
-						})
-						
-						// 还库存
-						await Control.revertStock(res.goodsList)
-
 						return ctx.error({
 							msg: '订单超时未支付，请重新下单',
 							code: 90
@@ -315,19 +299,8 @@ class Control {
 					}
 				}
 				
-				// 库存数量都够的情况下，在数据库中减掉库存，增加销量
-				for (let i = 0; i < info.list.length; i++) {
-					const data = info.list[i]
-
-					await SkuModel.update({
-						_id: data.skuId
-					}, {
-						$inc: {
-							stock: -data.amount,
-							sellCount: data.amount,
-						}
-					})
-				}
+				// 库存数量都够的情况下，占据库存
+				await SkuModel.occupyStock(info.list)
 			}
 			else {
 				return ctx.error({
@@ -429,24 +402,7 @@ class Control {
 		}
 	}
 	
-	// 归还库存
-	static async revertStock(list) {
-		return new Promise(async (resolve, reject) => {
-			for (let i = 0; i < list.length; i++) {
-				const data = list[i]
-				await SkuModel.update({
-					_id: data.skuId
-				}, {
-					$inc: {
-						stock: data.amount,
-						sellCount: -data.amount,
-					}
-				})
-			}
-
-			resolve()
-		})
-	}
+	
 
 }
 
