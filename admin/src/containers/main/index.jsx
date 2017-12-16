@@ -26,6 +26,7 @@ import ViewRecom from 'src/views/recom'
 
 // 订单管理
 import ViewOrder from 'src/views/order'
+import ViewOrderDetail from 'src/views/orderDetail'
 
 // 评价管理
 import ViewComment from 'src/views/comment'
@@ -76,6 +77,7 @@ const Main = ({children}) => {
 				<Route exact path="/postage/detail/:id?" component={ ViewPostageDetail } />
 
 				<Route exact path="/order/list" component={ ViewOrder } />
+				<Route exact path="/order/detail/:id?" component={ ViewOrderDetail } />
 
 				<Route exact path="/comment/list" component={ ViewComment } />
 

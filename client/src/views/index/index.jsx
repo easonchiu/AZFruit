@@ -11,7 +11,6 @@ import Layout from 'src/auto/layout'
 import AppFooter from 'src/components/appFooter'
 import GoodsItem from 'src/components/goodsItem'
 import TopGoodsItem from 'src/components/topGoodsItem'
-import NavSpct from 'src/components/navSpct'
 
 @connect
 @mass(style)
@@ -62,7 +61,6 @@ class ViewIndex extends Component {
 
 				<div styleName="top_header">
 					<h1>爱泽阳光</h1>
-					<NavSpct />
 				</div>
 
 				<div styleName="top_banners">

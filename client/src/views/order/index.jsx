@@ -10,8 +10,6 @@ import Layout from 'src/auto/layout'
 import Panel from 'src/auto/panel'
 import Tabs from 'src/auto/tabs'
 import Button from 'src/auto/button'
-import AppFooter from 'src/components/appFooter'
-import NavSpct from 'src/components/navSpct'
 
 @connect
 @mass(style)
@@ -129,7 +127,12 @@ class ViewOrder extends Component {
 				
 				<Layout.Header
 					title="我的订单"
-					addonAfter={<NavSpct />}
+					addonBefore={
+						<a href="javascript:;"
+							className="back"
+							onClick={this.props.history.goBack}
+						/>
+					}
 					addonBottom={this.renderTabs()}
 				/>
 
@@ -155,7 +158,6 @@ class ViewOrder extends Component {
 
 				</Layout.Body>
 
-				<AppFooter />
 			</Layout>
 		)
 	}

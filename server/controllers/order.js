@@ -87,22 +87,43 @@ class Control {
 
 	// 获取订单列表
 	static async fetchList(ctx, next) {
-		return Control._fetchList(ctx, next)
+		return await Control._fetchList(ctx, next)
 	}
 
 	// 用户获取订单列表
 	static async appFetchList(ctx, next) {
 		const {uid} = ctx.state.jwt
-		return Control._fetchList(ctx, next, uid)
+		return await Control._fetchList(ctx, next, uid)
 	}
 	
 	// 获取订单详情
 	static async fetchDetail(ctx, next) {
-		const res = await OrderModel.create({
+		try {
+			const id = ctx.params.id
 			
-		})
-		
-		return ctx.body = res
+			// 查询相关的订单
+			const res = await OrderModel.findOne({
+				_id: id
+			}, {
+				_id: 0,
+				__v: 0
+			})
+			
+			// 如果有找到，返回
+			if (res) {
+				return ctx.success({
+					data: res
+				})
+			}
+			else {
+				return ctx.error({
+					msg: '找不到相关订单'
+				})
+			}
+		}
+		catch (e) {
+			return ctx.error()
+		}
 	}
 
 	// 用户取消订单
@@ -117,9 +138,6 @@ class Control {
 				uid,
 				orderNo: id,
 				status: 1
-			}, {
-				__v: 0,
-				_id: 0,
 			})
 
 			// 找到订单
@@ -143,7 +161,9 @@ class Control {
 						msg: '订单无法关闭'
 					})
 				} else {
-					return ctx.error()
+					return ctx.error({
+						msg: '该订单不存在'
+					})
 				}
 			}
 		}
@@ -158,7 +178,6 @@ class Control {
 			const {uid} = ctx.state.jwt
 
 			const id = ctx.params.id
-			const couponId = ctx.query.couponId
 
 			const res = await OrderModel.findOne({
 				uid,
@@ -171,6 +190,8 @@ class Control {
 			if (res) {
 				// 待支付的订单
 				if (res.status === 1) {
+					const couponId = ctx.query.couponId
+
 					// 如果是待支付的话，计算剩余支付时间
 					const now = new Date()
 					const timeout = Math.round((res.paymentTimeout.getTime() - now.getTime()) / 1000)
@@ -246,15 +267,15 @@ class Control {
 					}
 				}
 				// 如果订单状态不为待支付，直接将查询结果返回
-				else if (res.status !== 1) {
+				else {
 					return ctx.success({
 						data: res
 					})
-				} else {
-					return ctx.error()
 				}
 			} else {
-				return ctx.error()
+				return ctx.error({
+					msg: '该订单不存在'
+				})
 			}
 		} catch(e) {
 			return ctx.error()

@@ -79,10 +79,6 @@ class ViewOrder extends Component {
 		Loading.hide()
 	}
 
-	backClick = e => {
-		this.props.history.goBack()
-	}
-
 	// 每个单品
 	renderGoodsItem = (data, index) => {
 		return (
@@ -395,10 +391,11 @@ class ViewOrder extends Component {
 					const id = this.props.match.params.id
 					// 取消订单
 					await this.props.$order.cancelOrder(id)
-					// 获取详情信息
-					await this.props.$order.fetchDetail(id)
 					// 清楚定时器
 					clearInterval(this.timer)
+					// 提示成功并返回
+					Toast.show('订单已成功取消')
+					this.props.history.goBack()
 				}
 				catch (e) {
 					console.error(e)
@@ -423,7 +420,7 @@ class ViewOrder extends Component {
 					addonBefore={
 						<a href="javascript:;"
 							className="back"
-							onClick={this.backClick}
+							onClick={this.props.history.goBack}
 						/>
 					}
 					addonAfter={

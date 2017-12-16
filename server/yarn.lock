@@ -170,6 +170,10 @@ dashify@^0.2.0:
   version "0.2.2"
   resolved "http://registry.npm.taobao.org/dashify/download/dashify-0.2.2.tgz#6a07415a01c91faf4a32e38d9dfba71f61cb20fe"
 
+dateformat@^3.0.2:
+  version "3.0.2"
+  resolved "http://registry.npm.taobao.org/dateformat/download/dateformat-3.0.2.tgz#9a4df4bff158ac2f34bc637abdb15471607e1659"
+
 debug@*:
   version "3.1.0"
   resolved "http://registry.npm.taobao.org/debug/download/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"

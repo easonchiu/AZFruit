@@ -4,6 +4,7 @@ import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 import cn from 'classnames'
 import qs from 'qs'
+import dateFormat from 'dateformat'
 
 import { Link } from 'react-router-dom'
 import { Button, Table, Pagination, Loading } from 'element-react'
@@ -92,18 +93,60 @@ class ViewOrder extends Component {
 								align: 'center'
 							}, {
 								label: '下单时间',
-								prop: 'createTime',
-								width: 220,
+								width: 180,
+								align: 'center',
+								render(data) {
+									return dateFormat(data.createTime, 'yyyy-mm-dd hh:MM:ss')
+								}
+							}, {
+								label: '订单状态',
+								width: 120,
+								align: 'center',
+								render(data) {
+									const status = {
+										1: '待支付',
+										11: '已支付',
+										21: '已发货',
+										31: '已完成',
+										41: '已评价',
+										90: '交易关闭',
+									}
+									return (
+										<div className="status">
+											<i
+												className={cn({
+													waiting: data.status == 1,
+													finish: data.status >= 2 && data.status < 90,
+													closed: data.status == 90
+												})}
+											/>
+											{status[data.status]}
+										</div>
+									)
+								}
+							}, {
+								label: '订单金额',
+								width: 120,
+								align: 'center',
+								render(data) {
+									return data.totalPrice / 100 + '元'
+								}
 							}, {
 								label: '收货地址',
-								width: 220,
 								render(data) {
 									return data.city + data.area + data.address
 								}
 							}, {
-								label: '订单状态',
-								render(data) {
-									return data.status
+								label: '',
+								width: 150,
+								render: data => {
+									return (
+										<p className="console">
+											<Link to={`/order/detail/${data.id}`}>
+												查看详情
+											</Link>
+										</p>
+									)
 								}
 							}
 						]}

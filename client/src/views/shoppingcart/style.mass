@@ -288,6 +288,7 @@
 		display: -webkit-box;
 		-webkit-box-align: center;
 		padding: 0.2rem 0.3rem;
+		background: #fff;
 		.total {
 			-webkit-box-flex: 1;
 			p {

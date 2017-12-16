@@ -1,5 +1,7 @@
 // 订单的定时任务
 var schedule = require('node-schedule')
+var dateFormat = require('dateformat')
+
 
 var OrderModel = require('../models/order')
 var SkuModel = require('../models/sku')
@@ -7,6 +9,8 @@ var SkuModel = require('../models/sku')
 
 // 清理超时没支付，或被手动关闭的订单
 var taskOvertimeOrder = async () => {
+	console.log('---------------------')
+	console.log(dateFormat(new Date(), 'yyyy-mm-dd, h:MM:ss'), '清理超时没支付，或被手动关闭的订单')
 	const res = await OrderModel.find({
 		$or: [{
 			paymentTimeout: {
@@ -26,6 +30,7 @@ var taskOvertimeOrder = async () => {
 			})
 		}
 	}
+	console.log('---------------------')
 }
 
 

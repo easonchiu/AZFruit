@@ -26,14 +26,17 @@
 			-webkit-box-align: center;
 			-webkit-box-pack: center;
 			i {
-				background: #ff4949;
+				background: #00bb44;
 				display: block;
 				width: 8px;
 				height: 8px;
 				margin-right: 5px;
 				border-radius: 50%;
+				&.waiting {
+					background: #ff4949;
+				}
 				&.online {
-					background: #00bb44;
+					background: #ccc;
 				}
 			}
 		}

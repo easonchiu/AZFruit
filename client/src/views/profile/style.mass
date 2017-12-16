@@ -1,6 +1,46 @@
 @charset "utf-8";
 
 .view-profile {
+
+	.header {
+		background: url('../../assets/imgs/bg-profile.jpg') center center;
+		background-size: cover;
+		box-shadow: none;
+		height: 3rem;
+		&:after {
+			background: rgba(60,55,117,0.4);
+		}
+		:global(.x-app-header__inner) {
+			-webkit-box-orient: vertical;
+			-webkit-box-align: center;
+			-webkit-box-pack: center;
+		}
+		:global(.x-app-header__addon-after) {
+			height: 1.18rem;
+			a {
+				color: #fff;
+				display: block;
+				font-size: 0.28rem;
+    			line-height: 0.8rem;
+    			&:active {
+    				opacity: 0.7;
+    			}
+			}
+		}
+		i {
+			display: block;
+			width: 1.2rem;
+			height: 1.2rem;
+			background: #fff;
+			margin: 0 auto 0.3rem auto;
+			border-radius: 50%;
+		}
+		p {
+			color: #fff;
+			text-align: center;
+			font-size: 0.26rem;
+		}
+	}
 	
 	.list {
 		margin-bottom: 0.3rem;

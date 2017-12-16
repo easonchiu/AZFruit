@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "dateformat": "^3.0.2",
     "element-react": "^1.2.6",
     "element-theme-default": "^1.4.6",
     "font-awesome": "^4.7.0",

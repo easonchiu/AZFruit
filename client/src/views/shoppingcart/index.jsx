@@ -278,10 +278,6 @@ class ViewShoppingcart extends Component {
 		)
 	}
 
-	backClick = e => {
-		this.props.history.push('/')
-	}
-
 	payment = async (address = {}) => {
 		if (!address || !address.id) {
 			Toast.show('您还没有收货地址哦')
@@ -315,25 +311,46 @@ class ViewShoppingcart extends Component {
 		Loading.hide()
 	}
 
-	render() {
+	renderFooter() {
 		const {
 			totalPrice = 0,
 			postagePrice = 0,
 			totalWeight = 0,
 			address = {},
-			list
 		} = this.props.$$shoppingcart
+
+		return (
+			<div styleName="footer">
+				<div styleName="total">
+					{
+						postagePrice > 0 ?
+						<em>
+							总重量约{Math.round(totalWeight/50)/10}斤，运费另收￥{postagePrice / 100}元
+						</em> :
+						<em>
+							总重量约{Math.round(totalWeight/50)/10}斤，免运费
+						</em>
+					}
+					<p>
+						<span>总计：￥</span>
+						<strong>{(totalPrice + postagePrice) / 100}</strong>
+						<span>元</span>
+					</p>
+				</div>
+
+				<Button onClick={this.payment.bind(this, address)}>
+					结算
+				</Button>
+			</div>
+		)
+	}
+
+	render() {
+		const { list } = this.props.$$shoppingcart
 
 		return (
 			<Layout styleName="view-shoppingcart">
 				<Layout.Header title="购物车"
-					addonBefore={
-						<a
-							href="javascript:;"
-							className="back"
-							onClick={this.backClick}
-						/>
-					}
 					addonBottom={
 						this.renderAddress()
 					}
@@ -370,36 +387,15 @@ class ViewShoppingcart extends Component {
 					
 				</Layout.Body>
 
-				<Layout.Footer
-					styleName="footer"
-					visible={
-						!this.data.loading &&
-						!this.data.errorInfo &&
-						list.length > 0
-					}
-				>
-					
-					<div styleName="total">
-						{
-							postagePrice > 0 ?
-							<em>
-								总重量约{Math.round(totalWeight/50)/10}斤，运费另收￥{postagePrice / 100}元
-							</em> :
-							<em>
-								总重量约{Math.round(totalWeight/50)/10}斤，免运费
-							</em>
-						}
-						<p>
-							<span>总计：￥</span>
-							<strong>{(totalPrice + postagePrice) / 100}</strong>
-							<span>元</span>
-						</p>
-					</div>
+				{
+					!this.data.loading &&
+					!this.data.errorInfo &&
+					list.length > 0 ?
+					this.renderFooter() :
+					null
+				}
 
-					<Button onClick={this.payment.bind(this, address)}>
-						结算
-					</Button>
-				</Layout.Footer>
+				<AppFooter />
 			</Layout>
 		)
 	}

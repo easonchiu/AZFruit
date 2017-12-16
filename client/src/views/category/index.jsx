@@ -9,7 +9,6 @@ import Toast from 'src/auto/toast'
 import Loading from 'src/auto/loading'
 import AppFooter from 'src/components/appFooter'
 import GoodsItem from 'src/components/goodsItem'
-import NavSpct from 'src/components/navSpct'
 
 @connect
 @mass(style)
@@ -141,8 +140,7 @@ class ViewCategory extends Component {
 	render() {
 		return (
 			<Layout styleName="view-category">
-				<Layout.Header title="全部"
-					addonAfter={<NavSpct />} />
+				<Layout.Header title="全部" />
 
 				<Layout.Body
 					styleName="body"

@@ -26,8 +26,26 @@
 	.icon-category {
 		background-image: url('../../assets/imgs/nav-category.png');
 	}
-	.icon-order {
-		background-image: url('../../assets/imgs/nav-order.png');
+	.icon-shoppingcart {
+		background-image: url('../../assets/imgs/nav-shoppingcart.png');
+	}
+	.shoppingcart {
+		position: relative;
+		span {
+			position: absolute;
+			left: 55%;
+			top: 10%;
+			color: #fff;
+			font-size: 0.2rem;
+			background: #ff4949;
+			line-height: 1;
+			display: -webkit-box;
+			-webkit-box-pack: center;
+			-webkit-box-align: center;
+			min-width: 1.4em;
+			padding: 0.2em;
+			border-radius: 1em;
+		}
 	}
 	.icon-profile {
 		background-image: url('../../assets/imgs/nav-profile.png');

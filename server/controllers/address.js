@@ -221,7 +221,7 @@ class Control {
 			const {uid} = ctx.state.jwt
 			
 			// 找到并删除相关的那条地址信息
-			const final = await UserModel.update({
+			const res = await UserModel.update({
 				_id: uid,
 				'addressList._id': id
 			}, {
@@ -233,7 +233,7 @@ class Control {
 			})
 			
 			// 如果删除成功，返回成功
-			if (final) {
+			if (res) {
 				return ctx.success()
 			}
 			// 否则报错

@@ -7,7 +7,6 @@ import stateData from 'react-state-data'
 import CDN from 'src/assets/libs/cdn'
 import ReactSwipe from 'react-swipe'
 import cn from 'classnames'
-import NavSpct from 'src/components/navSpct'
 
 import Layout from 'src/auto/layout'
 import Button from 'src/auto/button'
@@ -246,7 +245,6 @@ class ViewDetail extends Component {
 							onClick={this.backClick}
 						/>
 					}
-					addonAfter={<NavSpct />}
 				/>
 
 				<Layout.Body
