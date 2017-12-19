@@ -1,21 +1,22 @@
 var router = require('koa-router')()
 var prefix = require('../conf/prefix')
-var quick = require('../controllers/quick')
+var f_quick = require('../controllers/f.quick')
+var b_quick = require('../controllers/b.quick')
 var jwt = require('../middlewares/jwt')
 
 router
 	// 添加快捷
-	.post(`${prefix.api}/quick`, jwt, quick.create)
+	.post(`${prefix.api}/quick`, jwt, b_quick.save)
 	// 删除快捷
-	.delete(`${prefix.api}/quick/detail/:id`, jwt, quick.remove)
+	.delete(`${prefix.api}/quick/detail/:id`, jwt, b_quick.remove)
 	// 修改快捷
-	.patch(`${prefix.api}/quick/detail/:id`, jwt, quick.update)
+	.patch(`${prefix.api}/quick/detail/:id`, jwt, b_quick.save)
 	// 获取快捷列表
-	.get(`${prefix.api}/quick/list`, jwt, quick.fetchList)
+	.get(`${prefix.api}/quick/list`, jwt, b_quick.fetchList)
 	// 获取快捷详情
-	.get(`${prefix.api}/quick/detail/:id`, jwt, quick.fetchDetail)
+	.get(`${prefix.api}/quick/detail/:id`, jwt, b_quick.fetchDetail)
 
 	// 用户端获取列表
-	.get(`${prefix.app}/quick/list`, quick.appFetchList)
+	.get(`${prefix.app}/quick/list`, f_quick.fetchList)
 	
 module.exports = router

@@ -5,6 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var QuickSchema = Schema({
+	id: { type: Schema.Types.ObjectId },
 	// 名称
 	name: { type: String, required: true },
 	// 图标地址
@@ -18,6 +19,12 @@ var QuickSchema = Schema({
 	// 创建时间
 	createTime: { type: Date, default: Date.now }
 })
+
+// 创建
+QuickSchema.methods.create = function() {
+	this.id = this._id
+	return this.save()
+}
 
 // 查找上线中的列表
 QuickSchema.statics.findOnlineList = async function() {

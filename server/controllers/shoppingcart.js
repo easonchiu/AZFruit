@@ -1,8 +1,9 @@
 var ShoppingcartModel = require('../models/shoppingcart')
 var GoodsModel = require('../models/goods')
 var SkuModel = require('../models/sku')
+var PostageModel = require('../models/postage')
 
-var PostageCon = require('./postage')
+
 var AddressCon = require('./address')
 
 var qs = require('qs')
@@ -384,7 +385,7 @@ class Control {
 			// 如果有地址，获取数据库中的运费列表
 			let postagePrice = 0
 			if (resAddress) {
-				postagePrice = await PostageCon.countPostage(resAddress.distance, totalPrice, totalWeight)
+				postagePrice = await PostageModel.count(resAddress.distance, totalPrice, totalWeight)
 			}
 
 			return {

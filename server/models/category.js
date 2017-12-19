@@ -5,6 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var CategorySchema = Schema({
+	id: { type: Schema.Types.ObjectId },
 	// 分类名
 	name: { type: String, required: true },
 	// 是否使用中
@@ -16,6 +17,12 @@ var CategorySchema = Schema({
 	// 排序
 	index: { type: Number, required: true },
 })
+
+// 创建
+CategorySchema.methods.create = function() {
+	this.id = this._id
+	return this.save()
+}
 
 const model = mongoose.model('Category', CategorySchema)
 module.exports = model

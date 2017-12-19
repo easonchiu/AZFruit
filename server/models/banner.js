@@ -18,7 +18,7 @@ var BannerSchema = Schema({
 	index: { type: Number, required: true },
 })
 
-// 保存banner
+// 创建
 BannerSchema.methods.create = function() {
 	this.id = this._id
 	return this.save()
