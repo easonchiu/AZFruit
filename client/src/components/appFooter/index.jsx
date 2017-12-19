@@ -28,7 +28,7 @@ class AppFooter extends PureComponent {
 					<i className="icon-category" />
 					<p>全部</p>
 				</Link>
-				<Link to="/shoppingcart" className="shoppingcart">
+				<Link to="/shoppingcart">
 					{
 						this.props.$$shoppingcart.amount !== '' &&
 						this.props.$$shoppingcart.amount > 0 ?

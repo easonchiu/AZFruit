@@ -28,15 +28,18 @@ class Control {
 		}
 		
 		try {
-			await BannerModel.create({
+			const doc = new BannerModel({
 				uri: body.uri,
 				index: body.index,
 				link: body.link,
 				desc: body.desc,
 				online: body.online,
 			})
+
+			await doc.create()
 			return ctx.success()
 		} catch(e) {
+			console.log(e)
 			return ctx.error()
 		}
 	}
@@ -65,32 +68,12 @@ class Control {
 			let list = []
 
 			if (count > 0) {
-				//list = await BannerModel.test()
-
-				//console.log('finally', list)
-				
-				list = await BannerModel
-					.aggregate([{
-						$sort: {
-							online: -1,
-							index: 1
-						}
-					}, {
-						$project: {
-							_id: 0,
-							uri: 1,
-							index: 1,
-							link: 1,
-							desc: 1,
-							online: 1,
-							createTime: 1,
-							id: '$_id'
-						}
-					}, {
-						$skip: skip
-					}, {
-						$limit: limit
-					}])
+				list = await BannerModel.aggregate([
+					{ $sort: { online: -1, index: 1 } },
+					{ $project: { _id: 0, __v: 0 } },
+					{ $skip: skip },
+					{ $limit: limit }
+				])
 
 			}
 
@@ -167,24 +150,11 @@ class Control {
 	// 前端获取banner列表
 	static async appFetchList(ctx, next) {
 		try {
-			const list = await BannerModel
-				.aggregate([{
-					$match: {
-						online: true
-					}
-				}, {
-					$sort: {
-						index: 1
-					}
-				}, {
-					$project: {
-						_id: 0,
-						uri: 1,
-						index: 1,
-						link: 1,
-					}
-				}])
-
+			const list = await BannerModel.aggregate([
+				{ $match: { online: true } },
+				{ $sort: { index: 1 } },
+				{ $project: { _id: 0, __v: 0 } }
+			])
 
 			return ctx.success({
 				data: list

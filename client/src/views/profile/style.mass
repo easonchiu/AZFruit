@@ -6,7 +6,6 @@
 		background: url('../../assets/imgs/bg-profile.jpg') center center;
 		background-size: cover;
 		box-shadow: none;
-		height: 3rem;
 		&:after {
 			background: rgba(60,55,117,0.4);
 		}
@@ -14,6 +13,7 @@
 			-webkit-box-orient: vertical;
 			-webkit-box-align: center;
 			-webkit-box-pack: center;
+			padding: 1rem 0 0.4rem 0;
 		}
 		:global(.x-app-header__addon-after) {
 			height: 1.18rem;

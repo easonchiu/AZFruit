@@ -6,4 +6,16 @@
 		margin-bottom: 20px;
 		color: #3c404c + 30;
 	}
+	h6 {
+		font-size: 20px;
+		margin-bottom: 10px;
+		color: #3c404c + 50;
+	}
+	.item {
+		span {
+			display: inline-block;
+			width: 120px;
+			color: #999;
+		}
+	}
 }

@@ -5,6 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var BannerSchema = Schema({
+	id: { type: Schema.Types.ObjectId },
 	// 描述
 	desc: { type: String, default: '' },
 	// 图片地址
@@ -17,16 +18,11 @@ var BannerSchema = Schema({
 	index: { type: Number, required: true },
 })
 
-
-BannerSchema.statics.test = function () {
-	return this.aggregate([
-		{ $sort: { online: 1 } }
-	]).then(res => {
-		if (!res || res.length === 0) return Promise.reject()
-		return Promise.resolve(res)
-	}).catch(err => Promise.reject(err))
+// 保存banner
+BannerSchema.methods.create = function() {
+	this.id = this._id
+	return this.save()
 }
-
 
 const model = mongoose.model('Banner', BannerSchema)
 module.exports = model

@@ -65,7 +65,7 @@ class Control {
 			const newaddress = {
 				$push: {
 					addressList: {
-						_id: addressId,
+						id: addressId,
 						name: body.name,
 						mobile: body.mobile,
 						area: body.area,
@@ -130,15 +130,7 @@ class Control {
 			const list = []
 			for (let i = 0; i < find.addressList.length; i++) {
 				const d = find.addressList[i]
-				list.push({
-					name: d.name || '',
-					mobile: d.mobile || '',
-					city: d.city || '',
-					area: d.area || '',
-					areaAddress: d.areaAddress || '',
-					address: d.address || '',
-					id: d._id
-				})
+				list.push(d)
 			}
 			
 			// 返回整理后的数据与默认地址的id
@@ -176,7 +168,7 @@ class Control {
 			if (find && find.addressList) {
 				for (let i = 0; i < find.addressList.length; i++) {
 					const d = find.addressList[i]
-					if (d._id == id) {
+					if (d.id == id) {
 						res = {
 							id,
 							name: d.name || '',
@@ -223,11 +215,11 @@ class Control {
 			// 找到并删除相关的那条地址信息
 			const res = await UserModel.update({
 				_id: uid,
-				'addressList._id': id
+				'addressList.id': id
 			}, {
 				$pull: {
 					addressList: {
-						_id: id
+						id: id
 					}
 				}
 			})
@@ -324,7 +316,7 @@ class Control {
 
 			const final = await UserModel.update({
 				_id: uid,
-				'addressList._id': body.id
+				'addressList.id': body.id
 			}, newaddress)
 
 			if (final) {
@@ -355,11 +347,11 @@ class Control {
 				for (let i = 0; i < address.addressList.length; i++) {
 					const d = address.addressList[i]
 					// 如果有选择地址，返回选择的
-					if (aid && d._id == aid) {
+					if (aid && d.id == aid) {
 						choosedAddress = d
 					}
 					// 如果没有选择但有默认地址，返回默认地址
-					if (d._id == address.defaultAddress) {
+					if (d.id == address.defaultAddress) {
 						defaultAddress = d
 					}
 				}
@@ -373,7 +365,7 @@ class Control {
 			// 如果匹配中地址，整理数据
 			if (choosedAddress) {
 				resolve({
-					id: choosedAddress._id,
+					id: choosedAddress.id,
 					city: choosedAddress.city,
 					cityCode: choosedAddress.cityCode,
 					zipCode: choosedAddress.zipCode,

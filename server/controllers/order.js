@@ -15,6 +15,8 @@ class Control {
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 
+			let count = 0
+
 			const search = [{
 				$sort: {
 					createTime: -1,
@@ -69,13 +71,16 @@ class Control {
 				}
 				search.unshift(match)
 			}
+			else {
+				count = await OrderModel.count({})
+			}
 
 			const list = await OrderModel.aggregate(search) || []
 
 			return ctx.success({
 				data: {
 					list,
-					count: 0,
+					count,
 					skip,
 					limit,
 				}

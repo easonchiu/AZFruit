@@ -12,24 +12,6 @@
 		height: 1.1rem;
 		-webkit-box-flex: 1;
 		text-align: center;
-	}
-	i {
-		display: block;
-		width: 0.46rem;
-		height: 0.46rem;
-		background-size: 100% 100%;
-		margin-bottom: 0.05rem;
-	}
-	.icon-home {
-		background-image: url('../../assets/imgs/nav-home.png');
-	}
-	.icon-category {
-		background-image: url('../../assets/imgs/nav-category.png');
-	}
-	.icon-shoppingcart {
-		background-image: url('../../assets/imgs/nav-shoppingcart.png');
-	}
-	.shoppingcart {
 		position: relative;
 		span {
 			position: absolute;
@@ -46,6 +28,22 @@
 			padding: 0.2em;
 			border-radius: 1em;
 		}
+	}
+	i {
+		display: block;
+		width: 0.46rem;
+		height: 0.46rem;
+		background-size: 100% 100%;
+		margin-bottom: 0.05rem;
+	}
+	.icon-home {
+		background-image: url('../../assets/imgs/nav-home.png');
+	}
+	.icon-category {
+		background-image: url('../../assets/imgs/nav-category.png');
+	}
+	.icon-shoppingcart {
+		background-image: url('../../assets/imgs/nav-shoppingcart.png');
 	}
 	.icon-profile {
 		background-image: url('../../assets/imgs/nav-profile.png');
