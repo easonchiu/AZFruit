@@ -5,7 +5,7 @@ import mass from 'mass'
 import stateData from 'react-state-data'
 import cn from 'classnames'
 import {Link} from 'react-router-dom'
-import { getOpenid, authorize } from 'src/assets/libs/wxoauth'
+import { getLocalOpenid, authorize } from 'src/assets/libs/wxoauth'
 
 import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
@@ -69,7 +69,7 @@ class ViewShoppingcart extends Component {
 	// 编辑
 	edit = res => {
 		this.setState({
-			edited: res.id,
+			edited: res.skuId,
 			amount: res.amount,
 			maxAmount: res.stock
 		})
@@ -97,7 +97,7 @@ class ViewShoppingcart extends Component {
 		}
 		else if (res.amount !== this.data.amount) {
 			this.fetchData({
-				id: res.id,
+				id: res.skuId,
 				amount: this.data.amount
 			})
 		}
@@ -114,7 +114,7 @@ class ViewShoppingcart extends Component {
 			callback: async e => {
 				try {
 					await this.props.$shoppingcart.remove({
-						id: res.id
+						id: res.skuId
 					})
 					await this.props.$shoppingcart.fetchAmount()
 					this.fetchData(true)
@@ -175,7 +175,7 @@ class ViewShoppingcart extends Component {
 		const renderInfo = res => (
 			<div styleName="info">
 				{
-					this.data.edited == res.id ?
+					this.data.edited == res.skuId ?
 					<div styleName="tools">
 						<a href="javascript:;"
 							styleName={
@@ -229,7 +229,7 @@ class ViewShoppingcart extends Component {
 							'编辑'
 						}
 					</a> :
-					this.data.edited == res.id ?
+					this.data.edited == res.skuId ?
 					<a href="javascript:;"
 						styleName="save"
 						onClick={this.save.bind(this, res)}>保存</a> :
@@ -256,8 +256,8 @@ class ViewShoppingcart extends Component {
 			{
 				list.map(res => {
 					return (
-						<Panel key={res.id} styleName={cn('item', {
-							error: (!res.online || res.stock < res.amount) && this.data.edited != res.id
+						<Panel key={res.skuId} styleName={cn('item', {
+							error: (!res.online || res.stock < res.amount) && this.data.edited != res.skuId
 						})}>
 							<div styleName="thumb">
 								<img src={CDN+res.cover} />
@@ -286,7 +286,7 @@ class ViewShoppingcart extends Component {
 		// 如果没有openid，去授权
 		// 一般情况下这里不会丢失本地openid，都是人工干预的
 
-		// const openid = getOpenid()
+		const openid = getLocalOpenid()
 		// if (!openid) {
 		// 	Loading.show('微信授权...')
 		// 	setTimeout(e => {
@@ -299,10 +299,10 @@ class ViewShoppingcart extends Component {
 		try {
 			const res = await this.props.$order.create({
 				addressid: address.id,
-				openid: 'testtesttesttesttesttesttesttesttestopenid'
+				openid: openid
 			})
 
-			// return false
+			this.props.$shoppingcart.clearAmount()
 
 			this.props.history.replace(`/order/detail/${res.orderNo}`)
 		} catch(e) {

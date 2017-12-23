@@ -1,5 +1,5 @@
 var OrderModel = require('../models/order')
-var ShoppingcartCon = require('./shoppingcart')
+var ShoppingcartCon = require('./f.shoppingcart')
 var SkuModel = require('../models/sku')
 var UserModel = require('../models/user')
 
@@ -221,18 +221,11 @@ class Control {
 								return false
 							})
 
-							// 把_id改为id
-							resCoupons = resCoupons.map(c => {
-								var resc = Object.assign({}, c._doc)
-								resc.id = resc._id
-								
-								// 如果有选择coupon，找到匹配中的
-								if (couponId && couponId == resc.id) {
-									choosedCoupon = resc
+							// 如果有选择coupon，找到匹配中的
+							resCoupons.forEach(c => {
+								if (couponId && couponId == c.id) {
+									choosedCoupon = c
 								}
-
-								delete resc._id
-								return resc
 							})
 						}
 						
@@ -252,7 +245,7 @@ class Control {
 						if (needPayment < 1) {
 							needPayment = 1
 						}
-						
+
 						// 在返回参数中添加值
 						res._doc.couponList = resCoupons
 						res._doc.paymentTimeoutSec = timeout
@@ -343,15 +336,17 @@ class Control {
 			const m = ('0000' + now.getMinutes()).substr(-2)
 			const s = ('0000' + now.getSeconds()).substr(-2)
 			const count = cache.get('orderCount') ? +cache.get('orderCount') + 1 : '123'
+			const orderNo = yy + mm + dd + h + m + s + count
+			
+			// 缓存下一个计数器
 			const nextCount = count > 999 ? '123' : count
 			cache.put('orderCount', nextCount)
-			const orderNo = yy + mm + dd + h + m + s + count
 			
 			// 订单需要30分钟内支付
 			const after30m = new Date(now.getTime() + 1000 * 60 * 30)
 
 			// 生成订单（注意生成的订单中不包含优惠券）
-			const res = await OrderModel.create({
+			await new OrderModel({
 				orderNo,
 				wxOrderNo: '',
 				uid: uid,
@@ -372,8 +367,35 @@ class Control {
 				status: 1,
 				goodsList: info.list,
 				paymentTimeout: after30m
-			})
+			}).create()
 
+			// 清空购物车
+			await UserModel.update({
+				_id: uid
+			}, {
+				shoppingcart: []
+			})
+			
+			return ctx.success({
+				data: {
+					orderNo
+				}
+			})
+		}
+		catch(e) {
+			return ctx.error()
+		}
+		finally {
+			// 解锁
+			cache.del('create_order_lock')
+		}
+	}
+	
+	
+	// 支付
+	static async wxPayment() {
+		try {
+			//////// 微信订单生成（不在这里，在点支付的那一刻）
 			if (res) {
 				// 请求的传参
 				const data = {
@@ -409,26 +431,11 @@ class Control {
 				})
 			}
 			return
+		}
+		catch (e) {
 
-			// 清空购物车
-			await ShoppingcartCon.removeAll(uid)
-			
-			return ctx.success({
-				data: {
-					orderNo
-				}
-			})
 		}
-		catch(e) {
-			return ctx.error()
-		}
-		finally {
-			// 解锁
-			cache.del('create_order_lock')
-		}
-	}
-	
-	
+	}	
 
 }
 

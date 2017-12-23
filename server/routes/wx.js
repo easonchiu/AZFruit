@@ -1,11 +1,11 @@
 var router = require('koa-router')()
 var prefix = require('../conf/prefix')
 var wx = require('../controllers/wx')
-var checkJWT = require('../middlewares/clientJwt')
+var clientJWT = require('../middlewares/clientJwt')
 
 router
-	// 微信授权
-	.post(`${prefix.app}/wx/auth`, wx.auth)
+	// 微信授权回跳
+	.get(`${prefix.app}/wx/auth/callback`, wx.authCallback)
 
 
 module.exports = router

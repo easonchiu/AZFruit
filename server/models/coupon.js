@@ -5,6 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var CouponSchema = Schema({
+	id: { type: Schema.Types.ObjectId },
 	// 名称
 	name: { type: String, required: true },
 	// 批次号
@@ -28,6 +29,12 @@ var CouponSchema = Schema({
 	// 创建时间
 	createTime: { type: Date, default: Date.now }
 })
+
+// 创建
+CouponSchema.methods.create = function() {
+	this.id = this._id
+	return this.save()
+}
 
 const model = mongoose.model('Coupon', CouponSchema)
 module.exports = model

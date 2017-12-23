@@ -2,7 +2,7 @@ var jwt = require('jsonwebtoken')
 var jwtKey = require('../conf/clientJwtKey')
 
 var UserModel = require('../models/user')
-var CouponCon = require('./coupon')
+var CouponCon = require('./b.coupon')
 var isMobile = require('../utils/reg').isMobile
 var Sms = require('../utils/sms')
 
@@ -209,7 +209,7 @@ class Control {
 					updateinfo.createTime = now
 
 					// 查找是不是有注册就给的优惠券
-					const coupons = await CouponCon.getCouponAtRegisterSuccess()
+					const coupons = await CouponCon.getCouponWhenRegisterSuccess()
 					
 					// 如果有找到可用的，给该用户
 					if (coupons.length) {

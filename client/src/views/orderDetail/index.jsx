@@ -311,7 +311,7 @@ class ViewOrder extends Component {
 					}
 				>
 					<i />
-					<div styleName="coupon" key={res._id}>
+					<div styleName="coupon" key={res.id}>
 						<h2>{res.name}</h2>
 						<p>
 							可抵扣{res.worth / 100}元

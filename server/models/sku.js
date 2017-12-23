@@ -1,4 +1,5 @@
 var mongoose = require('../conf/mongoose')
+var GoodsModel = require('./goods')
 
 // 创建一个schema对象
 var Schema = mongoose.Schema
@@ -65,6 +66,44 @@ SkuSchema.statics.revertStock = function(list) {
 		}
 
 		resolve()
+	})
+}
+
+// 获取信息
+SkuSchema.statics.fetchInfo = function({goodsId, skuId}) {
+	return new Promise(async (resolve, reject) => {
+		const skuDoc = await this.findOne({
+			_id: skuId
+		})
+
+		// 如果没找到产品信息或没找到规格信息，提示用户没相关产品
+		if (!skuDoc) {
+			reject()
+		}
+
+		const goodsDoc = await GoodsModel.findOne({
+			_id: goodsId
+		})
+
+		// 如果没找到产品信息或没找到规格信息，提示用户没相关产品
+	 	if (!goodsDoc) {
+			reject()
+		}
+
+		// 如果找到，整合信息并返回
+		resolve({
+			cover: goodsDoc.cover,
+			name: goodsDoc.name,
+			skuName: skuDoc.desc,
+			unit: skuDoc.unit,
+			price: skuDoc.price,
+			weight: skuDoc.weight,
+			online: goodsDoc.online && skuDoc.online && skuDoc.stock > 0,
+			stock: skuDoc.stock,
+			skuId: skuId,
+			pid: goodsId
+		})
+		
 	})
 }
 

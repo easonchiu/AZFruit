@@ -82,7 +82,7 @@ class Control {
 			const localFileName = 'upload/' + fileName + fileType
 			
 			// 将buffer存到目录中
-			await Control.saveLocalPic(localFileName, dataBuffer)
+			await Control.savePicToLocal(localFileName, dataBuffer)
 
 			//上传到七牛后保存的文件名
 			const qnFileName = fileName + fileType
@@ -127,11 +127,12 @@ class Control {
 			// 查找数据
 			let list = []
 			if (count > 0) {
-				const sql = [{
+				const sql = [
 					{ $project: { _id: 0, __v: 0 } },
 					{ $skip: skip },
 					{ $limit: limit }
-				}]
+				]
+				// 如果是要查询某个分类的话
 				if (classes != '') {
 					sql.unshift({
 						$match: { class: classes }
@@ -154,7 +155,7 @@ class Control {
 	}
 
 	// 存图到本地
-	static saveLocalPic(filename, base64) {
+	static savePicToLocal(filename, base64) {
 		return new Promise((resolve, reject) => {
 			fs.writeFile(filename, base64, function(err){
 				if (err) {

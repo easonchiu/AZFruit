@@ -1,133 +1,16 @@
 var jwt = require('jsonwebtoken')
+var mongoose = require('../conf/mongoose')
 
 var UserModel = require('../models/user')
 var CouponModel = require('../models/coupon')
 
 class Control {
-	// 获取列表
-	static async fetchList(ctx, next) {
-		try {
-			let { skip = 0, limit = 10 } = ctx.query
-			skip = parseInt(skip)
-			limit = parseInt(limit)
-
-			const count = await CouponModel.count({})
-			let list = []
-
-			if (count > 0) {
-				list = await CouponModel
-					.aggregate([{
-						$sort: {
-							online: -1,
-							createTime: 1,
-						}
-					}, {
-						$project: {
-							_id: 0,
-							name: 1,
-							batch: 1,
-							amount: 1,
-							handOutAmount: 1,
-							usedAmount: 1,
-							worth: 1,
-							condition: 1,
-							flag: 1,
-							online: 1,
-							expiredTime: 1,
-							id: '$_id'
-						}
-					}, {
-						$skip: skip
-					}, {
-						$limit: limit
-					}])
-			}
-
-			return ctx.success({
-				data: {
-					list,
-					count,
-					skip,
-					limit,
-				}
-			})
-		}
-		catch (e) {
-			return ctx.error()
-		}
-	}
-
-	// 用户获取列表
-	static async appFetchList(ctx, next) {
-		try {
-			const {uid} = ctx.state.jwt
-
-			// 查找用户的地址表
-			const find = await UserModel.findOne({
-				_id: uid
-			}, {
-				couponList: 1
-			})
-			
-			// 如果没找到，返回空数据
-			if (!find) {
-				return ctx.success({
-					data: {
-						list: []
-					}
-				})
-			}
-			
-			// 找到，返回数据
-			const list = find.couponList.filter(res => {
-				const now = new Date()
-				// 如果在有效期内且没使用
-				if (!res.used && now < res.expiredTime) {
-					return true
-				}
-				return false
-			})
-			ctx.success({
-				data: {
-					list: list,
-				}
-			})
-		}
-		catch(e) {
-			ctx.error()
-		}
-	}
-
-	// 获取详情
-	static async fetchDetail(ctx, next) {
-		try {
-			const { id } = ctx.params
-
-			const res = await CouponModel.findOne({
-				_id: id
-			}, {
-				_id: 0,
-				__v: 0
-			})
-
-			if (res) {
-				return ctx.success({
-					data: res
-				})
-			}
-			else {
-				return ctx.error({
-					msg: '找不到该优惠券'
-				})
-			}
-		} catch(e) {
-			return ctx.error()
-		}
-	}
 
 	// 创建
 	static async create(ctx, next) {
 		try {
+
+			// 检查body的参数
 			const body = ctx.request.body
 
 			if (!body.name) {
@@ -165,18 +48,21 @@ class Control {
 					msg: '过期期限必须大于0天'
 				})
 			}
-
-			const find = await CouponModel.findOne({
+			
+			// 先检查是否有相同的批次号
+			const findDoc = await CouponModel.findOne({
 				batch: body.batch
 			})
-
-			if (find) {
+				
+			// 如果有，不允许重复插入
+			if (findDoc) {
 				return ctx.error({
 					msg: '批次号不能重复'
 				})
 			}
 			
-			const res = await CouponModel.create({
+			// 创建并返回成功
+			const doc = {
 				name: body.name,
 				flag: body.flag,
 				batch: body.batch,
@@ -185,16 +71,76 @@ class Control {
 				condition: body.condition * 100, // 优惠券使用条件，即满足多少钱
 				expiredTime: body.expiredTime, // 过期时间，n天
 				online: !!body.online
+			}
+
+			await new CouponModel(doc).create()
+
+			return ctx.success()
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
+
+	// 获取列表
+	static async fetchList(ctx, next) {
+		try {
+			let { skip = 0, limit = 10 } = ctx.query
+			skip = parseInt(skip)
+			limit = parseInt(limit)
+			
+			// 计算条目数量
+			const count = await CouponModel.count({})
+			
+			// 查找数据
+			let list = []
+			if (count > 0) {
+				list = await CouponModel.aggregate([
+					{ $sort: { online: -1, createTime: 1 } },
+					{ $project: { _id: 0, __v: 0 } },
+					{ $skip: skip },
+					{ $limit: limit }
+				])
+			}
+
+			return ctx.success({
+				data: {
+					list,
+					count,
+					skip,
+					limit,
+				}
+			})
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
+
+
+	// 获取详情
+	static async fetchDetail(ctx, next) {
+		try {
+			const { id } = ctx.params
+
+			const res = await CouponModel.findOne({
+				_id: id
+			}, {
+				_id: 0,
+				__v: 0
 			})
 
 			if (res) {
-				return ctx.success()
+				return ctx.success({
+					data: res
+				})
 			}
 			else {
-				return ctx.error()
+				return ctx.error({
+					msg: '找不到该优惠券'
+				})
 			}
-		}
-		catch (e) {
+		} catch(e) {
 			return ctx.error()
 		}
 	}
@@ -230,28 +176,30 @@ class Control {
 
 	// 注册完成时获得优惠券
 	// 注意：调用这个方法会自动加上领取量
-	static getCouponAtRegisterSuccess() {
+	static getCouponWhenRegisterSuccess() {
 		return new Promise(async resolve => {
 			// 获取下单即获取的优惠券
-			const res = await CouponModel.find({
+			const couponDoc = await CouponModel.find({
 				flag: 1,
 				online: true
 			}, {
-				__v: 0
+				__v: 0,
+				_id: 0
 			})
 			
 			// 声明结果数组
 			const list = []
 
 			// 处理优惠券
-			for (let i = 0; i < res.length; i++) {
-				const data = res[i]
+			for (let i = 0; i < couponDoc.length; i++) {
+				const data = couponDoc[i]
 
 				// 如果还有没发完的优惠券，给该用户
 				if (data.handOutAmount < data.amount) {
 					const date = (new Date().getTime()) + 60 * 60 * 1000 * 24 * data.expiredTime
 					const dt = new Date(date)
 					list.push({
+						id: new mongoose.Types.ObjectId(),
 						name: data.name,
 						batch: data.batch + '_' + (data.handOutAmount + 1),
 						condition: data.condition,
@@ -262,7 +210,7 @@ class Control {
 					// 已发放数量+1
 					// 如果是最后一张优惠券，停用它
 					await CouponModel.update({
-						_id: data._id
+						_id: data.id
 					}, {
 						$inc: {
 							handOutAmount: 1
@@ -275,7 +223,7 @@ class Control {
 				// 否则停用它
 				else {
 					await CouponModel.update({
-						_id: data._id
+						_id: data.id
 					}, {
 						$set: {
 							online: false

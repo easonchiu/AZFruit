@@ -3,10 +3,9 @@ var axios = require('axios')
 
 class Control {
 
-	// 微信获取openid
-	static async auth(ctx, next) {
+	static async authCallback(ctx, next) {
 		try {
-			const {code} = ctx.request.body
+			let { code, state } = ctx.query
 
 			// 请求微信授权接口
 			const res = await axios.request({
@@ -16,21 +15,15 @@ class Control {
 			
 			// 如果有错误，报错
 			if (res.data.errcode) {
-				return ctx.error({
-					msg: res.data.errmsg
-				})
+				return ctx.body = '授权异常'
 			}
-			// 成功
+			// 成功，302到首页
 			else {
-				return ctx.success({
-					data: {
-						openid: res.data.openid
-					}
-				})
+				ctx.redirect('http://localhost:1234/#/?openid=' + res.data.openid)
 			}
 		}
 		catch (e) {
-			return ctx.error()
+			return ctx.body = '授权异常'
 		}
 	}
 

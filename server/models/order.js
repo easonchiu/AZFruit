@@ -1,3 +1,4 @@
+
 var mongoose = require('../conf/mongoose')
 
 // 创建一个schema对象
@@ -5,6 +6,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var OrderSchema = Schema({
+	id: { type: Schema.Types.ObjectId },
 	// 订单号
 	orderNo: { type: String, required: true },
 	// 微信支付订单号
@@ -60,6 +62,12 @@ var OrderSchema = Schema({
 	// 超时时间
 	paymentTimeout: { type: Date, default: Date.now }
 })
+
+// 创建
+OrderSchema.methods.create = function() {
+	this.id = this._id
+	return this.save()
+}
 
 const model = mongoose.model('Order', OrderSchema)
 module.exports = model

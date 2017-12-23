@@ -72,8 +72,90 @@ user.couponList = [Schema({
 	used: { type: Boolean, default: false }
 }, { _id: false })]
 
+// 创建购物车的schema实例
+user.shoppingcart = [Schema({
+	// 产品规格id
+	skuId: { type: String, required: true, ref: 'Sku' },
+	// 产品id
+	pid: { type: String, required: true, ref: 'Product' },
+	// 产品名称
+	name: { type: String, required: true },
+	// 规格名称
+	skuName: { type: String, default: '' },
+	// 封面图
+	cover: { type: String, required: true },
+	// 数量
+	amount: { type: Number, default: 0, require: true },
+	// 重量(单份)
+	weight: { type: Number, default: 0, require: true },
+	// 总重量(数量 x 单份重量)
+	totalWeight: { type: Number, default: 0, require: true },
+	// 是否上架中
+	online: { type: Boolean, default: true },
+	// 价格(单价)
+	price: { type: Number, required: true },
+	// 小计(单价 x 数量)
+	totalPrice: { type: Number, required: true },
+	// 单位
+	unit: { type: String, required: true },
+	// 库存
+	stock: { type: Number, required: true },
+}, { _id: false })]
+
 // 创建一个schema实例
 var UserSchema = Schema(user)
+
+// 获取用户的一条地址信息，如果没查到但有默认地址的话，返回默认地址
+UserSchema.statics.getAddress = async function(userId, addressId) {
+	return new Promise(async (resolve, reject) => {
+
+		// 查找相应的地址
+		const doc = await this.findOne({
+			_id: userId
+		}, 'addressList defaultAddress')
+
+		// 如果用户有地址数据，匹配
+		let userAddress = null
+
+		if (doc && doc.addressList) {
+			let defaultAddress = null
+			for (let i = 0; i < doc.addressList.length; i++) {
+				const d = doc.addressList[i]
+				// 找到id相匹配的地址，并存到将要返回的变量中
+				if (addressId && d.id == addressId) {
+					userAddress = d
+				}
+				// 找到用户的默认地址，存到一个临时变量中
+				if (d.id == doc.defaultAddress) {
+					defaultAddress = d
+				}
+			}
+			// 如果没有找到用户的地址，但数据中有默认地址，使用默认地址
+			if (!userAddress && defaultAddress) {
+				userAddress = defaultAddress
+			}
+		} else {
+			resolve(null)
+		}
+		
+		// 如果匹配中地址，整理数据
+		if (userAddress) {
+			userAddress.distance = userAddress.distance * 1.2 // 因为取的是直线距离，实际距离肯定是大于它的
+			resolve(userAddress)
+		}
+		else {
+			resolve(null)
+		}
+	})
+}
+
+
+
+
+
+
+
+
 
 const model = mongoose.model('User', UserSchema)
 module.exports = model

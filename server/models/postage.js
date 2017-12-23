@@ -31,7 +31,7 @@ PostageSchema.methods.create = function() {
 }
 
 // 根据距离、价格、重量计算邮费
-PostageSchema.statics.count = function(distance, price, weight) {
+PostageSchema.statics.expense = function(distance, price, weight) {
 	return new Promise(async (resolve, reject) => {
 
 		// 运费数据库里存的km是千米单位，而地址数据库里存的是米，需要转换

@@ -144,6 +144,7 @@ class ViewDetail extends Component {
 		const data = sku[this.data.activeSku]
 
 		if (data) {
+			this.data.popupVisible = false
 			Loading.show()
 			try {
 				const pid = this.props.match.params.id
@@ -156,7 +157,7 @@ class ViewDetail extends Component {
 				})
 
 				await this.props.$shoppingcart.fetchAmount()
-				this.data.popupVisible = false
+				
 				Toast.show('在购物中等你哟')
 			} catch(e) {
 				Toast.show(e.msg)

@@ -55,5 +55,8 @@ var GoodsSchema = Schema({
 	createTime: { type: Date, default: Date.now }
 })
 
+
+
+
 const model = mongoose.model('Goods', GoodsSchema)
 module.exports = model

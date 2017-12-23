@@ -49,10 +49,14 @@ const fetchAmount = payload => async (dispatch, getState) => {
 	dispatch(_amount(res))
 }
 
+const clearAmount = createAction('SHOPPINGCART_CLEAR_AMOUNT')
+
+
 export default {
 	fetchList,
 	update,
 	remove,
 	create,
 	fetchAmount,
+	clearAmount,
 }
