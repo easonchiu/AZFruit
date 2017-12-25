@@ -251,25 +251,9 @@ class Control {
 
 			doc = !doc ? [] : doc.shoppingcart ? doc.shoppingcart : []
 
-			// 初始化数量为0，查询产品是不是存在，每存在一个加1
-			// 因为有可能随着时间推移，产品被删除
-			// 所以是查一遍这个时间点的产品信息
-			let amount = 0
-			for (let i = 0; i < doc.length; i++) {
-				// 先获取商品的信息
-				const info = await SkuModel.fetchInfo({
-					goodsId: doc[i].pid,
-					skuId: doc[i].skuId
-				})
-				// 如果商品存在
-				if (info) {
-					amount ++
-				}
-			}
-
 			return ctx.success({
 				data: {
-					amount
+					amount: doc.length
 				}
 			})
 		} catch(e) {

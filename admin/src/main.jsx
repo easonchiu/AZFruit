@@ -4,8 +4,12 @@ import 'element-theme-default'
 import React, { Component } from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { HashRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Redirect, Switch } from 'react-router-dom'
 import { getToken, clearToken } from 'src/assets/libs/token'
+
+const Router = process.env.ENV_NAME !== 'develop' ? BrowserRouter : HashRouter
+const basename = process.env.ENV_NAME !== 'develop' ? '/m/admin' : ''
+
 
 // store
 import configureStore from 'src/redux/store'

@@ -1,10 +1,10 @@
 const ua = navigator.userAgent.toLowerCase()
 const isWX = ua.indexOf('micromessenger') != -1
 
-const APPID = 'wxafcd379c5276d6a3'
+const APPID = 'wx34d82f12f9ab1942'
 
 // 微信授权回调地址，直接转向服务端地址
-const REDIRECT_URI = encodeURIComponent('http://127.0.0.1:8080/appserver/app/wx/auth/callback')
+const REDIRECT_URI = encodeURIComponent('http://www.ivcsun.com/server/app/wx/auth/callback')
 
 import http from 'src/assets/libs/http'
 

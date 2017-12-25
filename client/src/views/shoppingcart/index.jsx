@@ -47,10 +47,17 @@ class ViewShoppingcart extends Component {
 			if (typeof patchData == 'object') {
 				await this.props.$shoppingcart.update(patchData)
 			}
+
 			const aid = this.props.match.params.aid
 			await this.props.$shoppingcart.fetchList({
 				addressId: aid
 			})
+			
+			// 如果没有内容
+			const list = this.props.$$shoppingcart.list
+			if (!list.length) {
+				this.props.$shoppingcart.clearAmount()
+			}
 		} catch(e) {
 			console.error(e)
 			if (!patchData) {

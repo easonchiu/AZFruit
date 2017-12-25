@@ -1,4 +1,4 @@
 module.exports = {
-	api: '/appserver/api',
-	app: '/appserver/app'
+	api: '/server/api',
+	app: '/server/app'
 }

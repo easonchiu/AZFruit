@@ -12,6 +12,8 @@ class Control {
 				method: 'get',
 				url: `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${WX.appID}&secret=${WX.appsecret}&code=${code}&grant_type=authorization_code`
 			})
+
+			console.log(res)
 			
 			// 如果有错误，报错
 			if (res.data.errcode) {

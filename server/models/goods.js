@@ -5,6 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var GoodsSchema = Schema({
+	id: { type: Schema.Types.ObjectId },
 	// 产品名称
 	name: { type: String, required: true },
 	// 排序
@@ -14,19 +15,19 @@ var GoodsSchema = Schema({
 	// 封面图
 	cover: { type: String, default: '' },
 	// 参数
-	parameter: [{
+	parameter: [Schema({
 		name: { type: String, default: '' },
 		value: { type: String, default: '' }
-	}],
+	}, { _id: false })],
 	// 是否进口
 	isImport: { type: Boolean, default: false },
 	// 产地
 	origin: { type: String, default: '' },
 	// 所属分类
-	category: [{
+	category: [Schema({
 		name: { type: String, default: '' },
 		id: { type: String, default: '' }
-	}],
+	}, { _id: false })],
 	// 标签
 	badge: { type: String, default: '' },
 	// 标签底色
@@ -56,7 +57,11 @@ var GoodsSchema = Schema({
 })
 
 
-
+// 创建
+GoodsSchema.methods.create = function() {
+	this.id = this._id
+	return this.save()
+}
 
 const model = mongoose.model('Goods', GoodsSchema)
 module.exports = model

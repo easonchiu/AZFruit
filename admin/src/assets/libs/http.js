@@ -2,13 +2,13 @@ import axios from 'axios'
 import { getToken, setToken, clearToken} from './token'
 
 const config = {
-	production: '/appserver/api',
+	production: '/server/api',
 	develop: 'api',
-	test1: '/appserver/api',
-	test2: '/appserver/api',
-	test3: '/appserver/api',
-	test4: '/appserver/api',
-	test5: '/appserver/api',
+	test1: '/server/api',
+	test2: '/server/api',
+	test3: '/server/api',
+	test4: '/server/api',
+	test5: '/server/api',
 }
 
 const baseUrl = config[process.env.ENV_NAME] || config['develop']
@@ -39,7 +39,7 @@ http.interceptors.response.use(config => {
 }, error => {
 	if (error.response.status === '401') {
 		clearToken()
-		window.location.href = process.env.ENV_NAME === 'production' ? '/azfruitAdmin/#/login' : '/#/login'
+		window.location.href = process.env.ENV_NAME === 'production' ? '/admin/login' : '/login'
 		return false
 	}
 	return Promise.reject({

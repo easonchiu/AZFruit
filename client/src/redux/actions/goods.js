@@ -51,11 +51,11 @@ const fetchDetail = payload => async (dispatch, getState) => {
 	dispatch(_fetchDetail(res))
 }
 
-// 获取产品规格
+// 获取产品规格列表
 const fetchSku = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/goods/sku/${payload}`,
+        url: `/goods/${payload}/sku`,
         params: {}
 	})
 	dispatch(_fetchSku(res))

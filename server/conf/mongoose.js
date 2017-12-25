@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 
-var dburl = 'mongodb://localhost:27017/azfruit'
+var dburl = 'mongodb://127.0.0.1:27017/azfruit'
 
 // 配置
 var config = {

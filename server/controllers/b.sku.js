@@ -16,41 +16,54 @@ class Control {
 	 * @online 上下架
 	 *
 	 */
-	static async create(ctx, next) {
-		const body = ctx.request.body
-
-		if (!body.pid) {
-			return ctx.error({
-				msg: '所属产品不能为空'
-			})
-		}
-
-		if (!body.unit) {
-			return ctx.error({
-				msg: '计量单位不能为空'
-			})
-		}
-
+	static async save(ctx, next) {
 		try {
-			const res = await SkuModel.create({
-				pid: body.pid,
-				desc: body.desc,
-				stock: body.stock,
-				unit: body.unit,
-				weight: body.weight,
-				price: body.price,
-				prePrice: body.prePrice,
-				online: body.online,
-			})
+			const { method } = ctx.request
+			const { id } = ctx.params
 
-			await Control.updateSkuCount(body.pid)
+			// 如果请求中有传id，更新，先查有没有这条数据
+			if (id && method === 'PATCH') {
+				const doc = await SkuModel.findOne({
+					_id: id
+				})
 
-			if (res) {
-				return ctx.success()
-			} else {
-				return ctx.error()
+				if (!doc) {
+					return ctx.error({
+						msg: '该商品不存在'
+					})
+				}
+			}
+			
+			// 检查body的参数
+			const body = ctx.request.body
+			delete body.id
+
+			if (!body.pid) {
+				return ctx.error({
+					msg: '所属产品不能为空'
+				})
+			}
+			else if (!body.unit) {
+				return ctx.error({
+					msg: '计量单位不能为空'
+				})
 			}
 
+			// 有id，更新
+			if (id && method === 'PATCH') {
+				await SkuModel.update({
+					_id: id
+				}, body)
+			}
+			// 没有id，创建
+			else {
+				await new SkuModel(body).create()
+			}
+			
+			// 更新商品可购买数量的值
+			await Control.updateSkuCount(body.pid)
+			
+			return ctx.success()
 		} catch(e) {
 			return ctx.error()
 		}
@@ -119,47 +132,6 @@ class Control {
 		}
 
 	}
-
-	// 用户获取列表
-	static async appFetchSku(ctx, next) {
-		try {
-			let { id } = ctx.params
-			
-			if (!id) {
-				return ctx.error({
-					msg: '产品id不能为空'
-				})
-			}
-
-			const list = await SkuModel
-				.aggregate([{
-					$match: {
-						pid: id,
-						online: true
-					}
-				},{
-					$sort: {
-						price: 1,
-					}
-				}, {
-					$project: {
-						_id: 0,
-						desc: 1,
-						unit: 1,
-						weight: 1,
-						price: 1,
-						prePrice: 1,
-						id: '$_id'
-					}
-				}])
-
-			return ctx.success({
-				data: list
-			})
-		} catch(e) {
-			return ctx.error()
-		}
-	}
 	
 	// 获取详情
 	static async fetchDetail(ctx, next) {
@@ -185,47 +157,6 @@ class Control {
 					id: id
 				}
 			})
-		} catch(e) {
-			return ctx.error()
-		}
-	}
-	
-	// 修改规格
-	static async update(ctx, next) {
-		try {
-			const { id } = ctx.params
-
-			let find = await SkuModel.findOne({
-				_id: id
-			})
-
-			if (!find) {
-				return ctx.error({
-					msg: '该产品不存在'
-				})
-			}
-
-			const body = ctx.request.body
-
-			if (!body.pid) {
-				return ctx.error({
-					msg: '所属产品不能为空'
-				})
-			}
-
-			if (!body.unit) {
-				return ctx.error({
-					msg: '计量单位不能为空'
-				})
-			}
-
-			await SkuModel.update({
-				_id: id
-			}, body)
-
-			await Control.updateSkuCount(body.pid)
-			
-			return ctx.success()
 		} catch(e) {
 			return ctx.error()
 		}

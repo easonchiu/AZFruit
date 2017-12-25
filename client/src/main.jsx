@@ -11,8 +11,8 @@ import qs from 'qs'
 import { getLocalOpenid, authorize, setLocalOpenid, isWeixin } from 'src/assets/libs/wxoauth'
 
 // fastclick
-import initReactFastclick from 'src/assets/libs/react-fastclick'
-initReactFastclick()
+import fastclick from 'fastclick'
+fastclick.attach(document.body)
 
 // store
 import configureStore from 'src/redux/store'
@@ -33,7 +33,7 @@ class Wrapper extends Component {
 	async componentWillMount() {
 		// 如果不在微信中打开，啥也不请求
 		if (!isWeixin) {
-			// return false
+			return false
 		}
 
 		// 获取地址中的openid
@@ -58,7 +58,7 @@ class Wrapper extends Component {
 
 	render() {
 		if (!isWeixin) {
-			// return <p>请在微信客户端中打开</p>
+			return <p>请在微信客户端中打开</p>
 		}
 		else if (!this.state.done) {
 			return null

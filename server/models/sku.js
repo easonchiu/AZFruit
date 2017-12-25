@@ -6,6 +6,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var SkuSchema = Schema({
+	id: { type: Schema.Types.ObjectId },
 	// 所属产品
 	pid: { type: String, required: true },
 	// 规格描述
@@ -30,6 +31,11 @@ var SkuSchema = Schema({
 	createTime: { type: Date, default: Date.now }
 })
 
+// 创建
+SkuSchema.methods.create = function() {
+	this.id = this._id
+	return this.save()
+}
 
 // 批量占用库存
 SkuSchema.statics.occupyStock = function(list) {
@@ -78,7 +84,8 @@ SkuSchema.statics.fetchInfo = function({goodsId, skuId}) {
 
 		// 如果没找到产品信息或没找到规格信息，提示用户没相关产品
 		if (!skuDoc) {
-			reject()
+			resolve(null)
+			return
 		}
 
 		const goodsDoc = await GoodsModel.findOne({
@@ -87,7 +94,8 @@ SkuSchema.statics.fetchInfo = function({goodsId, skuId}) {
 
 		// 如果没找到产品信息或没找到规格信息，提示用户没相关产品
 	 	if (!goodsDoc) {
-			reject()
+			resolve(null)
+			return
 		}
 
 		// 如果找到，整合信息并返回
