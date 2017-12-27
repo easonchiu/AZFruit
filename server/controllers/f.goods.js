@@ -1,3 +1,4 @@
+var cache = require('memory-cache')
 var markdown = require('markdown').markdown
 var GoodsModel = require('../models/goods')
 

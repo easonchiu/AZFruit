@@ -71,9 +71,12 @@ class Wrapper extends Component {
 	}
 }
 
-
 // render to #root
 render(
-	<Wrapper />,
+	process.env.ENV_NAME === 'production' ?
+	<Wrapper /> :
+	<Provider store={store}>
+		<Routers />
+	</Provider>,
 	document.getElementById('root')
 )

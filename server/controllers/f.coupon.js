@@ -1,5 +1,3 @@
-var jwt = require('jsonwebtoken')
-
 var UserModel = require('../models/user')
 
 class Control {

@@ -3,6 +3,7 @@ import http from 'src/assets/libs/http'
 
 const _fetchList = createAction('ORDER_FETCH_LIST');
 const _fetchDetail = createAction('ORDER_FETCH_DETAIL');
+const _amount = createAction('ORDER_SET_AMOUNT')
 
 // 下单
 const create = payload => async (dispatch, getState) => {
@@ -45,9 +46,19 @@ const cancelOrder = payload => async (dispatch) => {
 	return res
 }
 
+const fetchAmount = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'get',
+        url: `/order/amount`,
+        data: payload
+	})
+	dispatch(_amount(res))
+}
+
 export default {
 	create,
 	fetchList,
 	fetchDetail,
 	cancelOrder,
+	fetchAmount,
 }

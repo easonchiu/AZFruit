@@ -46,6 +46,13 @@
 		margin-bottom: 0.3rem;
 		label {
 			display: block;
+			-webkit-box-flex: 1;
+		}
+		sub {
+			color: #5fc37f;
+			font-size: 0.24rem;
+			line-height: 1;
+			border-radius: 1em;
 		}
 	}
 }

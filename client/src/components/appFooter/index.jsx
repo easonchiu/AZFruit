@@ -13,8 +13,15 @@ class AppFooter extends PureComponent {
 
 	componentDidMount() {
 		if (this.props.$$shoppingcart.amount === '' && getToken()) {
-			this.props.$shoppingcart.fetchAmount()
+			this.timer = setTimeout(e => {
+				this.props.$shoppingcart.fetchAmount()
+				this.props.$order.fetchAmount()
+			}, 500)
 		}
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer)
 	}
 
 	render() {
@@ -32,13 +39,19 @@ class AppFooter extends PureComponent {
 					{
 						this.props.$$shoppingcart.amount !== '' &&
 						this.props.$$shoppingcart.amount > 0 ?
-						<span>{this.props.$$shoppingcart.amount}</span> :
+						<sub>{this.props.$$shoppingcart.amount}</sub> :
 						null
 					}
 					<i className="icon-shoppingcart" />
 					<p>购物车</p>
 				</Link>
 				<Link to="/profile">
+					{
+						this.props.$$order.amount !== '' &&
+						this.props.$$order.amount > 0 ?
+						<sub>{this.props.$$order.amount}</sub> :
+						null
+					}
 					<i className="icon-profile" />
 					<p>我的</p>
 				</Link>

@@ -95,6 +95,34 @@ class Control {
 		return await Control._fetchList(ctx, next)
 	}
 
+	// 获取进行中的订单数量
+	static async appFetchAmount(ctx, next) {
+		try {
+			const {uid} = ctx.state.jwt
+
+			// 查询相关的订单
+			const res = await OrderModel.find({
+				uid: uid,
+				status: 1,
+				paymentTimeout: {
+					'$gt': new Date()
+				}
+			}, {
+				_id: 0,
+				__v: 0
+			})
+
+			return ctx.success({
+				data: {
+					amount: res ? res.length : 0
+				}
+			})
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
+
 	// 用户获取订单列表
 	static async appFetchList(ctx, next) {
 		const {uid} = ctx.state.jwt
@@ -297,9 +325,15 @@ class Control {
 			const {uid} = ctx.state.jwt
 			
 			// 如果没有openid，一般都会有
-			if (!uid || !body.openid) {
+			if (!uid) {
 				return ctx.error({
 					msg: '身份信息错误'
+				})
+			}
+			else if (!body.openid) {
+				return ctx.error({
+					msg: 'openid错误',
+					code: 4001
 				})
 			}
 

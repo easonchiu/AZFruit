@@ -27,7 +27,7 @@ const reducer = handleActions({
 	},
 	SHOPPINGCART_CLEAR_AMOUNT(state, action) {
 		return Immutable.merge(state, {
-			amount: ''
+			amount: 0
 		})
 	}
 }, initialState)

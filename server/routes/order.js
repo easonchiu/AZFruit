@@ -14,6 +14,8 @@ router
 	.post(`${prefix.app}/order`, clientJWT, order.create)
 	// 用户查看订单列表
 	.get(`${prefix.app}/order/list`, clientJWT, order.appFetchList)
+	// 用户获取进行中的订单数量
+	.get(`${prefix.app}/order/amount`, clientJWT, order.appFetchAmount)
 	// 用户查看订单详情
 	.get(`${prefix.app}/order/detail/:id`, clientJWT, order.appFetchDetail)
 	// 用户取消订单

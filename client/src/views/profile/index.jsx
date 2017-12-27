@@ -42,11 +42,15 @@ class ViewProfile extends Component {
 
 				<Layout.Body>
 
-					
-
 					<Cell styleName="list">
 						<Cell.Row arrow onClick={this.orderClick}>
 							<label>我的订单</label>
+							{
+								this.props.$$order.amount !== '' &&
+								this.props.$$order.amount > 0 ?
+								<sub>{this.props.$$order.amount}个新订单</sub> :
+								null
+							}
 						</Cell.Row>
 					</Cell>
 				
