@@ -21,7 +21,7 @@ class Control {
 			}
 			// 成功，302到首页
 			else {
-				ctx.redirect('http://localhost:1234/#/?openid=' + res.data.openid)
+				ctx.redirect('http://www.ivcsun.com/?openid=' + res.data.openid)
 			}
 		}
 		catch (e) {

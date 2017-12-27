@@ -8,7 +8,7 @@ import { BrowserRouter, HashRouter, Route, Redirect, Switch } from 'react-router
 import { getToken, clearToken } from 'src/assets/libs/token'
 
 const Router = process.env.ENV_NAME !== 'develop' ? BrowserRouter : HashRouter
-const basename = process.env.ENV_NAME !== 'develop' ? '/m/admin' : ''
+const basename = process.env.ENV_NAME !== 'develop' ? '/admin' : ''
 
 
 // store
@@ -36,7 +36,7 @@ const LoginIfNeeded = View => need => props => {
 // render to #root
 render(
 	<Provider store={store}>
-		<Router>
+		<Router basename={basename}>
 			<Switch>
 				<Route path="/login" component={ LoginIfNeeded(ViewLogin)(false) } />
 				<Route component={ LoginIfNeeded(ViewIndex)(true) } />

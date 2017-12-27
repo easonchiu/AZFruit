@@ -1,7 +1,6 @@
 import React from 'react'
 import { HashRouter, BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 const Router = process.env.NODE_ENV !== 'develop' ? BrowserRouter : HashRouter
-const basename = process.env.NODE_ENV !== 'develop' ? 'azfruit' : ''
 
 import {getToken, clearToken} from 'src/assets/libs/token'
 
@@ -34,7 +33,7 @@ const LoginIfNeeded = View => need => props => {
 
 const Routes = () => {
 	return (
-		<Router basename={basename}>
+		<Router>
 			<Switch>
 				<Route exact path="/" component={ ViewIndex }/>
 				<Route exact path="/category/:id?" component={ ViewCategory }/>

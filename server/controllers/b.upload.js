@@ -80,6 +80,8 @@ class Control {
 
 			// 本地的文件名
 			const localFileName = 'upload/' + fileName + fileType
+
+			console.log(localFileName)
 			
 			// 将buffer存到目录中
 			await Control.savePicToLocal(localFileName, dataBuffer)
@@ -103,7 +105,7 @@ class Control {
 				class: body.class,
 			}
 
-			await new BannerModel(doc).create()
+			await new UploadModel(doc).create()
 
 			return ctx.success({
 				data: doc

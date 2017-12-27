@@ -2,7 +2,7 @@ const path = require('path')
 
 
 // 打包的出口目录
-const prodPath = 'admin'
+const prodPath = 'dist'
 
 
 /*
@@ -28,48 +28,48 @@ module.exports = {
 	production: {
 		env: require('./prod.env'),
 		assetsRoot: path.resolve(__dirname, '../' + prodPath),
-		assetsPublicPath: './',
-		cssAssetsPath: '../',
+		assetsPublicPath: '/admin/',
+		cssAssetsPath: '/admin/',
 		assetsSubDirectory: './',
 		productionSourceMap: false,
 	},
 	test1: {
 		env: require('./test1.env'),
 		assetsRoot: path.resolve(__dirname, '../' + prodPath),
-		assetsPublicPath: './',
-		cssAssetsPath: '../',
+		assetsPublicPath: '/admin/',
+		cssAssetsPath: '/admin/',
 		assetsSubDirectory: './',
 		productionSourceMap: false,
 	},
 	test2: {
 		env: require('./test2.env'),
 		assetsRoot: path.resolve(__dirname, '../' + prodPath),
-		assetsPublicPath: './',
-		cssAssetsPath: '../',
+		assetsPublicPath: '/admin/',
+		cssAssetsPath: '/admin/',
 		assetsSubDirectory: './',
 		productionSourceMap: false,
 	},
 	test3: {
 		env: require('./test3.env'),
 		assetsRoot: path.resolve(__dirname, '../' + prodPath),
-		assetsPublicPath: './',
-		cssAssetsPath: '../',
+		assetsPublicPath: '/admin/',
+		cssAssetsPath: '/admin/',
 		assetsSubDirectory: './',
 		productionSourceMap: false,
 	},
 	test4: {
 		env: require('./test4.env'),
 		assetsRoot: path.resolve(__dirname, '../' + prodPath),
-		assetsPublicPath: './',
-		cssAssetsPath: '../',
+		assetsPublicPath: '/admin/',
+		cssAssetsPath: '/admin/',
 		assetsSubDirectory: './',
 		productionSourceMap: false,
 	},
 	test5: {
 		env: require('./test5.env'),
 		assetsRoot: path.resolve(__dirname, '../' + prodPath),
-		assetsPublicPath: './',
-		cssAssetsPath: '../',
+		assetsPublicPath: '/admin/',
+		cssAssetsPath: '/admin/',
 		assetsSubDirectory: './',
 		productionSourceMap: false,
 	}
