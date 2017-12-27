@@ -1,8 +1,0 @@
-.sass-cache
-*.bak
-*.log
-node_modules
-.DS_Store
-dist/
-psd/
-test/

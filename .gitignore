@@ -6,3 +6,6 @@ node_modules
 dist/
 psd/
 test/
+upload/
+wx.js
+mongoose.js
