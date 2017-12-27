@@ -7,5 +7,5 @@ dist/
 psd/
 test/
 upload/
-wx.js
-mongoose.js
+server/conf/wx.js
+server/conf/mongoose.js
