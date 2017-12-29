@@ -21,7 +21,7 @@ class Control {
 				})
 			}
 			
-			// 找到，返回数据
+			// 找到，整理数据
 			const couponList = doc.couponList.filter(res => {
 				const now = new Date()
 				// 如果在有效期内且没使用

@@ -5,6 +5,7 @@ const chalk = require('chalk')
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 
 function resolve(dir) {
 	return path.join(__dirname, '..', dir)
@@ -29,7 +30,7 @@ const webpackConfig = {
 		rules: [{
 			test: /\.js[x]?$/,
 			loader: 'babel-loader',
-			include: [resolve('src'), resolve('test')],
+			include: [resolve('src'), resolve('test')]
 		}, {
         	test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
       		loader: 'url-loader',

@@ -46,6 +46,7 @@ const cancelOrder = payload => async (dispatch) => {
 	return res
 }
 
+// 获取正在进行中的订单数量
 const fetchAmount = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',

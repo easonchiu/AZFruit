@@ -151,11 +151,5 @@ UserSchema.statics.getAddress = async function(userId, addressId) {
 
 
 
-
-
-
-
-
-
 const model = mongoose.model('User', UserSchema)
 module.exports = model
