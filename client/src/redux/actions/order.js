@@ -19,7 +19,7 @@ const create = payload => async (dispatch, getState) => {
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/order/list`,
+        url: `/order`,
         params: payload
 	})
 	dispatch(_fetchList(res))
@@ -29,7 +29,7 @@ const fetchList = payload => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/order/detail/${payload.id}`,
+        url: `/order/${payload.id}`,
         params: {
         	couponId: payload.couponId
         }

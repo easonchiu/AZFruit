@@ -19,6 +19,6 @@ router
 	.get(`${prefix.api}/category/detail/:id`, jwt, b_category.fetchDetail)
 
 	// 用户端获取列表
-	.get(`${prefix.app}/category/list`, f_category.fetchList)
+	.get(`${prefix.app}/category`, f_category.fetchList)
 	
 module.exports = router

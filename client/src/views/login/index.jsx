@@ -2,6 +2,7 @@ import style from './style'
 import React, { PureComponent as Component } from 'react'
 import connect from 'src/redux/connect'
 import mass from 'mass'
+import qs from 'qs'
 
 import Layout from 'src/auto/layout'
 import Input from 'src/auto/input'
@@ -9,6 +10,8 @@ import Button from 'src/auto/button'
 import Toast from 'src/auto/toast'
 import Alert from 'src/auto/alert'
 import Loading from 'src/auto/loading'
+
+import { authorize } from 'src/assets/libs/wxoauth'
 
 @connect
 @mass(style)
@@ -21,6 +24,15 @@ class ViewLogin extends Component {
 			verifcode: '',
 			smskey: '',
 			timeout: 0
+		}
+
+		this.search = this.props.location.search.replace(/^\?/, '')
+		this.search = qs.parse(this.search)
+	}
+
+	componentDidMount() {
+		if (!this.search || !this.search.redirect) {
+			this.props.history.replace('/')
 		}
 	}
 
@@ -104,13 +116,18 @@ class ViewLogin extends Component {
 		else {
 			Loading.show()
 			try {
-				const token = await this.props.$user.login({
+				const res = await this.props.$user.login({
 					mobile,
 					verifcode,
 					smskey
 				})
-				if (token) {
-					this.props.history.push('/')
+
+				// 没有openid时需要跳转到微信授权页面
+				if (!res.hasOpenId) {
+					authorize(res.token, this.search.redirect)
+				} else if (res) {
+					window.history.replaceState(null, '', this.search.redirect)
+					window.location.reload()
 				}
 				else {
 					Toast.show('系统错误')

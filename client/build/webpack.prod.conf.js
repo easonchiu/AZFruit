@@ -16,7 +16,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 
     plugins: [
         // lodash按需加载
-        new LodashModuleReplacementPlugin(),
+        // new LodashModuleReplacementPlugin(),
         
         // 压缩js
         new webpack.optimize.UglifyJsPlugin({

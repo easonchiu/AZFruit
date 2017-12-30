@@ -6,7 +6,7 @@ const _fetchList = createAction('COUPON_FETCH_LIST')
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/coupon/list`,
+        url: `/coupon`,
         params: payload
 	})
 	dispatch(_fetchList({

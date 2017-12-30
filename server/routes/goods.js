@@ -38,13 +38,13 @@ router
 	.delete(`${prefix.api}/goods/sku/detail/:id`, jwt, b_sku.remove)
 
 	// 用户端获取首页推荐列表
-	.get(`${prefix.app}/goods/recommend/list`, f_goods.fetchRecommendList)
-	// 用户端获取全部产品列表
-	.get(`${prefix.app}/goods/list`, f_goods.fetchList)
+	.get(`${prefix.app}/goods/recommend`, f_goods.fetchRecommendList)
 	// 用户端获取销量排行产品列表
-	.get(`${prefix.app}/goods/ranking/list`, f_goods.fetchRankingList)
+	.get(`${prefix.app}/goods/ranking`, f_goods.fetchRankingList)
+	// 用户端获取全部产品列表
+	.get(`${prefix.app}/goods`, f_goods.fetchList)
 	// 用户端获取产品详情
-	.get(`${prefix.app}/goods/detail/:id`, f_goods.fetchDetail)
+	.get(`${prefix.app}/goods/:id`, f_goods.fetchDetail)
 	// 用户端获取产品规格列表
 	.get(`${prefix.app}/goods/:id/sku`, f_sku.fetchList)
 

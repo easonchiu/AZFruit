@@ -13,7 +13,7 @@ const fetchList = payload => async (dispatch, getState) => {
 
 	const res = await http.request({
 		method: 'get',
-        url: `/quick/list`,
+        url: `/quick`,
         params: {}
 	})
 	dispatch(_fetchList(res))

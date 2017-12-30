@@ -39,7 +39,7 @@ module.exports = {
 		assetsPublicPath: '/',
 		cssAssetsPath: '/',
 		assetsSubDirectory: './',
-		productionSourceMap: false,
+		productionSourceMap: true,
 	},
 	test2: {
 		env: require('./test2.env'),

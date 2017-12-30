@@ -16,7 +16,7 @@ router
 	.post(`${prefix.api}/coupon`, jwt, b_coupon.create)
 
 	// 用户获取列表
-	.get(`${prefix.app}/coupon/list`, clientJWT, f_coupon.fetchList)
+	.get(`${prefix.app}/coupon`, clientJWT, f_coupon.fetchList)
 
 
 module.exports = router

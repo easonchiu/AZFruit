@@ -17,6 +17,6 @@ router
 	.patch(`${prefix.api}/banner/detail/:id`, jwt, b_banner.save)
 	
 	// 前端banner列表
-	.get(`${prefix.app}/banner/list`, f_banner.fetchList)
+	.get(`${prefix.app}/banner`, f_banner.fetchList)
 
 module.exports = router

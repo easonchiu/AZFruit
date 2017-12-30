@@ -6,7 +6,7 @@ const _fetchList = createAction('ADDRESS_FETCH_LIST');
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/address/list`,
+        url: `/address`,
         params: {}
 	})
 	dispatch(_fetchList(res))
@@ -15,7 +15,7 @@ const fetchList = payload => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/address/detail/${payload.id}`,
+        url: `/address/${payload.id}`,
         params: {}
 	})
 	return res

@@ -7,7 +7,7 @@ const _amount = createAction('SHOPPINGCART_SET_AMOUNT');
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/shoppingcart/list`,
+        url: `/shoppingcart`,
         params: payload
 	})
 	dispatch(_fetchList(res))

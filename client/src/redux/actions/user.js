@@ -2,6 +2,8 @@ import { createAction } from 'redux-actions'
 import http from 'src/assets/libs/http'
 import { setToken, getToken } from 'src/assets/libs/token'
 
+const _fetchBaseInfo = createAction('USER_BASE_INFO');
+
 const login = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'post',
@@ -10,7 +12,7 @@ const login = payload => async (dispatch, getState) => {
 	})
 	
 	setToken(res.token)
-	return getToken()
+	return res
 }
 
 const sendVerifcode = payload => async (dispatch, getState) => {
@@ -22,7 +24,16 @@ const sendVerifcode = payload => async (dispatch, getState) => {
 	return res
 }
 
+const fetchBaseInfo = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'get',
+        url: `/user`
+	})
+	dispatch(_fetchBaseInfo(res))
+}
+
 export default {
 	login,
 	sendVerifcode,
+	fetchBaseInfo
 }

@@ -7,7 +7,7 @@ router
 	// 添加商品
 	.post(`${prefix.app}/shoppingcart`, clientJWT, f_shoppingcart.add)
 	// 获取购物车商品
-	.get(`${prefix.app}/shoppingcart/list`, clientJWT, f_shoppingcart.fetchList)
+	.get(`${prefix.app}/shoppingcart`, clientJWT, f_shoppingcart.fetchList)
 	// 更新某个商品的数量
 	.patch(`${prefix.app}/shoppingcart`, clientJWT, f_shoppingcart.update)
 	// 删除某个商品的数量

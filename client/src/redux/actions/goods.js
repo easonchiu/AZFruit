@@ -11,7 +11,7 @@ const _fetchSku = createAction('GOODS_FETCH_SKU')
 const fetchRecommendList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/goods/recommend/list`,
+        url: `/goods/recommend`,
         params: {}
 	})
 	dispatch(_fetchRecommendList(res))
@@ -21,7 +21,7 @@ const fetchRecommendList = payload => async (dispatch, getState) => {
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/goods/list`,
+        url: `/goods`,
         params: {
         	category: payload
         }
@@ -33,7 +33,7 @@ const fetchList = payload => async (dispatch, getState) => {
 const fetchRankingList = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/goods/ranking/list`,
+        url: `/goods/ranking`,
         params: {
         	category: payload
         }
@@ -45,7 +45,7 @@ const fetchRankingList = payload => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/goods/detail/${payload}`,
+        url: `/goods/${payload}`,
         params: {}
 	})
 	dispatch(_fetchDetail(res))

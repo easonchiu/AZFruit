@@ -5,7 +5,6 @@ import mass from 'mass'
 import stateData from 'react-state-data'
 import cn from 'classnames'
 import {Link} from 'react-router-dom'
-import { getLocalOpenid, authorize } from 'src/assets/libs/wxoauth'
 
 import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
@@ -293,7 +292,6 @@ class ViewShoppingcart extends Component {
 		// 如果没有openid，去授权
 		// 一般情况下这里不会丢失本地openid，都是人工干预的
 
-		const openid = getLocalOpenid()
 		// if (!openid) {
 		// 	Loading.show('微信授权...')
 		// 	setTimeout(e => {

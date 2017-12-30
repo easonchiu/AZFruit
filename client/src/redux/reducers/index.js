@@ -8,6 +8,7 @@ import $$shoppingcart from './shoppingcart'
 import $$address from './address'
 import $$order from './order'
 import $$coupon from './coupon'
+import $$user from './user'
 
 const reducers = {
 	$$category,
@@ -18,6 +19,7 @@ const reducers = {
 	$$address,
 	$$order,
 	$$coupon,
+	$$user,
 }
 
 export default combineReducers({

@@ -27,7 +27,8 @@ const LoginIfNeeded = View => need => props => {
 		if (props.location.pathname === '/login') {
 			return <View {...props} />
 		}
-		return <Redirect to="/login" />
+		const redirect = encodeURIComponent(window.location.href)
+		return <Redirect to={`/login?redirect=${redirect}`} />
 	}
 }
 

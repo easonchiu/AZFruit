@@ -60,7 +60,8 @@ class Control {
 			// 返回成功
 			return ctx.success({
 				data: {
-					smskey: smskey
+					smskey: smskey,
+					verifcode: verifcode
 				}
 			})
 		} catch(e) {
@@ -167,7 +168,8 @@ class Control {
 				return ctx.success({
 					data: {
 						mobile: body.mobile,
-						token
+						token,
+						hasOpenId: !!$user.openId
 					}
 				})
 			}
@@ -179,21 +181,9 @@ class Control {
 	// 获取用户的基本信息
 	static async fetchBaseInfo(ctx, next) {
 		try {
-			const {uid} = ctx.state.jwt
-
-			// 查找用户
-			const doc = await UserModel.findOne({
-				_id: uid
-			})
-			
-			// 如果没找到，报错
-			if (!doc) {
-				return ctx.error()
-			}
-
-			// 返回找到的结果
+			// 返回jwt信息
 			ctx.success({
-				data: doc
+				data: ctx.state.jwt
 			})
 		}
 		catch(e) {

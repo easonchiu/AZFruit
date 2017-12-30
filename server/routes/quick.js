@@ -17,6 +17,6 @@ router
 	.get(`${prefix.api}/quick/detail/:id`, jwt, b_quick.fetchDetail)
 
 	// 用户端获取列表
-	.get(`${prefix.app}/quick/list`, f_quick.fetchList)
+	.get(`${prefix.app}/quick`, f_quick.fetchList)
 	
 module.exports = router

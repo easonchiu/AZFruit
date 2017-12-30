@@ -1,6 +1,5 @@
 var router = require('koa-router')()
 var prefix = require('../conf/prefix')
-var user = require('../controllers/user')
 var f_user = require('../controllers/f.user')
 var b_user = require('../controllers/b.user')
 var jwt = require('../middlewares/jwt')
