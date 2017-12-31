@@ -27,7 +27,7 @@ const LayoutBody = props => {
 		}
 	)
 	return (
-		<main className={ css } style={ props.style }>
+		<main className={ css } style={ props.style } onScroll={ props.onScroll }>
 			{
 				props.loading ?
 				<div className="x-app__loading">

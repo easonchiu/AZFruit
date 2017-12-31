@@ -324,13 +324,19 @@ class Control {
 
 			const {uid} = ctx.state.jwt
 			
-			// 如果没有openid，一般都会有
+			// 如果没有uid，一般都会有
 			if (!uid) {
 				return ctx.error({
 					msg: '身份信息错误'
 				})
 			}
-			else if (!body.openid) {
+
+			// 获取用户openid信息
+			const userInfo = await UserModel.findOne({
+				_id: uid
+			}, 'openId')
+			
+			if (!userInfo.openId) {
 				return ctx.error({
 					msg: 'openid错误',
 					code: 4001
@@ -384,6 +390,7 @@ class Control {
 				orderNo,
 				wxOrderNo: '',
 				uid: uid,
+				openId: userInfo.openId,
 				city: info.address.city,
 				cityCode: info.address.cityCode,
 				zipCode: info.address.zipCode,

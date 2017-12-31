@@ -12,10 +12,14 @@ class AppFooter extends PureComponent {
 	}
 
 	componentDidMount() {
-		if (this.props.$$shoppingcart.amount === '' && getToken()) {
+		if (getToken()) {
 			this.timer = setTimeout(e => {
-				this.props.$shoppingcart.fetchAmount()
-				this.props.$order.fetchAmount()
+				if (this.props.$$shoppingcart.amount === '') {
+					this.props.$shoppingcart.fetchAmount()
+				}
+				if (this.props.$$order.amount === '') {
+					this.props.$order.fetchAmount()
+				}
 			}, 500)
 		}
 	}

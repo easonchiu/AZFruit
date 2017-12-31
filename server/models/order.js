@@ -13,6 +13,8 @@ var OrderSchema = Schema({
 	wxOrderNo: { type: String, default: '' },
 	// 用户id, index: 按uid来作索引
 	uid: { type: String, required: true, index: true },
+	// 用户openId
+	openId: { type: String, required: true },
 	// 城市，目前只能上海
 	city: { type: String, default: '上海', enum: ['上海'] },
 	// 城市编号

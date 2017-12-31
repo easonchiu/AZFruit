@@ -289,31 +289,23 @@ class ViewShoppingcart extends Component {
 			Toast.show('您还没有收货地址哦')
 			return
 		}
-		// 如果没有openid，去授权
-		// 一般情况下这里不会丢失本地openid，都是人工干预的
-
-		// if (!openid) {
-		// 	Loading.show('微信授权...')
-		// 	setTimeout(e => {
-		// 		authorize()
-		// 	}, 1000)
-		// 	return false
-		// }
 
 		Loading.show()
 		try {
 			const res = await this.props.$order.create({
-				addressid: address.id,
-				openid: openid
+				addressid: address.id
 			})
 
 			this.props.$shoppingcart.clearAmount()
 
 			this.props.history.replace(`/order/detail/${res.orderNo}`)
-		} catch(e) {
+		}
+		catch(e) {
 			Toast.show(e.msg)
 		}
-		Loading.hide()
+		finally {
+			Loading.hide()
+		}
 	}
 
 	renderFooter() {

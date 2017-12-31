@@ -1,8 +1,10 @@
 import style from './style'
 import React, { PureComponent as Component } from 'react'
+import { Link } from 'react-router-dom'
 import connect from 'src/redux/connect'
 import mass from 'mass'
 import stateData from 'react-state-data'
+import {getToken} from 'src/assets/libs/token'
 
 import CDN from 'src/assets/libs/cdn'
 import ReactSwipe from 'react-swipe'
@@ -13,7 +15,6 @@ import Button from 'src/auto/button'
 import Popup from 'src/auto/popup'
 import Toast from 'src/auto/toast'
 import Loading from 'src/auto/loading'
-
 
 @connect
 @mass(style)
@@ -27,12 +28,21 @@ class ViewDetail extends Component {
 			errorInfo: '',
 			imgsIndex: 0,
 			activeSku: 0,
-			popupVisible: false
+			popupVisible: false,
+			ghostHeader: true
 		})
 	}
 
 	componentDidMount() {
 		this.fetch(this.props.match.params.id)
+
+		if (getToken()) {
+			this.timer = setTimeout(e => {
+				if (this.props.$$shoppingcart.amount === '') {
+					this.props.$shoppingcart.fetchAmount()
+				}
+			}, 500)
+		}
 	}
 
 	async fetch(id) {
@@ -58,6 +68,12 @@ class ViewDetail extends Component {
 	}
 
 	addToCart = e => {
+		const token = getToken()
+		if (!token) {
+			const redirect = encodeURIComponent(window.location.href)
+			this.props.history.replace('/login?redirect=' + redirect)
+			return
+		}
 		this.data.popupVisible = true
 	}
 
@@ -65,7 +81,7 @@ class ViewDetail extends Component {
 		const data = this.props.$$goods.detail || {}
 
 		return (
-			<div styleName="cover">
+			<div styleName="cover" ref={e => this.coverPic = e}>
 				<div styleName="cover-imgs">
 					<ReactSwipe styleName="imgs" swipeOptions={{
 						transitionEnd: this.bannerScrollEnd
@@ -131,6 +147,18 @@ class ViewDetail extends Component {
 				</h6>
 			</div>	
 		)
+	}
+
+	// 监听body滚动，切换头样式
+	bodyScroll = e => {
+		const t = e.target.scrollTop
+		const coverH = this.coverPic.clientHeight
+
+		if (t > coverH - 50 && this.data.ghostHeader) {
+			this.data.ghostHeader = false
+		} else if (t <= coverH - 50 && !this.data.ghostHeader) {
+			this.data.ghostHeader = true
+		}
 	}
 	
 	// 规格点击
@@ -238,7 +266,7 @@ class ViewDetail extends Component {
 		return (
 			<Layout styleName="view-detail">
 				<Layout.Header
-					ghost
+					ghost={this.data.ghostHeader}
 					title={data.name}
 					addonBefore={
 						<a href="javascript:;"
@@ -246,12 +274,24 @@ class ViewDetail extends Component {
 							onClick={this.backClick}
 						/>
 					}
+					addonAfter={
+						<Link to="/shoppingcart" styleName="shoppingcart">
+							{
+								this.props.$$shoppingcart.amount !== '' &&
+								this.props.$$shoppingcart.amount > 0 ?
+								<sub>{this.props.$$shoppingcart.amount}</sub> :
+								null
+							}
+						</Link>
+					}
 				/>
 
 				<Layout.Body
 					styleName="body"
 					errorInfo={this.data.errorInfo}
-					loading={this.data.loading}>
+					onScroll={this.bodyScroll}
+					loading={this.data.loading}
+				>
 
 					{this.renderCover()}
 

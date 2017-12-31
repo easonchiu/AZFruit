@@ -17,7 +17,7 @@ const http = axios.create({
 })
 
 http.interceptors.request.use(config => {
-	const token = getToken('token')
+	const token = getToken()
 	if (token) {
 		config.headers.Authorization = 'Bearer ' + token
 	}
@@ -34,10 +34,18 @@ http.interceptors.response.use(config => {
 }, error => {
 	if (error.response.status == '401') {
 		clearToken()
-		window.location.href = process.env.ENV_NAME === 'production' ? '/login' : '/#/login'
-		return Promise.reject({
-			msg: '登录超时，请重新登录'
-		})
+		const token = getToken()
+		if (!token) {
+			const redirect = encodeURIComponent(window.location.href)
+			window.history.replaceState(null, '', '/#/login?redirect=' + redirect)
+			window.location.reload()
+			return
+		}
+		else {
+			return Promise.reject({
+				msg: '登录超时，请重新登录'
+			})
+		}
 	}
 	return Promise.reject({
 		msg: '系统错误'

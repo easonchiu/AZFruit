@@ -30,12 +30,14 @@
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
 		background: #fff;
+		visibility: hidden;
 	}
 	&.x-modal--enter {
 		.x-modal__bg {
 			opacity: 1;
 		}
 		.x-modal__inner {
+			visibility: visible;
 			-webkit-animation: '__x_popup_slideup_enter' cubic-bezier(0.5,0,0.3,1) 0.3s;
 		}
 		&.x-popup--top {
@@ -49,6 +51,7 @@
 			opacity: 0;
 		}
 		.x-modal__inner {
+			visibility: visible;
 			-webkit-animation: '__x_popup_slideup_leave' cubic-bezier(0.5,0,0.3,1) 0.3s;
 		}
 		&.x-popup--top {

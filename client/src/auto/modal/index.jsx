@@ -9,7 +9,7 @@ class Modal extends Component {
 
 		this.state = {
 			visible: false,
-			ani: 'leave',
+			ani: '',
 		}
 	}
 
@@ -30,8 +30,13 @@ class Modal extends Component {
     _enter() {
 		this.setState({
 			visible: true,
-            ani: 'enter',
 		})
+
+        setTimeout(e => {
+            this.setState({
+                ani: 'enter'
+            })
+        })
         
         const focusdom = document.querySelector(':focus')
         if (focusdom) {
@@ -41,23 +46,27 @@ class Modal extends Component {
 
     _leave() {
     	this.setState({
-			ani: 'leave',
+			ani: 'leave'
 		})
     }
 
     _onAnimationEnd() {
-    	if (this.state.ani !== 'leave') {
-            return
+        console.log(this.state.ani)
+    	if (this.state.ani === 'leave') {
+            this.setState({
+                visible: false,
+                ani: ''
+            })
         }
-    	this.setState({
-    		visible: false
-    	})
     }
 
     render() {
     	const css = classnames(
     		'x-modal',
-    		`x-modal--${this.state.ani}`,
+            {
+                'x-modal--enter': this.state.ani === 'enter',
+                'x-modal--leave': this.state.ani === 'leave'
+            },
     		this.props.className
     	)
 

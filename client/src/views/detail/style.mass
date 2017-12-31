@@ -3,6 +3,31 @@
 .view-detail {
 	background: #fff !important;
 
+	.shoppingcart {
+		position: relative;
+		display: block;
+		width: 0.8rem;
+		height: 0.8rem;
+		background: url('../../assets/imgs/nav-shoppingcart.png') center no-repeat;
+		background-size: 0.46rem;
+		margin-right: -0.1rem;
+		sub {
+			position: absolute;
+			left: 55%;
+			top: 10%;
+			color: #fff;
+			font-size: 0.2rem;
+			background: #ff4949;
+			line-height: 1;
+			display: -webkit-box;
+			-webkit-box-pack: center;
+			-webkit-box-align: center;
+			min-width: 1.4em;
+			padding: 0.2em;
+			border-radius: 1em;
+		}
+	}
+
 	.body {
 		margin-top: -1.2rem;
 	}
@@ -227,6 +252,13 @@
 	}
 }
 
+:global(.x-app-header--ghost) {
+	.shoppingcart {
+		background: url('../../assets/imgs/nav-shoppingcart-w.png') center no-repeat;
+		background-size: 0.46rem;
+	}
+}
+
 .add-to-cart-popup {
 	:global(.x-modal__inner) {
 		min-height: 40%;
@@ -235,7 +267,7 @@
 	:global(.x-popup__inner) {
 		overflow: visible;
 		position: relative;
-		// padding-top: 1.8rem;
+		padding-bottom: 0.2rem;
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
 	}
@@ -358,7 +390,7 @@
 	}
 	.buttons {
 		display: -webkit-box;
-		padding-top: 0.3rem;
+		padding-top: 0.2rem;
 		:global(.x-button) {
 			-webkit-box-flex: 1;
 			&:first-child {

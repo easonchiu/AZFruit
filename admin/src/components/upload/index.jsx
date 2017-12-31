@@ -29,7 +29,7 @@ class Upload extends Component {
 					base64,
 					class: this.props.classes
 				})
-				this.props.onChange(res)
+				this.props.onChange(res.uri)
 			} else {
 				Message.error('获取base64失败')
 			}
@@ -69,6 +69,20 @@ class Upload extends Component {
 			// 获取base64
 			var imgData = canvas.toDataURL('image/jpeg')
 			
+			if (src.indexOf('data:image/png') == 0) {
+				imgData = canvas.toDataURL('image/png')
+			}
+			else if (src.indexOf('data:image/jpg') == 0) {
+				imgData = canvas.toDataURL('image/jpeg')
+			}
+			else if (src.indexOf('data:image/jpeg') == 0) {
+				imgData = canvas.toDataURL('image/jpeg')
+			}
+			else {
+				return
+			}
+
+
 			this.uploadBase64(imgData)
 			canvas = null
 		}

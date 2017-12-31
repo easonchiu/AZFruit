@@ -51,15 +51,12 @@ class ViewProfile extends Component {
 	}
 
 	logout = e => {
-		clearToken()
-
 		Alert.show({
 			title: '退出登录',
-			desc: '确定要退出登录吗？',
-			className: 'delete-address-alert',
+			desc: '确定要退出帐号吗？',
 			btnTextN: '取消',
 			btnTextY: '退出登录',
-			callbackY: async e => {
+			callbackY: e => {
 				clearToken()
 				this.props.history.replace('/')
 			}
