@@ -42,6 +42,17 @@ class Control {
 		}
 	}
 
+	static async unifiedorderCallback(ctx, next) {
+		try {
+			console.log(ctx.query)
+
+			return ctx.success()
+		}
+		catch (e) {
+			return ctx.error()
+		}
+	}
+
 }
 
 module.exports = Control

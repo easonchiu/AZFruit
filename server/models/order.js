@@ -43,7 +43,7 @@ var OrderSchema = Schema({
 	totalPrice: { type: Number, default: 0 },
 	// 邮费
 	postage: { type: Number, default: 0 },
-	// 需要支付
+	// 需要支付（totalPrice + postage）
 	needPayment: { type: Number, default: 0 },
 	// 状态 
 	// 1: 待支付

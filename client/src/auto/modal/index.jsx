@@ -51,7 +51,6 @@ class Modal extends Component {
     }
 
     _onAnimationEnd() {
-        console.log(this.state.ani)
     	if (this.state.ani === 'leave') {
             this.setState({
                 visible: false,

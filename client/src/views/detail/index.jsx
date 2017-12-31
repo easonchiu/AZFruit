@@ -71,7 +71,7 @@ class ViewDetail extends Component {
 		const token = getToken()
 		if (!token) {
 			const redirect = encodeURIComponent(window.location.href)
-			this.props.history.replace('/login?redirect=' + redirect)
+			this.props.history.push('/login?redirect=' + redirect)
 			return
 		}
 		this.data.popupVisible = true

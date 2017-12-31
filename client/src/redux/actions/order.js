@@ -56,10 +56,21 @@ const fetchAmount = payload => async (dispatch, getState) => {
 	dispatch(_amount(res))
 }
 
+// 支付订单
+const paymentOrder = payload => async (dispatch) => {
+	const res = await http.request({
+		method: 'post',
+        url: `/order/${payload.orderNo}/payment`,
+        data: payload
+	})
+	return res
+}
+
 export default {
 	create,
 	fetchList,
 	fetchDetail,
 	cancelOrder,
 	fetchAmount,
+	paymentOrder,
 }

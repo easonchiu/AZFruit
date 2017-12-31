@@ -298,7 +298,7 @@ class ViewShoppingcart extends Component {
 
 			this.props.$shoppingcart.clearAmount()
 
-			this.props.history.replace(`/order/detail/${res.orderNo}`)
+			this.props.history.replace(`/order/detail/?orderNo=${res.orderNo}`)
 		}
 		catch(e) {
 			Toast.show(e.msg)

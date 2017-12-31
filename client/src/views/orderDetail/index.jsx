@@ -4,6 +4,7 @@ import connect from 'src/redux/connect'
 import mass from 'mass'
 import stateData from 'react-state-data'
 import cn from 'classnames'
+import qs from 'qs'
 
 import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
@@ -31,9 +32,9 @@ class ViewOrder extends Component {
 	}
 
 	componentDidMount() {
-		const id = this.props.match.params.id
-		const couponId = this.props.match.params.couponId
-		this.fetch(id, couponId, true)
+		this.search = qs.parse(this.props.location.search.replace(/^\?/, ''))
+
+		this.fetch(this.search.orderNo, this.search.couponId, true)
 	}
 
 	componentWillUnmount() {
@@ -282,9 +283,9 @@ class ViewOrder extends Component {
 
 	// 优惠券点击
 	couponClick = couponId => {
-		const id = this.props.match.params.id
-		this.props.history.replace(`/order/detail/${id}/${couponId}`)
-		this.fetch(id, couponId)
+		this.search.couponId = couponId
+		this.props.history.replace(`/order/detail/?orderNo=${this.search.orderNo}&couponId=${couponId}`)
+		this.fetch(this.search.orderNo, couponId)
 
 		this.closeCouponPopup()
 	}
@@ -408,6 +409,26 @@ class ViewOrder extends Component {
 		})
 	}
 
+	// 支付
+	payment = async e => {
+		try {
+			Loading.show()
+			const data = this.props.$$order.detail
+			const couponId = data.usedCoupon ? data.usedCoupon.id : ''
+
+			await this.props.$order.paymentOrder({
+				orderNo: this.search.orderNo,
+				couponId: couponId
+			})
+		}
+		catch (e) {
+			Toast.show(e.msg || '系统错误')
+		}
+		finally {
+			Loading.hide()
+		}
+	}
+
 	render() {
 		const data = this.props.$$order.detail
 
@@ -463,7 +484,7 @@ class ViewOrder extends Component {
 
 					{
 						data.status == 1 ?
-						<Button>
+						<Button onClick={this.payment}>
 							微信支付￥{data.needPayment / 100}元
 						</Button> :
 
