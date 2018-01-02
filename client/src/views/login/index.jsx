@@ -143,11 +143,9 @@ class ViewLogin extends Component {
 	render() {
 		return (
 			<Layout styleName="view-login">
-				<Layout.Header title="账户登录" ghost />
-
 				<Layout.Body styleName="body">
 
-					<h1 styleName="logo">LOGO</h1>
+					<h1 styleName="logo" />
 				
 					<Input
 						type="tel"

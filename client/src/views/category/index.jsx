@@ -152,7 +152,7 @@ class ViewCategory extends Component {
 					{this.renderList()}
 				</Layout.Body>
 
-				<AppFooter />
+				<AppFooter pathname={this.props.location.pathname} />
 			</Layout>
 		)
 	}

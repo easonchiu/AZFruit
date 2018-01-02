@@ -8,76 +8,13 @@ var axios = require('axios')
 var WX = require('../conf/wx')
 var dateFormat = require('dateformat')
 var md5 = require('md5')
+var xml2json = require('xml2json')
+
+
+var tempXml = "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg><appid><![CDATA[wx34d82f12f9ab1942]]></appid><mch_id><![CDATA[1480957522]]></mch_id><device_info><![CDATA[WEB]]></device_info><nonce_str><![CDATA[Hy4OUWBzdchBy0hx]]></nonce_str><sign><![CDATA[1F379FE6A1037AAF3E2C8C0B089E6DEA]]></sign><result_code><![CDATA[SUCCESS]]></result_code><prepay_id><![CDATA[wx20180103001813400b47fc430664315043]]></prepay_id><trade_type><![CDATA[JSAPI]]></trade_type></xml>"
+
 
 class Control {
-
-	static async _fetchList(ctx, next, uid) {
-		try {
-			let { skip = 0, limit = 10, type = 1 } = ctx.query
-			skip = parseInt(skip)
-			limit = parseInt(limit)
-
-			let count = 0
-
-			console.log(12312)
-
-			const search = [{
-				$sort: {
-					createTime: -1,
-				}
-			}, {
-				$project: {
-					_id: 0,
-					__v: 0
-				}
-			}, {
-				$skip: skip
-			}, {
-				$limit: limit
-			}]
-			
-			// 如果特指到某一用户，只查他的
-			if (uid) {
-				const match = {
-					$match: {
-						uid
-					}
-				}
-
-				// 进行中的订单
-				if (type == 1) {
-					match.$match.status = 1
-					match.$match.paymentTimeout = {
-						'$gt': new Date()
-					}
-				}
-				// 已完成的订单
-				else if (type == 2) {
-					// 除了待支付和已关闭的订单
-					match.$match.status = {
-						$all: [11, 21, 31, 41]
-					}
-				}
-				search.unshift(match)
-			}
-			else {
-				count = await OrderModel.count({})
-			}
-
-			const list = await OrderModel.aggregate(search) || []
-
-			return ctx.success({
-				data: {
-					list,
-					count,
-					skip,
-					limit,
-				}
-			})
-		} catch(e) {
-			return ctx.error()
-		}
-	}
 
 	// 获取进行中的订单数量
 	static async fetchAmount(ctx, next) {
@@ -106,8 +43,37 @@ class Control {
 
 	// 用户获取订单列表
 	static async fetchList(ctx, next) {
-		const {uid} = ctx.state.jwt
-		return await Control._fetchList(ctx, next, uid)
+		try {
+			let { type = 1 } = ctx.query
+			const {uid} = ctx.state.jwt
+
+			let list = []
+
+			// 进行中的订单
+			if (type == 1) {
+				list = await OrderModel.aggregate([
+					{ $match: { uid: uid, status: 1, paymentTimeout: { '$gt': new Date() } } },
+					{ $sort: { createTime: -1 } },
+					{ $project: { _id: 0, __v: 0 } }
+				])
+			}
+			// 已完成的订单
+			else if (type == 2) {
+				list = await OrderModel.history.aggregate([
+					{ $match: { uid: uid } },
+					{ $sort: { createTime: -1 } },
+					{ $project: { _id: 0, __v: 0 } }
+				])
+			}
+
+			return ctx.success({
+				data: {
+					list
+				}
+			})
+		} catch(e) {
+			return ctx.error()
+		}
 	}
 
 	// 用户取消订单
@@ -161,15 +127,38 @@ class Control {
 		try {
 			const {uid} = ctx.state.jwt
 
-			const id = ctx.params.id
+			const {id} = ctx.params
 
-			const res = await OrderModel.findOne({
-				uid,
-				orderNo: id
-			}, {
-				__v: 0,
-				_id: 0
-			})
+			const {flag} = ctx.query
+
+			// 详情必须要有flag，来区分查不同的表
+			if (flag != 1 && flag != 2) {
+				return ctx.error({
+					msg: 'flag参数错误'
+				})
+			}
+
+			let res = null
+			
+			// 查询条件
+			const query = [
+				{ uid, orderNo: id },
+				{ __v: 0, _id: 0 }
+			]
+			
+			// 查进行中的订单
+			if (flag == 1) {
+				res = await OrderModel.findOne(query[0], query[1])
+			}
+			// 查已完成的订单
+			else {
+				res = await OrderModel.history.findOne(query[0], query[1])
+				
+				// 如果没找到，再去flag=1的表里再查查
+				if (!res) {
+					res = await OrderModel.findOne(query[0], query[1])
+				}
+			}
 
 			if (res) {
 				// 待支付的订单
@@ -408,15 +397,23 @@ class Control {
 				})
 			}
 
+			// 查找用户信息
+			const userDoc = await UserModel.findOne({
+				_id: uid
+			}, 'couponList openId')
+			
+			// openid必须要有，若没有就报错
+			if (!userDoc.openId) {
+				return ctx.error({
+					msg: '没有该用户的openId信息'
+				})
+			}
+
 			// 如果有优惠券，验证它是不是可用
 			let choosedCoupon = null
 			let total_fee = orderDoc.needPayment
 			if (couponId) {
-				let couponDoc = await UserModel.findOne({
-					_id: uid
-				}, 'couponList')
-
-				couponDoc = couponDoc.couponList ? couponDoc.couponList : []
+				const couponDoc = userDoc.couponList ? userDoc.couponList : []
 				
 				for (let i = 0; i < couponDoc.length; i++) {
 					const d = couponDoc[i]
@@ -444,6 +441,15 @@ class Control {
 			}
 
 			// 到这一步，说明订单和优惠券都验证通过了，开始请求微信支付
+			
+			const returnJson = JSON.parse(xml2json.toJson(tempXml)).xml
+			return ctx.success({
+				data: {
+					nonce_str: returnJson.nonce_str,
+					sign: returnJson.sign,
+					prepay_id: returnJson.prepay_id
+				}
+			})
 
 			// 生成订单失效时间
 			const time_expire = dateFormat(orderDoc.paymentTimeout, 'yyyymmddhhMMss')
@@ -452,10 +458,13 @@ class Control {
 			const body = '爱泽阳光ivcsun-爱泽阳光商城支付'
 			
 			// 客户端ip
-			const spbill_create_ip = ctx.ip.replace(/^::\D+:/g, '')
+			const spbill_create_ip = ctx.request.ip.replace(/^::\D+:/g, '')
+
+			// 异步接收地址
+			const notify_url = 'http://www.ivcsun.com/server/api/wx/unifiedorder/callback'
 
 			// 生成签名
-			const stringA = `appid=${WX.appID}&body=${body}&device_info=WEB&mch_id=${WX.mchID}&nonce_str=${id}`
+			const stringA = `appid=${WX.appID}&body=${body}&device_info=WEB&mch_id=${WX.mchID}&nonce_str=${id}&notify_url=${notify_url}&openid=${userDoc.openId}&out_trade_no=${id}&sign_type=MD5&spbill_create_ip=${spbill_create_ip}&time_expire=${time_expire}&total_fee=${total_fee}&trade_type=JSAPI`
 			const stringSign = md5(stringA + '&key=' + WX.key).toUpperCase()
 
 			const data = {
@@ -464,20 +473,23 @@ class Control {
 				device_info: 'WEB',
 				nonce_str: id, // 随机字符串，长度要求在32位以内。
 				sign: stringSign, // 通过签名算法计算得出的签名值，详见签名生成算法
+				sign_type: 'MD5',
 				body: body, // 商品简单描述，该字段请按照规范传递，具体请见参数规定
 				out_trade_no: id, // 商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。
 				total_fee: total_fee, // 订单总金额，单位为分，详见支付金额
 				spbill_create_ip: spbill_create_ip, // APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
 				time_expire: time_expire, // 订单失效时间，格式为yyyyMMddHHmmss
-				notify_url: 'http://www.ivcsun.com/server/api/wx/unifiedorder/callback', // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
+				notify_url: notify_url, // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
 				trade_type: 'JSAPI',
+				openid: userDoc.openId
 			}
 
 			// 将请求的值转为xml形式
-			let xmlData = ''
+			let xmlData = '<xml>'
 			for (let i in data) {
 				xmlData += '<' + i + '>' + data[i] + '</' + i + '>'
 			}
+			xmlData += '</xml>'
 
 			// 微信预支付
 			const res = await axios.request({
@@ -489,13 +501,19 @@ class Control {
 			// 失败
 			if ((/FAIL/gi).test(res.data)) {
 				return ctx.error({
-					msg: res.data.replace(/^\D+<return_msg><!\[CDATA\[/gi, '').replace(/\]\]><\/return_msg>\D+/gi, ''),
-					data: data
+					msg: res.data.replace(/^\D+<return_msg><!\[CDATA\[/gi, '').replace(/\]\]><\/return_msg>\D+/gi, '')
 				})
 			}
 			// 成功
 			else {
-				return ctx.success()
+				const obj = JSON.parse(xml2json.toJson(res.data))
+				return ctx.success({
+					data: {
+						nonce_str: obj.nonce_str,
+						sign: obj.sign,
+						prepay_id: obj.prepay_id
+					}
+				})
 			}
 		}
 		catch (e) {

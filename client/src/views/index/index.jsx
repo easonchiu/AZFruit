@@ -59,9 +59,7 @@ class ViewIndex extends Component {
 		return (
 			<div styleName="top">
 
-				<div styleName="top_header">
-					<h1>爱泽阳光</h1>
-				</div>
+				<div styleName="top_header"></div>
 
 				<div styleName="top_banners">
 					<div styleName="banners">
@@ -196,7 +194,7 @@ class ViewIndex extends Component {
 					
 				</Layout.Body>
 
-				<AppFooter />
+				<AppFooter pathname={this.props.location.pathname} />
 			</Layout>
 		)
 	}

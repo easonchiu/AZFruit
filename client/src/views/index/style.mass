@@ -12,14 +12,11 @@
 	.top_header {
 		height: 1.18rem;
 		line-height: 1.18rem;
+		background: url('../../assets/imgs/logo.gif') center center no-repeat;
+		background-size: auto 0.8rem;
 		position: relative;
 		h1 {
 			text-align: center;
-		}
-		:global(.nav-top-spct) {
-			position: absolute;
-			right: -0.2rem;
-			top: 0.04rem;
 		}
 	}
 

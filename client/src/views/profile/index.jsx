@@ -113,7 +113,7 @@ class ViewProfile extends Component {
 
 				</Layout.Body>
 
-				<AppFooter />
+				<AppFooter pathname={this.props.location.pathname} />
 			</Layout>
 		)
 	}

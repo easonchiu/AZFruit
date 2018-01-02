@@ -3,6 +3,7 @@ var jwtKey = require('../conf/clientJwtKey')
 var WX = require('../conf/wx')
 var axios = require('axios')
 var UserModel = require('../models/user')
+var OrderModel = require('../models/order')
 
 class Control {
 
@@ -44,11 +45,40 @@ class Control {
 
 	static async unifiedorderCallback(ctx, next) {
 		try {
-			console.log(ctx.query)
+			const {id} = ctx.request.body
+
+			let doc = await OrderModel.aggregate([
+				{ $match: { orderNo: id } },
+				{ $project: { _id: 0, __v: 0 } },
+				{ $limit: 1 }
+			])
+			
+			// 找到这个订单
+			if (doc && doc.length) {
+				doc = doc[0]
+			}
+			else {
+				return ctx.error()
+			}
+
+			// 查找相关的订单将其改成支付完成状态
+			doc.status = 11
+			
+			// 存入微信订单号
+			doc.wxOrderNo = 'test'
+			
+			// 存到历史订单表中
+			await new OrderModel.history(doc).create()
+
+			// 删除原表中的订单
+			await OrderModel.remove({
+				orderNo: id
+			})
 
 			return ctx.success()
 		}
 		catch (e) {
+			console.log(e)
 			return ctx.error()
 		}
 	}

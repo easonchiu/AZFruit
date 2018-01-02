@@ -48,6 +48,26 @@
 	.icon-profile {
 		background-image: url('../../assets/imgs/nav-profile.png');
 	}
+
+	.active {
+		p {
+			color: #5fc37f;
+		}
+		.icon-home {
+			background-image: url('../../assets/imgs/nav-home-act.png');
+		}
+		.icon-category {
+			background-image: url('../../assets/imgs/nav-category-act.png');
+		}
+		.icon-shoppingcart {
+			background-image: url('../../assets/imgs/nav-shoppingcart-act.png');
+		}
+		.icon-profile {
+			background-image: url('../../assets/imgs/nav-profile-act.png');
+		}
+	}
+	
+
 	p {
 		display: block;
 		font-size: 0.22rem;

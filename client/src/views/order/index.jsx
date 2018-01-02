@@ -89,7 +89,7 @@ class ViewOrder extends Component {
 	}
 
 	itemClick = data => {
-		this.props.history.push(`/order/detail/?orderNo=${data.orderNo}`)
+		this.props.history.push(`/order/detail/?orderNo=${data.orderNo}&flag=${this.data.tabsActive}`)
 	}
 
 	renderItem = data => {

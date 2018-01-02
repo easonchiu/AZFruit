@@ -31,7 +31,8 @@ const fetchDetail = payload => async (dispatch, getState) => {
 		method: 'get',
         url: `/order/${payload.id}`,
         params: {
-        	couponId: payload.couponId
+        	couponId: payload.couponId,
+        	flag: payload.flag
         }
 	})
 	dispatch(_fetchDetail(res))

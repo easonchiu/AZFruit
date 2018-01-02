@@ -48,16 +48,7 @@ a:active {opacity: 0.7;}
 
 /*
 -------------------------------------------------------------------------------*/
-
-/* 链接长按时不触发系统的菜单，也可用于img，在不想让用户长按将图片保存至相册时使用，默认禁止链接和图片 */
-a,img { -webkit-touch-callout: none;}
-
-/* 无法选择复制内容 / 去除iphone中按下时的高亮效果 */
-a, select, input:not([type=radio]):not([type=checkbox]), textarea, button { -webkit-user-select: none; -webkit-tap-highlight-color: rgba(0,0,0,0); outline: none;}
-input:not([type=radio]):not([type=checkbox]),textarea { -webkit-user-select: auto; background: rgba(0,0,0,0); width: 100%;}
-
-/* 阻止旋转屏幕时自动调整字体大小 */
-* { -webkit-text-size-adjust: none;}
+* { -webkit-appearance: none; -webkit-text-size-adjust: none; -webkit-user-select: none; -webkit-tap-highlight-color: rgba(0,0,0,0); outline: none; -webkit-touch-callout: none;}
 
 /* 切换盒模型 */
 *, *:after, *:before { -webkit-box-sizing: border-box; box-sizing: border-box;}

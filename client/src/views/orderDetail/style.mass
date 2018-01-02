@@ -114,7 +114,7 @@
 			font-size: 0.26rem;
 			line-height: 0.4rem;
 			display: block;
-			width: 5.5em;
+			width: 8em;
 		}
 		p, strong {
 			display: block;

@@ -8,7 +8,7 @@ router
 	.get(`${prefix.app}/wx/auth/callback`, wx.authCallback)
 
 	// 微信支付异步回掉接口
-	.get(`${prefix.api}/wx/unifiedorder/callback`, wx.unifiedorderCallback)
+	.post(`${prefix.app}/wx/unifiedorder/callback`, wx.unifiedorderCallback)
 
 
 module.exports = router

@@ -34,14 +34,14 @@ class ViewOrder extends Component {
 	componentDidMount() {
 		this.search = qs.parse(this.props.location.search.replace(/^\?/, ''))
 
-		this.fetch(this.search.orderNo, this.search.couponId, true)
+		this.fetch(this.search.orderNo, this.search.flag, this.search.couponId, true)
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.timer)
 	}
 
-	async fetch(id, couponId = '', first) {
+	async fetch(id, flag, couponId = '', first) {
 		if (first) {
 			this.data.loading = true
 		}
@@ -51,7 +51,8 @@ class ViewOrder extends Component {
 		try {
 			await this.props.$order.fetchDetail({
 				id,
-				couponId
+				couponId,
+				flag
 			})
 			const data = this.props.$$order.detail
 
@@ -217,6 +218,15 @@ class ViewOrder extends Component {
 						null
 					}
 					{
+						data.status !== 1 &&
+						data.status !== 90 ?
+						<li>
+							<label>微信支付订单号</label>
+							<p>{data.wxOrderNo}</p>
+						</li> :
+						null
+					}
+					{
 						data.status !== 90 ?
 						<li>
 							<label>下单时间</label>
@@ -284,8 +294,8 @@ class ViewOrder extends Component {
 	// 优惠券点击
 	couponClick = couponId => {
 		this.search.couponId = couponId
-		this.props.history.replace(`/order/detail/?orderNo=${this.search.orderNo}&couponId=${couponId}`)
-		this.fetch(this.search.orderNo, couponId)
+		this.props.history.replace(`/order/detail/?orderNo=${this.search.orderNo}&flag=${this.search.flag}&couponId=${couponId}`)
+		this.fetch(this.search.orderNo, this.search.flag, couponId)
 
 		this.closeCouponPopup()
 	}
@@ -420,6 +430,8 @@ class ViewOrder extends Component {
 				orderNo: this.search.orderNo,
 				couponId: couponId
 			})
+			
+			this.props.history.replace(`/order/detail/?orderNo=${this.search.orderNo}&flag=2&couponId=${couponId}`)
 		}
 		catch (e) {
 			Toast.show(e.msg || '系统错误')
@@ -493,7 +505,9 @@ class ViewOrder extends Component {
 							订单已取消
 						</Button> :
 
-						null
+						<Button>
+							联系客服
+						</Button>
 					}
 					
 				</Layout.Footer>

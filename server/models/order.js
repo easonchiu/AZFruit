@@ -8,11 +8,11 @@ var Schema = mongoose.Schema
 var OrderSchema = Schema({
 	id: { type: Schema.Types.ObjectId },
 	// 订单号
-	orderNo: { type: String, required: true },
+	orderNo: { type: String, required: true, index: true },
 	// 微信支付订单号
 	wxOrderNo: { type: String, default: '' },
-	// 用户id, index: 按uid来作索引
-	uid: { type: String, required: true, index: true },
+	// 用户id
+	uid: { type: String, required: true },
 	// 用户openId
 	openId: { type: String, required: true },
 	// 城市，目前只能上海
@@ -72,4 +72,5 @@ OrderSchema.methods.create = function() {
 }
 
 const model = mongoose.model('Order', OrderSchema)
+model.history = mongoose.model('HistoryOrder', OrderSchema)
 module.exports = model

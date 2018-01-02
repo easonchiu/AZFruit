@@ -31,7 +31,8 @@
 			display: block;
 			width: 1.2rem;
 			height: 1.2rem;
-			background: #fff;
+			background: url('../../assets/imgs/logo.gif') center 0.35rem no-repeat #fff;
+			background-size: 80% auto;
 			margin: 0 auto 0.3rem auto;
 			border-radius: 50%;
 		}
@@ -49,6 +50,7 @@
 			-webkit-box-flex: 1;
 		}
 		sub {
+			display: block;
 			color: #5fc37f;
 			font-size: 0.24rem;
 			line-height: 1;
