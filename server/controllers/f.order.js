@@ -435,24 +435,16 @@ class Control {
 				total_fee = orderDoc.needPayment - choosedCoupon.worth
 				
 				// 如果被减到0，改成1，即必须支付一次
-				if (!total_fee) {
+				if (total_fee <= 0) {
 					total_fee = 1
 				}
 			}
 
 			// 到这一步，说明订单和优惠券都验证通过了，开始请求微信支付
-			
-			const returnJson = JSON.parse(xml2json.toJson(tempXml)).xml
-			return ctx.success({
-				data: {
-					nonce_str: returnJson.nonce_str,
-					sign: returnJson.sign,
-					prepay_id: returnJson.prepay_id
-				}
-			})
 
 			// 生成订单失效时间
-			const time_expire = dateFormat(orderDoc.paymentTimeout, 'yyyymmddhhMMss')
+			const after10m = new Date((new Date()).getTime() + 1000 * 60 * 10)
+			const time_expire = dateFormat(after10m, 'yyyymmddHHMMss')
 			
 			// 商品简单描述
 			const body = '爱泽阳光ivcsun-爱泽阳光商城支付'
@@ -501,17 +493,22 @@ class Control {
 			// 失败
 			if ((/FAIL/gi).test(res.data)) {
 				return ctx.error({
+					data: xmlData,
 					msg: res.data.replace(/^\D+<return_msg><!\[CDATA\[/gi, '').replace(/\]\]><\/return_msg>\D+/gi, '')
 				})
 			}
 			// 成功
 			else {
-				const obj = JSON.parse(xml2json.toJson(res.data))
+				const obj = JSON.parse(xml2json.toJson(res.data)).xml || {}
 				return ctx.success({
 					data: {
+						appid: obj.appid,
+						time_stamp: Math.round(new Date().getTime() / 1000).toString(),
 						nonce_str: obj.nonce_str,
-						sign: obj.sign,
-						prepay_id: obj.prepay_id
+						sign_type: 'MD5',
+						sign: stringSign,
+						prepay_id: obj.prepay_id,
+						xml: res.data
 					}
 				})
 			}

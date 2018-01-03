@@ -5,6 +5,7 @@ import mass from 'mass'
 import stateData from 'react-state-data'
 import cn from 'classnames'
 import qs from 'qs'
+import wx from 'we-jssdk'
 
 import CDN from 'src/assets/libs/cdn'
 import Layout from 'src/auto/layout'
@@ -35,6 +36,8 @@ class ViewOrder extends Component {
 		this.search = qs.parse(this.props.location.search.replace(/^\?/, ''))
 
 		this.fetch(this.search.orderNo, this.search.flag, this.search.couponId, true)
+
+		this.getWxTicket()
 	}
 
 	componentWillUnmount() {
@@ -79,6 +82,25 @@ class ViewOrder extends Component {
 		}
 		this.data.loading = false
 		Loading.hide()
+	}
+
+	// 微信获取ticket
+	async getWxTicket() {
+		try {
+			const data = await this.props.$user.getTicket()
+
+			wx.config({
+			    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			    appId: data.appId, // 必填，公众号的唯一标识
+			    timestamp: data.timestamp, // 必填，生成签名的时间戳
+			    nonceStr: data.nonceStr, // 必填，生成签名的随机串
+			    signature: data.signature,// 必填，签名，见附录1
+			    jsApiList: [] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+			})
+		}
+		catch (e) {
+			console.log(e)
+		}
 	}
 
 	// 每个单品
@@ -426,12 +448,42 @@ class ViewOrder extends Component {
 			const data = this.props.$$order.detail
 			const couponId = data.usedCoupon ? data.usedCoupon.id : ''
 
-			await this.props.$order.paymentOrder({
+			const res = await this.props.$order.paymentOrder({
 				orderNo: this.search.orderNo,
 				couponId: couponId
 			})
-			
-			this.props.history.replace(`/order/detail/?orderNo=${this.search.orderNo}&flag=2&couponId=${couponId}`)
+
+			const _this = this
+
+			wx.chooseWXPay({
+				appId: res.appid,
+			    timestamp: res.time_stamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+			    nonceStr: res.nonce_str, // 支付签名随机串，不长于 32 位
+			    package: `prepay_id=${res.prepay_id}`, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+			    signType: res.sign_type, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+			    paySign: res.sign, // 支付签名
+			    success: function(e){
+			        console.log(e)
+			    }
+			})
+
+			// const params = {
+			// 	appId: res.appid, //公众号名称，由商户传入     
+			// 	timeStamp: res.time_stamp, //时间戳，自1970年以来的秒数
+			// 	nonceStr: res.nonce_str, //随机串     
+			// 	package: `prepay_id=${res.prepay_id}`,     
+			// 	signType: res.sign_type, //微信签名方式：     
+			// 	paySign: res.sign //微信签名 
+			// }
+
+			// WeixinJSBridge && WeixinJSBridge.invoke(
+			//    'getBrandWCPayRequest', params,
+			// 	function(res){     
+			// 		if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+
+			// 		}
+			// 	}
+			// )
 		}
 		catch (e) {
 			Toast.show(e.msg || '系统错误')

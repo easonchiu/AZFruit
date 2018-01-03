@@ -32,8 +32,20 @@ const fetchBaseInfo = payload => async (dispatch, getState) => {
 	dispatch(_fetchBaseInfo(res))
 }
 
+const getTicket = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'post',
+        url: `/wx/getTicket`,
+        data: {
+        	url: encodeURIComponent(window.location.href.split('#')[0])
+        }
+	})
+	return res
+}
+
 export default {
 	login,
 	sendVerifcode,
-	fetchBaseInfo
+	fetchBaseInfo,
+	getTicket
 }

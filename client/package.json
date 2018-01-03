@@ -61,6 +61,7 @@
     "babel-plugin-lodash": "^3.3.2",
     "fastclick": "^1.0.6",
     "lodash-webpack-plugin": "^0.11.4",
-    "react-swipe": "^5.1.0"
+    "react-swipe": "^5.1.0",
+    "we-jssdk": "^1.0.0"
   }
 }
