@@ -8,6 +8,7 @@ import ViewIndex from 'src/views/index'
 import ViewCategory from 'src/views/category'
 import ViewDetail from 'src/views/detail'
 import ViewLogin from 'src/views/login'
+import ViewPlaceOrder from 'src/views/placeOrder'
 import ViewOrder from 'src/views/order'
 import ViewOrderDetail from 'src/views/orderDetail'
 import ViewProfile from 'src/views/profile'
@@ -40,10 +41,11 @@ const Routes = () => {
 				<Route exact path="/category/:id?" component={ ViewCategory }/>
 				<Route exact path="/detail/:id" component={ ViewDetail }/>
 				<Route exact path="/login" component={ ViewLogin }/>
+				<Route exact path="/placeOrder" component={ LoginIfNeeded(ViewPlaceOrder)(true) }/>
 				<Route exact path="/order/detail" component={ LoginIfNeeded(ViewOrderDetail)(true) }/>
 				<Route exact path="/order/:type?" component={ LoginIfNeeded(ViewOrder)(true) }/>
 				<Route exact path="/profile" component={ LoginIfNeeded(ViewProfile)(true) }/>
-				<Route exact path="/shoppingcart/:aid?" component={ LoginIfNeeded(ViewShoppingcart)(true) }/>
+				<Route exact path="/shoppingcart" component={ LoginIfNeeded(ViewShoppingcart)(true) }/>
 				<Route exact path="/address" component={ LoginIfNeeded(ViewAddress)(true) }/>
 				<Route exact path="/address/choose/:id?" component={ LoginIfNeeded(ViewAddressChoose)(true) }/>
 				<Route exact path="/address/edit/:id" component={ LoginIfNeeded(ViewAddressDetail)(true) }/>

@@ -153,10 +153,7 @@ class Control {
 		try {
 			const {uid} = ctx.state.jwt
 			
-			// 找到请求中的addressId
-			const search = qs.parse(ctx.search.replace(/^\?/, ''))
-
-			const data = await Control.getShoppingcartInfo(uid, search.addressId)
+			const data = await Control.getShoppingcartInfoWithUser(uid)
 
 			if (data) {
 				return ctx.success({
@@ -262,13 +259,8 @@ class Control {
 
 	// 计算某用户购物车中的信息
 	// uid: 用户id
-	// aid: 地址id,若没有的话使用默认地址,如果默认地址也没有的话将不返回地址信息
-	static async getShoppingcartInfo(uid, aid) {
+	static async getShoppingcartInfoWithUser(uid) {
 		try {
-			
-			// 获取地址
-			const addressDoc = await UserModel.getAddress(uid, aid)
-
 			// 先获取购物车中的所有商品
 			let shoppingcartDoc = await UserModel.findOne({
 				_id: uid
@@ -279,7 +271,6 @@ class Control {
 			// 如果没有商品，返回空数据
 			if (!shoppingcartDoc.length) {
 				return {
-					address: addressDoc,
 					list: [],
 					postagePrice: 0,
 					totalPrice: 0,
@@ -299,13 +290,14 @@ class Control {
 					skuId: data.skuId
 				})
 
-				// 如果购物车里的商品存在，更新
+				// 如果购物车里的商品存在，从商品表中更新商品信息到购物车表
 				if (skuDoc) {
 					// 分别计算每个规格的总重量和总价
 					skuDoc.amount = data.amount
 					skuDoc.totalWeight = skuDoc.weight * data.amount
 					skuDoc.totalPrice = skuDoc.price * data.amount
-
+					
+					// 更新到购物车表
 					await UserModel.update({
 						_id: uid,
 						'shoppingcart.skuId': data.skuId
@@ -330,7 +322,7 @@ class Control {
 				}
 			}
 
-			// 再次查找所有数据
+			// 再次查找购物车中的所有商品数据，这时商品信息是最新的
 			shoppingcartDoc = await UserModel.findOne({
 				_id: uid
 			}, 'shoppingcart')
@@ -345,19 +337,12 @@ class Control {
 					totalWeight += shoppingcartDoc[i].totalWeight
 				}
 			}
-
-			// 如果有地址，获取数据库中的运费列表
-			let postagePrice = 0
-			if (addressDoc) {
-				postagePrice = await PostageModel.expense(addressDoc.distance, totalPrice, totalWeight)
-			}
-
+			
+			// 返回数据
 			return {
 				list: shoppingcartDoc,
-				postagePrice,
 				totalPrice,
-				totalWeight,
-				address: addressDoc
+				totalWeight
 			}
 		} catch(e) {
 			return false

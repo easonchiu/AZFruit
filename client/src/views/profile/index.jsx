@@ -84,7 +84,7 @@ class ViewProfile extends Component {
 					{
 						mobile ?
 						<p>{mobile}</p> :
-						<p>{mobile}</p>
+						<p>&nbsp;</p>
 					}
 				</Layout.Header>
 

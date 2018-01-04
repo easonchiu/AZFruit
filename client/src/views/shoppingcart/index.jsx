@@ -43,14 +43,13 @@ class ViewShoppingcart extends Component {
 			Loading.show()
 		}
 		try {
+			// 如果有修改操作，先修改购物车内的商品
 			if (typeof patchData == 'object') {
 				await this.props.$shoppingcart.update(patchData)
 			}
-
-			const aid = this.props.match.params.aid
-			await this.props.$shoppingcart.fetchList({
-				addressId: aid
-			})
+			
+			// 获取购物车内的商品
+			await this.props.$shoppingcart.fetchList()
 			
 			// 如果没有内容
 			const list = this.props.$$shoppingcart.list
@@ -284,21 +283,15 @@ class ViewShoppingcart extends Component {
 		)
 	}
 
-	payment = async (address = {}) => {
-		if (!address || !address.id) {
-			Toast.show('您还没有收货地址哦')
-			return
-		}
-
+	payment = async () => {
 		Loading.show()
 		try {
-			const res = await this.props.$order.create({
-				addressid: address.id
-			})
+			// const res = await this.props.$order.create({
+			// 	addressid: address.id
+			// })
 
-			this.props.$shoppingcart.clearAmount()
-
-			this.props.history.replace(`/order/detail/?orderNo=${res.orderNo}&flag=1`)
+			// this.props.$shoppingcart.clearAmount()
+			this.props.history.push(`/placeOrder`)
 		}
 		catch(e) {
 			Toast.show(e.msg)
@@ -311,33 +304,23 @@ class ViewShoppingcart extends Component {
 	renderFooter() {
 		const {
 			totalPrice = 0,
-			postagePrice = 0,
 			totalWeight = 0,
-			address = {},
 		} = this.props.$$shoppingcart
 
 		return (
 			<div styleName="footer">
 				<div styleName="total">
-					{
-						postagePrice > 0 ?
-						<em>
-							总重量约{Math.round(totalWeight/50)/10}斤，运费另收￥{postagePrice / 100}元
-						</em> :
-						<em>
-							总重量约{Math.round(totalWeight/50)/10}斤，免运费
-						</em>
-					}
 					<p>
 						<span>总计：￥</span>
-						<strong>{(totalPrice + postagePrice) / 100}</strong>
+						<strong>{totalPrice / 100}</strong>
 						<span>元</span>
 					</p>
+					<em>
+						总重量约{Math.round(totalWeight / 50) / 10}斤
+					</em>
 				</div>
 
-				<Button onClick={this.payment.bind(this, address)}>
-					结算
-				</Button>
+				<Button onClick={this.payment}>结算</Button>
 			</div>
 		)
 	}
@@ -347,11 +330,7 @@ class ViewShoppingcart extends Component {
 
 		return (
 			<Layout styleName="view-shoppingcart">
-				<Layout.Header title="购物车"
-					addonBottom={
-						this.renderAddress()
-					}
-				/>
+				<Layout.Header title="购物车" />
 
 				<Layout.Body
 					styleName="body"
@@ -373,12 +352,6 @@ class ViewShoppingcart extends Component {
 								去逛逛
 							</Button>
 						</div> :
-						null
-					}
-
-					{
-						!list.length ?
-						<div></div> :
 						null
 					}
 					
