@@ -27,7 +27,8 @@ class ViewShoppingcart extends Component {
 			errorInfo: '',
 			edited: '',
 			amount: 0,
-			maxAmount: 0
+			maxAmount: 0,
+			disabled: false
 		})
 	}
 
@@ -55,6 +56,18 @@ class ViewShoppingcart extends Component {
 			const list = this.props.$$shoppingcart.list
 			if (!list.length) {
 				this.props.$shoppingcart.clearAmount()
+			}
+			// 判断每个商品的库存是不是够
+			else {
+				let disabled = false
+				for (let i = 0; i < list.length; i++) {
+					const d = list[i]
+					if (d.amount > d.stock) {
+						disabled = true
+						break
+					}
+				}
+				this.data.disabled = disabled
 			}
 		} catch(e) {
 			console.error(e)
@@ -128,49 +141,6 @@ class ViewShoppingcart extends Component {
 				}
 			}
 		})
-	}
-
-	// 更换地址
-	changeAddress = e => {
-		const aid = this.props.match.params.aid
-		if (aid) {
-			this.props.history.push('/address/choose/' + aid)
-		} else {
-			this.props.history.push('/address/choose')
-		}
-	}
-
-	renderAddress() {
-		if (this.data.loading) {
-			return null
-		}
-		const address = this.props.$$shoppingcart.address
-
-		if (!address) {
-			return (
-				<div styleName="address empty">
-					<p>您还没有收货地址哦~</p>
-					<Button onClick={e => this.props.history.push('/address/create/first')}>
-						创建地址
-					</Button>
-				</div>
-			)
-		}
-
-		return (
-			<div styleName="address">
-				<h6>收货人：{address.name}<span>{address.mobile}</span></h6>
-				<a href="javascript:;"
-					onClick={this.changeAddress}
-					styleName="change">
-					更换地址
-				</a>
-				<div styleName="location">
-					<p>{address.area} {address.address}</p>
-					<em>{(address.distance/1000).toFixed(1)}公里</em>
-				</div>
-			</div>
-		)
 	}
 
 	renderList() {
@@ -257,11 +227,11 @@ class ViewShoppingcart extends Component {
 		)
 		
 		return (
-			<div styleName="list">
+			<Panel styleName="list">
 			{
 				list.map(res => {
 					return (
-						<Panel key={res.skuId} styleName={cn('item', {
+						<div key={res.skuId} styleName={cn('item', {
 							error: (!res.online || res.stock < res.amount) && this.data.edited != res.skuId
 						})}>
 							<div styleName="thumb">
@@ -275,22 +245,17 @@ class ViewShoppingcart extends Component {
 								renderOnline(res) :
 								renderOffline(res)
 							}
-						</Panel>
+						</div>
 					)
 				})
 			}
-			</div>
+			</Panel>
 		)
 	}
 
-	payment = async () => {
+	submit = async () => {
 		Loading.show()
 		try {
-			// const res = await this.props.$order.create({
-			// 	addressid: address.id
-			// })
-
-			// this.props.$shoppingcart.clearAmount()
 			this.props.history.push(`/placeOrder`)
 		}
 		catch(e) {
@@ -320,7 +285,9 @@ class ViewShoppingcart extends Component {
 					</em>
 				</div>
 
-				<Button onClick={this.payment}>结算</Button>
+				<Button onClick={this.submit} disabled={this.data.disabled}>
+					下一步
+				</Button>
 			</div>
 		)
 	}

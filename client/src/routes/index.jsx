@@ -1,6 +1,5 @@
 import React from 'react'
-import { HashRouter, BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
-const Router = process.env.NODE_ENV !== 'develop' ? BrowserRouter : HashRouter
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
 
 import {getToken, clearToken} from 'src/assets/libs/token'
 
@@ -35,13 +34,13 @@ const LoginIfNeeded = View => need => props => {
 
 const Routes = () => {
 	return (
-		<Router>
+		<BrowserRouter>
 			<Switch>
 				<Route exact path="/" component={ ViewIndex }/>
 				<Route exact path="/category/:id?" component={ ViewCategory }/>
 				<Route exact path="/detail/:id" component={ ViewDetail }/>
 				<Route exact path="/login" component={ ViewLogin }/>
-				<Route exact path="/placeOrder" component={ LoginIfNeeded(ViewPlaceOrder)(true) }/>
+				<Route exact path="/placeOrder/:aid?" component={ LoginIfNeeded(ViewPlaceOrder)(true) }/>
 				<Route exact path="/order/detail" component={ LoginIfNeeded(ViewOrderDetail)(true) }/>
 				<Route exact path="/order/:type?" component={ LoginIfNeeded(ViewOrder)(true) }/>
 				<Route exact path="/profile" component={ LoginIfNeeded(ViewProfile)(true) }/>
@@ -53,7 +52,7 @@ const Routes = () => {
 				<Route exact path="/coupon/:id?" component={ LoginIfNeeded(ViewCoupon)(true) } />
 				<Redirect from="*" to="/" />
 			</Switch>
-		</Router>
+		</BrowserRouter>
 	)
 }
 

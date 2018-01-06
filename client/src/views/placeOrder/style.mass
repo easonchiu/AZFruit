@@ -1,0 +1,210 @@
+@charset "utf-8";
+
+.view-place-order {
+
+	.body {
+		padding: 0.2rem;
+	}
+
+	// 地址模块
+	.address {
+		background: #fff;
+		padding: 0.3rem;
+		position: relative;
+		margin-bottom: 0.2rem;
+		&:after {
+			content: "";
+			display: block;
+			width: 100%;
+			height: 0.05rem;
+			background: url('../../assets/imgs/border-envelope.png') 0 center repeat-x;
+			background-size: 0.6rem 0.2rem;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		&.empty {
+			display: -webkit-box;
+			-webkit-box-align: center;
+			-webkit-box-pack: center;
+		}
+		> p {
+			color: #999;
+			-webkit-box-flex: 1;
+		}
+		:global(.x-button) {
+			width: auto;
+			height: auto;
+			font-size: 0.26rem;
+			padding: 0.1rem;
+		}
+		h6 {
+			font-size: 0.3rem;
+			margin-bottom: 0.05rem;
+			color: #333;
+			span {
+				margin-left: 0.2rem;
+				font-weight: normal;
+				font-size: 0.26rem;
+				color: #999;
+			}
+		}
+
+		// 更换地址按钮
+		.change {
+			position: absolute;
+			right: 0.3rem;
+			top: 0.3rem;
+			height: 0.45rem;
+			line-height: 0.45rem;
+			font-size: 0.24rem;
+			background: #ffab2d;
+			color: #fff;
+			padding: 0 0.1rem;
+			border-radius: 0.05rem;
+			&:active {
+				opacity: 0.7;
+			}
+		}
+		
+		// 地理位置信息
+		.location {
+			display: -webkit-box;
+			p {
+				-webkit-box-flex: 1;
+				color: #666;
+				font-size: 0.26rem;
+			}
+			em {
+				font-style: normal;
+				color: #999;
+				font-size: 0.24rem;
+			}
+		}
+	}
+	
+	// 列表容器
+	.list {
+		margin-bottom: 0.2rem;
+		padding: 0.2rem;
+		> h2 {
+			font-size: 0.3rem;
+			margin-bottom: 0.2rem;
+			padding: 0.1rem 0.1rem 0 0.1rem;
+		}
+	}
+
+	// 产品列表的每项
+	.item {
+		border-bottom: 0.02rem dashed #f2f4f9;
+		display: -webkit-box;
+		padding-bottom: 0.2rem;
+		margin-bottom: 0.2rem;
+
+		&:last-child {
+			border-bottom: none;
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+		
+		// 产品主体文字信息
+		.info {
+			margin-right: 0.1rem;
+			-webkit-box-flex: 1;
+			position: relative;
+			padding: 0.1rem;
+			h1 {
+				font-size: 0.3rem;
+				font-weight: normal;
+				color: #333;
+				margin-bottom: 0.05rem;
+			}
+			p {
+				font-size: 0.26rem;
+				font-weight: normal;
+				color: #333;
+				margin-bottom: 0.05rem;
+			}
+			strong {
+				font-size: 0.26rem;
+				font-weight: normal;
+				color: #999;
+				margin-bottom: 0.05rem;
+			}
+		}
+		
+		.thumb {
+			width: 1.6rem;
+			height: 1.6rem;
+			overflow: hidden;
+			margin-right: 0.1rem;
+			img {
+				display: block;
+				width: 1.6rem;
+				height: 1.6rem;
+			}
+		}
+
+		.total {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-box-align: end;
+			padding: 0.1rem;
+			p {
+				display: block;
+				color: #ff4949;
+				font-size: 0.28rem;
+			}
+			span {
+				display: block;
+				color: #999;
+				font-size: 0.24rem;
+				margin-bottom: 0.1rem;
+			}
+		}
+	}
+
+	// 优惠券
+	.coupon {
+		margin-bottom: 0.2rem;
+		padding: 0.3rem;
+		h2 {
+			font-size: 0.3rem;
+			margin-bottom: 0.2rem;
+		}
+	}
+	
+	// 底部结算模块
+	.footer {
+		display: -webkit-box;
+		-webkit-box-align: center;
+		padding: 0.2rem 0.3rem;
+		background: #fff;
+		.total {
+			-webkit-box-flex: 1;
+			p {
+				display: -webkit-box;
+				-webkit-box-align: center;
+				color: #ff4949;
+			}
+			span {
+				display: block;
+				font-size: 0.34rem;
+			}
+			strong {
+				display: block;
+				font-size: 0.34rem;
+			}
+			em {
+				display: block;
+				color: #999;
+				font-size: 0.24rem;
+				font-style: normal;
+			}
+		}
+		:global(.x-button) {
+			width: 2rem;
+		}
+	}
+	
+}

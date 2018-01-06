@@ -18,10 +18,8 @@ module.exports = {
 	develop: {
 		env: require('./dev.env'),
         port: 1234,
-        srcRoot: path.resolve(__dirname, '../src'),
-        assetsRoot: path.resolve(__dirname, '../' + prodPath),
-        assetsPublicPath: './',
-		cssAssetsPath: '../',
+        assetsPublicPath: '/',
+		cssAssetsPath: '/',
 		assetsSubDirectory: './',
 		productionSourceMap: false,
 	},

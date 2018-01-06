@@ -12,13 +12,20 @@ const webpackConfig = merge(baseWebpackConfig, {
 
 	devtool: '#cheap-module-eval-source-map',
 
+	output: {
+        path: config.develop.assetsRoot,
+        filename: utils.assetsPath('js/[name].js'),
+        chunkFilename: utils.assetsPath('js/[id].js'),
+        publicPath: config.develop.assetsPublicPath
+    },
+
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
 	],
 
 	devServer: {
-		contentBase: config.develop.srcRoot,
+		contentBase: __dirname,
 	    historyApiFallback: true,
 	    hot: true,
 	    open: true,

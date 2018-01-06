@@ -2,6 +2,7 @@ import { createAction } from 'redux-actions'
 import http from 'src/assets/libs/http'
 
 const _fetchList = createAction('ADDRESS_FETCH_LIST');
+const _fetchDetail = createAction('ADDRESS_FETCH_DETAIL');
 
 const fetchList = payload => async (dispatch, getState) => {
 	const res = await http.request({
@@ -13,11 +14,14 @@ const fetchList = payload => async (dispatch, getState) => {
 }
 
 const fetchDetail = payload => async (dispatch, getState) => {
+	const id = payload.id
+	delete payload.id
 	const res = await http.request({
 		method: 'get',
-        url: `/address/${payload.id}`,
-        params: {}
+        url: `/address/${id}`,
+        params: payload
 	})
+	dispatch(_fetchDetail(res))
 	return res
 }
 
@@ -48,10 +52,21 @@ const create = payload => async (dispatch, getState) => {
 	return res
 }
 
+const fetchDefault = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'get',
+        url: `/address/default`,
+        params: payload
+	})
+	dispatch(_fetchDetail(res))
+	return res
+}
+
 export default {
 	fetchList,
 	update,
 	remove,
 	create,
 	fetchDetail,
+	fetchDefault,
 }

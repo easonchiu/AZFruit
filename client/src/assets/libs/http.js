@@ -3,7 +3,7 @@ import { getToken, setToken, clearToken} from './token'
 
 const config = {
 	production: '/server/app',
-	develop: 'proxy',
+	develop: '/proxy',
 }
 
 const baseUrl = config[process.env.ENV_NAME] || config['develop']
@@ -37,7 +37,7 @@ http.interceptors.response.use(config => {
 		const token = getToken()
 		if (!token) {
 			const redirect = encodeURIComponent(window.location.href)
-			window.history.replaceState(null, '', '/#/login?redirect=' + redirect)
+			window.history.replaceState(null, '', '/login?redirect=' + redirect)
 			window.location.reload()
 			return
 		}

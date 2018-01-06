@@ -208,8 +208,7 @@ class Control {
 	static async fetchDetail(ctx, next) {
 		try {
 			const {uid} = ctx.state.jwt
-
-			const id = ctx.params.id
+			let id = ctx.params.id
 
 			if (!id) {
 				ctx.error({
@@ -218,15 +217,20 @@ class Control {
 			}
 			
 			// 找到这个用户的所有地址
-			const find = await UserModel.findOne({
+			const doc = await UserModel.findOne({
 				_id: uid
 			})
+
+			// 如果查的是默认地址
+			if (id === 'default') {
+				id = doc.defaultAddress
+			}
 			
 			// 找到相应的那一条地址
 			let res = null
-			if (find && find.addressList) {
-				for (let i = 0; i < find.addressList.length; i++) {
-					const d = find.addressList[i]
+			if (doc && doc.addressList) {
+				for (let i = 0; i < doc.addressList.length; i++) {
+					const d = doc.addressList[i]
 					if (d.id == id) {
 						res = {
 							id,
@@ -235,8 +239,10 @@ class Control {
 							area: d.area || '',
 							areaAddress: d.areaAddress || '',
 							address: d.address || '',
-							default: find.defaultAddress == id,
+							distance: d.distance * 1.2, // 因为取的是直线距离，实际距离肯定是大于它的
+							default: doc.defaultAddress == id,
 						}
+						break
 					}
 				}
 			}

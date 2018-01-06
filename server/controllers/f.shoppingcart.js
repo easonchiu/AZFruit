@@ -152,8 +152,16 @@ class Control {
 	static async fetchList(ctx, next) {
 		try {
 			const {uid} = ctx.state.jwt
+			const {distance} = ctx.query
 			
 			const data = await Control.getShoppingcartInfoWithUser(uid)
+			
+			// 如果有距离信息，计算运费
+			if (distance) {
+				const postage = await PostageModel.expense(distance, data.totalPrice, data.totalWeight)
+				data.postage = postage
+				data.totalPrice += postage
+			}
 
 			if (data) {
 				return ctx.success({

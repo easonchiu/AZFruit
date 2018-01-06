@@ -21,7 +21,7 @@
 	// 商品列表
 	.goods-list {
 		display: block;
-		margin: 0 0 0.2rem 0;
+		margin-bottom: 0.2rem;
 	}
 
 	// 单个产品
@@ -87,7 +87,7 @@
 
 	.panel {
 		display: block;
-		margin: 0 0 0.2rem 0;
+		margin-bottom: 0.2rem;
 		padding: 0.3rem 0.3rem 0.1rem 0.3rem;
 		&:last-child {
 			margin-bottom: 0;

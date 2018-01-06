@@ -105,50 +105,6 @@ user.shoppingcart = [Schema({
 // 创建一个schema实例
 var UserSchema = Schema(user)
 
-// 获取用户的一条地址信息，如果没查到但有默认地址的话，返回默认地址
-UserSchema.statics.getAddress = async function(userId, addressId) {
-	return new Promise(async (resolve, reject) => {
-
-		// 查找相应的地址
-		const doc = await this.findOne({
-			_id: userId
-		}, 'addressList defaultAddress')
-
-		// 如果用户有地址数据，匹配
-		let userAddress = null
-
-		if (doc && doc.addressList) {
-			let defaultAddress = null
-			for (let i = 0; i < doc.addressList.length; i++) {
-				const d = doc.addressList[i]
-				// 找到id相匹配的地址，并存到将要返回的变量中
-				if (addressId && d.id == addressId) {
-					userAddress = d
-				}
-				// 找到用户的默认地址，存到一个临时变量中
-				if (d.id == doc.defaultAddress) {
-					defaultAddress = d
-				}
-			}
-			// 如果没有找到用户的地址，但数据中有默认地址，使用默认地址
-			if (!userAddress && defaultAddress) {
-				userAddress = defaultAddress
-			}
-		} else {
-			resolve(null)
-		}
-		
-		// 如果匹配中地址，整理数据
-		if (userAddress) {
-			userAddress.distance = userAddress.distance * 1.2 // 因为取的是直线距离，实际距离肯定是大于它的
-			resolve(userAddress)
-		}
-		else {
-			resolve(null)
-		}
-	})
-}
-
 
 
 const model = mongoose.model('User', UserSchema)

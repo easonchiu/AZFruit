@@ -31,7 +31,7 @@ class ViewAddressChoose extends Component {
 	}
 
 	onClick = e => {
-		this.props.history.push('/shoppingcart/' + e.id)
+		this.props.history.push('/placeOrder/' + e.id)
 	}
 
 	async fetch() {

@@ -2,101 +2,29 @@
 
 .view-shoppingcart {
 	.body {
-		padding: 0.2rem 0 0 0;
-	}
-	
-	// 地址模块
-	.address {
-		background: #fff;
-		padding: 0 0.3rem 0.3rem 0.3rem;
-		position: relative;
-		margin-top: -0.1rem;
-		&:after {
-			content: "";
-			display: block;
-			width: 100%;
-			height: 0.05rem;
-			background: url('../../assets/imgs/border-envelope.png') 0 bottom repeat-x;
-			background-size: 0.6rem 0.2rem;
-			position: absolute;
-			left: 0;
-			bottom: 0;
-		}
-		&.empty {
-			display: -webkit-box;
-			-webkit-box-align: center;
-			-webkit-box-pack: center;
-		}
-		> p {
-			color: #999;
-			-webkit-box-flex: 1;
-		}
-		:global(.x-button) {
-			width: auto;
-			height: auto;
-			font-size: 0.26rem;
-			padding: 0.1rem;
-		}
-		h6 {
-			font-size: 0.3rem;
-			margin-bottom: 0.05rem;
-			color: #333;
-			span {
-				margin-left: 0.2rem;
-				font-weight: normal;
-				font-size: 0.26rem;
-				color: #999;
-			}
-		}
-
-		// 更换地址按钮
-		.change {
-			position: absolute;
-			right: 0.3rem;
-			top: 0;
-			height: 0.45rem;
-			line-height: 0.45rem;
-			font-size: 0.24rem;
-			background: #ffab2d;
-			color: #fff;
-			padding: 0 0.1rem;
-			border-radius: 0.05rem;
-			&:active {
-				opacity: 0.7;
-			}
-		}
-		
-		// 地理位置信息
-		.location {
-			display: -webkit-box;
-			p {
-				-webkit-box-flex: 1;
-				color: #666;
-				font-size: 0.26rem;
-			}
-			em {
-				font-style: normal;
-				color: #999;
-				font-size: 0.24rem;
-			}
-		}
+		padding: 0.2rem;
 	}
 	
 	// 列表容器
 	.list {
 		margin-bottom: 0.2rem;
-		padding: 0 0.3rem;
+		padding: 0.2rem;
 	}
 	
 	// 产品列表的每项
 	.item {
-		padding: 0.2rem;
+		
+		border-bottom: 0.02rem dashed #f2f4f9;
 		display: -webkit-box;
+		padding-bottom: 0.2rem;
 		margin-bottom: 0.2rem;
 
 		&:last-child {
 			border-bottom: none;
+			margin-bottom: 0;
+			padding-bottom: 0;
 		}
+		
 		&.error {
 			.thumb, .info {
 				opacity: 0.5;
