@@ -4,6 +4,7 @@ import connect from 'src/redux/connect'
 import { Link } from 'react-router-dom'
 import stateData from 'react-state-data'
 import mass from 'mass'
+import qs from 'qs'
 
 import Layout from 'src/auto/layout'
 import Button from 'src/auto/button'
@@ -20,6 +21,8 @@ class ViewAddressChoose extends Component {
 			loading: true,
 			errorInfo: ''
 		})
+
+		this.search = qs.parse(props.location.search.replace(/^\?/, ''))
 	}
 
 	backClick = e => {
@@ -31,7 +34,8 @@ class ViewAddressChoose extends Component {
 	}
 
 	onClick = e => {
-		this.props.history.push('/placeOrder/' + e.id)
+		const coupon = this.search.coupon ? '?coupon=' + this.search.coupon : ''
+		this.props.history.push('/placeOrder/' + e.id + coupon)
 	}
 
 	async fetch() {

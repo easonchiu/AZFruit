@@ -25,7 +25,7 @@ class Control {
 			const couponList = doc.couponList.filter(res => {
 				const now = new Date()
 				// 如果在有效期内且没使用
-				if (!res.used && now < res.expiredTime) {
+				if (!res.used && !res.locked && now < res.expiredTime) {
 					return true
 				}
 				return false

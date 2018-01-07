@@ -152,15 +152,63 @@ class Control {
 	static async fetchList(ctx, next) {
 		try {
 			const {uid} = ctx.state.jwt
-			const {distance} = ctx.query
+			const {distance, coupon} = ctx.query
 			
 			const data = await Control.getShoppingcartInfoWithUser(uid)
+			const defaultTotalPrice = data.totalPrice
 			
 			// 如果有距离信息，计算运费
 			if (distance) {
 				const postage = await PostageModel.expense(distance, data.totalPrice, data.totalWeight)
 				data.postage = postage
-				data.totalPrice += postage
+				data.totalPrice = defaultTotalPrice + postage
+			}
+
+			// 如果有选择优惠券
+			if (coupon) {
+				// 查找可用的优惠券
+				const coupons = await UserModel.findOne({
+					_id: uid
+				}, 'couponList')
+
+				// 算出可用的coupon
+				let couponList = []
+				let choosedCoupon = null
+				if (coupons && coupons.couponList) {
+					couponList = coupons.couponList.filter(c => {
+						const now = new Date()
+						if (c.condition < defaultTotalPrice && c.expiredTime > now && !c.used && !c.locked) {
+							return true
+						}
+						return false
+					})
+
+					// 如果有选择coupon，找到匹配中的
+					couponList.forEach(c => {
+						if (coupon && coupon == c.id) {
+							choosedCoupon = c
+						}
+					})
+				}
+				
+				// 如果有优惠券，排序，并拿价值最高的作为默认使用券
+				if (couponList.length) {
+					couponList.sort((a, b) => a.worth > b.worth ? -1 : 1)
+					choosedCoupon = choosedCoupon ? choosedCoupon : couponList[0]
+				}
+				
+				// 计算优惠券的价值
+				let couponWorth = 0
+				if (choosedCoupon) {
+					couponWorth = choosedCoupon.worth
+				}
+				data.totalPrice = data.totalPrice - couponWorth
+				if (data.totalPrice < 1) {
+					data.totalPrice = 1
+				}
+
+				data.couponList = couponList
+				data.choosedCoupon = choosedCoupon
 			}
 
 			if (data) {

@@ -179,7 +179,7 @@ class ViewShoppingcart extends Component {
 					{res.skuName} 约{Math.round(res.weight/50)/10}斤
 				</p>
 				<strong>
-					￥{res.price / 100}元/{res.unit}
+					￥{res.price / 100}元 / {res.unit}
 				</strong>
 			</div>
 		)
@@ -192,7 +192,7 @@ class ViewShoppingcart extends Component {
 					<p>库存仅{res.stock}件</p> :
 					<p>￥{res.totalPrice / 100}元</p>
 				}
-				<span>×{res.amount}份</span>
+				<span>× {res.amount}份</span>
 				{
 					this.data.edited == '' ?
 					<a href="javascript:;"

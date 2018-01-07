@@ -15,36 +15,20 @@ var OrderSchema = Schema({
 	uid: { type: String, required: true },
 	// 用户openId
 	openId: { type: String, required: true },
-	// 城市，目前只能上海
-	city: { type: String, default: '上海', enum: ['上海'] },
-	// 城市编号
-	cityCode: { type: String, default: '310100' },
-	// 邮编号码
-	zipCode: { type: String, default: '200000' },
-	// 收货人电话
-	mobile: { type: String, required: true },
-	// 收货人姓名
-	name: { type: String, required: true },
-	// 小区（地图选的）
-	area: { type: String, required: true },
-	// 经度
-	lat: { type: Number, required: true },
-	// 纬度
-	lon: { type: Number, required: true },
-	// 送货距离
-	distance: { type: Number, required: true },
-	// 收货人地址（门牌号部分）
-	address: { type: String, required: true },
+	// 收货人信息
+	address: { type: Object, required: true },
+	// 优惠券信息
+	coupon: { type: Object },
 	// 商品
-	goodsList: [{}],
+	list: [{}],
 	// 总重量
 	totalWeight: { type: Number, default: 0 },
-	// 总价(不包含邮费)
+	// 总价
 	totalPrice: { type: Number, default: 0 },
+	// 支付金额（商品总价+运费-优惠券）
+	paymentPrice: { type: Number, default: 0 },
 	// 邮费
 	postage: { type: Number, default: 0 },
-	// 需要支付（totalPrice + postage）
-	needPayment: { type: Number, default: 0 },
 	// 状态 
 	// 1: 待支付
 	// 11: 已支付

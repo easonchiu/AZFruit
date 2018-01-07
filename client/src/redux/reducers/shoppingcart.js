@@ -6,6 +6,8 @@ const initialState = Immutable({
 	totalPrice: 0,
 	totalWeight: 0,
 	postage: 0,
+	couponList: [],
+	choosedCoupon: null,
 	amount: ''
 })
 
@@ -15,6 +17,8 @@ const reducer = handleActions({
 			list: action.payload.list,
 			totalPrice: action.payload.totalPrice,
 			totalWeight: action.payload.totalWeight,
+			couponList: action.payload.couponList,
+			choosedCoupon: action.payload.choosedCoupon,
 			postage: action.payload.postage,
 		})
 	},

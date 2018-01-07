@@ -22,7 +22,7 @@ var taskOvertimeOrder = async () => {
 	})
 
 	for (let i = 0; i < res.length; i++) {
-		const goods = res[i].goodsList
+		const goods = res[i].list
 		if (goods.length) {
 			await SkuModel.revertStock(goods)
 			await OrderModel.remove({

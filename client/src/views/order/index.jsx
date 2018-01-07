@@ -77,32 +77,32 @@ class ViewOrder extends Component {
 						{data.skuName} 约{Math.round(data.weight/50)/10}斤
 					</p>
 					<strong>
-						￥{data.price / 100}元/{data.unit}
+						￥{data.price / 100}元 / {data.unit}
 					</strong>
 				</div>
 				<div styleName="total">
 					<p>￥{data.totalPrice / 100}元</p>
-					<span>×{data.amount}份</span>
+					<span>× {data.amount}份</span>
 				</div>
 			</div>
 		)
 	}
 
 	itemClick = data => {
-		this.props.history.push(`/order/detail/?orderNo=${data.orderNo}&flag=${this.data.tabsActive}`)
+		this.props.history.push(`/order/detail/?id=${data.orderNo}&flag=${this.data.tabsActive}`)
 	}
 
 	renderItem = data => {
 		return (
-			<Panel onClick={this.itemClick.bind(this, data)} styleName="item" key={data.orderNo}>
+			<Panel onClick={this.itemClick.bind(this, data)} styleName="item" key={data.id}>
 				<div styleName="hd">
 					<p>订单号：{data.orderNo}</p>
 					<span>待支付</span>
 				</div>
-				<div className="bd">
+				<div styleName="bd">
 					{
-						data.goodsList ?
-						data.goodsList.map(this.renderGoodsItem) :
+						data.list ?
+						data.list.map(this.renderGoodsItem) :
 						null
 					}
 				</div>

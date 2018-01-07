@@ -66,9 +66,6 @@ class Control {
 			// 查找相关的订单将其改成支付完成状态
 			doc.status = 11
 			
-			// 存入微信订单号
-			doc.wxOrderNo = 'test'
-			
 			// 存到历史订单表中
 			await new OrderModel.history(doc).create()
 

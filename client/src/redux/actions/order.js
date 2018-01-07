@@ -12,7 +12,7 @@ const create = payload => async (dispatch, getState) => {
         url: `/order`,
         data: payload
 	})
-	return res
+	return res.orderNo
 }
 
 // 获取我的订单列表

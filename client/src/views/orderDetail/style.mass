@@ -26,7 +26,7 @@
 
 	// 单个产品
 	.goods-item {
-		border-bottom: 1px solid #e5e5e5;
+		border-bottom: 0.02rem solid #f2f4f9;
 		padding: 0.2rem;
 		display: -webkit-box;
 		.info {
@@ -99,13 +99,14 @@
 		sup {
 			display: block;
 			color: #ff4949;
-			margin-bottom: 0.1rem;
+			margin-top: -0.2rem;
+			margin-bottom: 0.2rem;
 			font-size: 0.24rem;
 			line-height: 1;
 		}
 		li {
 			display: -webkit-box;
-			border-top: 1px solid #e5e5e5;
+			border-top: 0.02rem solid #f2f4f9;
 			padding: 0.2rem 0;
 		}
 		label {
@@ -135,13 +136,10 @@
 	}
 
 	.discount-panel {
-		a {
-			border-top: 1px solid #e5e5e5;
+		div {
+			border-top: 0.02rem solid #f2f4f9;
 			display: -webkit-box;
 			padding: 0.2rem 0;
-			&:active {
-				opacity: 0.6;
-			}
 		}
 		label {
 			display: block;
@@ -151,9 +149,6 @@
 			display: block;
 			text-align: right;
 			color: #5fc37f;
-			background: url('../../assets/imgs/icon-arrow.png') right center no-repeat;
-			background-size: 0.4rem;
-			padding-right: 0.3rem;
 		}
 	}
 
@@ -165,92 +160,4 @@
 
 :global(.cancel-order .x-alert__btn-y) {
 	color: #ff4949 !important;
-}
-
-.coupon-popup {
-	:global(.x-popup__inner) {
-		padding: 0;
-		overflow: hidden;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-	}
-	:global(.x-app) {
-		position: absolute;
-		left: 0;
-		top: 0;
-		right: 0;
-		bottom: 0;
-	}
-	.item {
-		margin: 0 -0.05rem 0.2rem -0.05rem;
-		display: -webkit-box;
-		-webkit-box-align: center;
-		> i {
-			display: block;
-			width: 0.35rem;
-			height: 0.35rem;
-			margin-right: 0.2rem;
-			border-radius: 50%;
-			background: #eee;
-		}
-		&.active {
-			> i {
-				background: #5fc37f url('../../assets/imgs/icon-checked.png') center center no-repeat;
-				background-size: 0.15rem;
-			}
-		}
-		&:last-child {
-			margin-bottom: 0;
-		}
-		&:active {
-			opacity: 0.7;
-		}
-	}
-	.coupon {
-		-webkit-box-flex: 1;
-		display: block;
-		position: relative;
-		border-radius: 0.1rem;
-		background: url('../../assets/imgs/bg-coupon.png');
-		background-size: 100% 100%;
-		overflow: hidden;
-
-		h2 {
-			font-size: 0.34rem;
-			padding: 0.3rem 0 0 0.3rem;
-			margin-bottom: 0.1rem;
-			color: #fff;
-		}
-		p {
-			padding: 0 0.3rem;
-			display: block;
-			font-size: 0.26rem;
-			margin-bottom: 0.5rem;
-			color: #fff;
-		}
-		h6 {
-			display: -webkit-box;
-			-webkit-box-align: center;
-			border: 0.02rem solid #70cb8d;
-			border-top: none;
-			border-bottom-left-radius: 0.1rem;
-			border-bottom-right-radius: 0.1rem;
-			padding: 0 0.3rem;
-			background: #fafafa;
-			font-weight: normal;
-			height: 0.7rem;
-		}
-		em {
-			display: block;
-			font-size: 0.24rem;
-			color: #ddd;
-			font-style: normal;
-		}
-		span {
-			display: block;
-			font-size: 0.24rem;
-			color: #999;
-			-webkit-box-flex: 1;
-		}
-	}
 }

@@ -19,7 +19,7 @@ import Popup from 'src/auto/popup'
 @connect
 @mass(style)
 @stateData
-class ViewOrder extends Component {
+class ViewOrderDetail extends Component {
 	constructor(props) {
 		super(props)
 
@@ -27,15 +27,13 @@ class ViewOrder extends Component {
 			loading: false,
 			errorInfo: '',
 			timeout: 0,
-			couponPopupVisible: false,
-			activeCoupon: ''
 		})
 	}
 
 	componentDidMount() {
 		this.search = qs.parse(this.props.location.search.replace(/^\?/, ''))
 
-		this.fetch(this.search.orderNo, this.search.flag, this.search.couponId, true)
+		this.fetch(this.search.id, this.search.flag)
 
 		this.getWxTicket()
 	}
@@ -44,27 +42,20 @@ class ViewOrder extends Component {
 		clearInterval(this.timer)
 	}
 
-	async fetch(id, flag, couponId = '', first) {
-		if (first) {
-			this.data.loading = true
-		}
-		else {
-			Loading.show()
-		}
+	async fetch(id, flag) {
+		this.data.loading = true
 		try {
 			await this.props.$order.fetchDetail({
 				id,
-				couponId,
 				flag
 			})
 			const data = this.props.$$order.detail
 
 			this.setState({
-				timeout: data.paymentTimeoutSec,
-				activeCoupon: data.usedCoupon ? data.usedCoupon.id : ''
+				timeout: data.paymentTimeout
 			})
 			
-			if (data.paymentTimeoutSec > 0) {
+			if (data.paymentTimeout > 0) {
 				clearInterval(this.timer)
 				this.timer = setInterval(e => {
 					this.setState({
@@ -80,14 +71,17 @@ class ViewOrder extends Component {
 			console.error(e)
 			this.data.errorInfo = e.msg
 		}
-		this.data.loading = false
-		Loading.hide()
+		finally {
+			this.data.loading = false
+		}
 	}
 
 	// 微信获取ticket
 	async getWxTicket() {
 		try {
 			const data = await this.props.$user.getTicket()
+
+			console.log(data)
 
 			wx.config({
 			    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -118,12 +112,12 @@ class ViewOrder extends Component {
 						{data.skuName} 约{Math.round(data.weight/50)/10}斤
 					</p>
 					<strong>
-						￥{data.price / 100}元/{data.unit}
+						￥{data.price / 100}元 / {data.unit}
 					</strong>
 				</div>
 				<div styleName="total">
 					<p>￥{data.totalPrice / 100}元</p>
-					<span>×{data.amount}份</span>
+					<span>× {data.amount}份</span>
 				</div>
 			</div>
 		)
@@ -131,7 +125,7 @@ class ViewOrder extends Component {
 	
 	// 商品列表
 	renderGoods = e => {
-		const list = this.props.$$order.detail.goodsList || []
+		const list = this.props.$$order.detail.list || []
 		
 		if (!list) {
 			return null
@@ -150,7 +144,7 @@ class ViewOrder extends Component {
 	renderDeliveryInfo() {
 		const data = this.props.$$order.detail
 
-		if (!data) {
+		if (!data || !data.address) {
 			return null
 		}
 
@@ -160,25 +154,25 @@ class ViewOrder extends Component {
 				<ul>
 					<li>
 						<label>收货人姓名</label>
-						<p>{data.name}</p>
+						<p>{data.address.name}</p>
 					</li>
 					<li>
 						<label>收货人电话</label>
 						<p>
 							{
-								data.mobile && data.mobile.substr(0,3)
+								data.address.mobile && data.address.mobile.substr(0,3)
 							}
 							****
 							{
-								data.mobile && data.mobile.substr(-4)
+								data.address.mobile && data.address.mobile.substr(-4)
 							}
 						</p>
 					</li>
 					<li>
 						<label>收货地址</label>
 						<p>
-							{data.area} {data.address}
-							<span>{(data.distance / 1000).toFixed(1)}公里</span>
+							{data.address.area} {data.address.address}
+							<span>{(data.address.distance / 1000).toFixed(1)}公里</span>
 						</p>
 					</li>
 				</ul>
@@ -282,7 +276,7 @@ class ViewOrder extends Component {
 						data.status === 1 ?
 						<li>
 							<label>需支付金额</label>
-							<strong>{data.needPayment / 100}元</strong>
+							<strong>{data.paymentPrice / 100}元</strong>
 						</li> :
 						null
 					}
@@ -291,7 +285,7 @@ class ViewOrder extends Component {
 						data.status !== 90 ?
 						<li>
 							<label>支付金额</label>
-							<strong>{data.needPayment / 100}元</strong>
+							<strong>{data.paymentPrice / 100}元</strong>
 						</li> :
 						null
 					}
@@ -300,114 +294,21 @@ class ViewOrder extends Component {
 		)
 	}
 
-	// 优惠券弹层
-	openCouponPopup = e => {
-		this.setState({
-			couponPopupVisible: true
-		})
-	}
-
-	closeCouponPopup = e => {
-		this.setState({
-			couponPopupVisible: false
-		})
-	}
-
-	// 优惠券点击
-	couponClick = couponId => {
-		this.search.couponId = couponId
-		this.props.history.replace(`/order/detail/?orderNo=${this.search.orderNo}&flag=${this.search.flag}&couponId=${couponId}`)
-		this.fetch(this.search.orderNo, this.search.flag, couponId)
-
-		this.closeCouponPopup()
-	}
-
-	// 优惠券弹层里优惠券列表
-	renderCoupons() {
-		const data = this.props.$$order.detail
-
-		if (!data || !data.couponList || !data.couponList.length) {
-			return null
-		}
-
-		return (
-			data.couponList.map(res => (
-				<div
-					key={res.id}
-					styleName={
-						cn('item', {
-							active: res.id == this.state.activeCoupon
-						})
-					}
-					onClick={
-						this.couponClick.bind(this, res.id)
-					}
-				>
-					<i />
-					<div styleName="coupon" key={res.id}>
-						<h2>{res.name}</h2>
-						<p>
-							可抵扣{res.worth / 100}元
-							{
-								res.condition ?
-								`（满${res.condition / 100}元可用）` :
-								null
-							}
-						</p>
-						<h6>
-							{
-								res.expiredTime ?
-								<span>
-									{
-										new Date(res.expiredTime).format('使用期限 yyyy年 M月d日前')
-									}
-								</span> :
-								null
-							}
-							<em>{res.batch}</em>
-						</h6>
-					</div>
-				</div>
-			))
-		)
-	}
-
 	// 减免信息
 	renderDiscountInfo() {
 		const data = this.props.$$order.detail
 
-		if (!data || !data.usedCoupon) {
+		if (!data || !data.coupon) {
 			return null
 		}
 
 		return (
 			<Panel styleName="panel discount-panel">
 				<h2>优惠券</h2>
-				<a href="javascript:;" onClick={this.openCouponPopup}>
-					<label>{data.usedCoupon.name}</label>
-					<span>-{data.usedCoupon.worth / 100}元</span>
-				</a>
-				<Popup
-					styleName="coupon-popup"
-					visible={this.state.couponPopupVisible}
-					height={100}
-				>
-					<Layout>
-						<Layout.Header
-							title="选择优惠券"
-							addonBefore={
-								<a
-									href="javascript:;"
-									className="close"
-									onClick={this.closeCouponPopup}
-								/>
-							}
-						/>
-						<Layout.Body>
-							{this.renderCoupons()}
-						</Layout.Body>
-					</Layout>
-				</Popup>
+				<div>
+					<label>{data.coupon.name}</label>
+					<span>-{data.coupon.worth / 100}元</span>
+				</div>
 			</Panel>
 		)
 	}
@@ -421,14 +322,14 @@ class ViewOrder extends Component {
 			callbackY: async e => {
 				Loading.show()
 				try {
-					const id = this.props.match.params.id
 					// 取消订单
-					await this.props.$order.cancelOrder(id)
-					// 清楚定时器
+					await this.props.$order.cancelOrder(this.search.id)
+					// 清除定时器
 					clearInterval(this.timer)
 					// 提示成功并返回
 					Toast.show('订单已成功取消')
 					this.props.history.goBack()
+					this.props.$order.fetchAmount()
 				}
 				catch (e) {
 					console.error(e)
@@ -548,7 +449,7 @@ class ViewOrder extends Component {
 					{
 						data.status == 1 ?
 						<Button onClick={this.payment}>
-							微信支付￥{data.needPayment / 100}元
+							微信支付￥{data.paymentPrice / 100}元
 						</Button> :
 
 						data.status == 90 ?
@@ -567,4 +468,4 @@ class ViewOrder extends Component {
 	}
 }
 
-export default ViewOrder
+export default ViewOrderDetail

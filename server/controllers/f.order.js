@@ -1,6 +1,7 @@
 var OrderModel = require('../models/order')
 var ShoppingcartCon = require('./f.shoppingcart')
 var SkuModel = require('../models/sku')
+var PostageModel = require('../models/postage')
 var UserModel = require('../models/user')
 
 var cache = require('memory-cache')
@@ -88,7 +89,7 @@ class Control {
 				uid,
 				orderNo: id,
 				status: 1
-			})
+			}, 'coupon')
 
 			// 找到订单
 			if (doc) {
@@ -101,6 +102,18 @@ class Control {
 						status: 90
 					}
 				})
+
+				// 如果有使用优惠券，解锁
+				if (doc.coupon) {
+					await UserModel.update({
+						_id: uid,
+						'couponList.id': doc.coupon.id
+					}, {
+						$set: {
+							'couponList.$.locked': false
+						}
+					})
+				}
 
 				return ctx.success()
 			}
@@ -142,7 +155,7 @@ class Control {
 			
 			// 查询条件
 			const query = [
-				{ uid, orderNo: id },
+				{ orderNo: id, uid },
 				{ __v: 0, _id: 0 }
 			]
 			
@@ -163,65 +176,17 @@ class Control {
 			if (res) {
 				// 待支付的订单
 				if (res.status === 1) {
-					const couponId = ctx.query.couponId
-
 					// 如果是待支付的话，计算剩余支付时间
 					const now = new Date()
 					const timeout = Math.round((res.paymentTimeout.getTime() - now.getTime()) / 1000)
 
 					// 如果还在支付时间内
 					if (timeout > 0) {
-						
-						// 查找可用的优惠券
-						const coupons = await UserModel.findOne({
-							_id: uid
-						}, 'couponList')
-
-						// 算出可用的coupon
-						let resCoupons = []
-						let choosedCoupon
-						if (coupons && coupons.couponList) {
-							resCoupons = coupons.couponList.filter(c => {
-								const now = new Date()
-								if (c.condition < res.totalPrice && c.expiredTime > now) {
-									return true
-								}
-								return false
-							})
-
-							// 如果有选择coupon，找到匹配中的
-							resCoupons.forEach(c => {
-								if (couponId && couponId == c.id) {
-									choosedCoupon = c
-								}
-							})
-						}
-						
-						let usedCoupon
-						// 如果有优惠券，排序，并拿价值最高的作为默认使用券
-						if (resCoupons.length) {
-							resCoupons.sort((a, b) => a.worth > b.worth ? -1 : 1)
-							usedCoupon = choosedCoupon ? choosedCoupon : resCoupons[0]
-						}
-						
-						// 计算优惠券的价值
-						let couponWorth = 0
-						if (usedCoupon) {
-							couponWorth = usedCoupon.worth
-						}
-						let needPayment = res._doc.needPayment - couponWorth
-						if (needPayment < 1) {
-							needPayment = 1
-						}
-
-						// 在返回参数中添加值
-						res._doc.couponList = resCoupons
-						res._doc.paymentTimeoutSec = timeout
-						res._doc.needPayment = needPayment
-						res._doc.usedCoupon = usedCoupon
+						// 在返回参数中修改值
+						res._doc.paymentTimeout = timeout
 
 						return ctx.success({
-							data: res._doc
+							data: res
 						})
 					}
 					// 如果已经过了支付时间
@@ -270,41 +235,100 @@ class Control {
 					msg: '身份信息错误'
 				})
 			}
+			// 验证addressid是否有
+			else if (!body.addressId) {
+				return ctx.error({
+					msg: '没有地址信息'
+				})
+			}
 
 			// 获取用户openid信息
-			const userInfo = await UserModel.findOne({
+			const userDoc = await UserModel.findOne({
 				_id: uid
-			}, 'openId')
+			}, 'openId addressList couponList')
 			
-			if (!userInfo.openId) {
+			if (!userDoc.openId) {
 				return ctx.error({
 					msg: 'openid错误',
 					code: 4001
 				})
 			}
+			else if (!userDoc.addressList || !userDoc.addressList.length) {
+				return ctx.error({
+					msg: '您还没有创建收货地址哦~'
+				})
+			}
+
+			// 找到相关的那个地址
+			let choosedAddress = null
+			for (let i = 0, data = userDoc.addressList; i < data.length; i++) {
+				if (data[i].id == body.addressId) {
+					choosedAddress = data[i]
+					break
+				}
+			}
+			
+			// 如果没有找到相应的地址
+			if (!choosedAddress) {
+				return ctx.error({
+					msg: '没有地址信息'
+				})
+			}
 
 			// 获取购物车内的信息
-			const info = await ShoppingcartCon.getShoppingcartInfo(uid, body.addressid)
+			const spcDoc = await ShoppingcartCon.getShoppingcartInfoWithUser(uid)
 
-			if (info.list && info.list.length) {
+			// 验证购物车内所有商品的库存
+			if (spcDoc.list && spcDoc.list.length) {
 				// 如果库存不够，提示
-				for (let i = 0; i < info.list.length; i++) {
-					const data = info.list[i]
-
+				for (let i = 0; i < spcDoc.list.length; i++) {
+					const data = spcDoc.list[i]
 					if (data.stock < data.amount) {
 						return ctx.error({
 							msg: '购物车中的' + data.name + '库存不够'
 						})
 					}
 				}
-				
-				// 库存数量都够的情况下，占据库存
-				await SkuModel.occupyStock(info.list)
 			}
 			else {
 				return ctx.error({
 					msg: '购物车中没有可购买的产品'
 				})
+			}
+
+			// 地址的距离要x1.2，并存到返回数据中
+			choosedAddress.distance *= 1.2
+
+			// 根据距离、重量、价格计算运费
+			const postage = await PostageModel.expense(choosedAddress.distance, spcDoc.totalPrice, spcDoc.totalWeight)
+			
+			// 如果使用了优惠券
+			let choosedCoupon = null
+			if (body.couponId) {
+				// 查到这张券
+				const now = new Date()
+				for (let i = 0, data = userDoc.couponList; i < data.length; i++) {
+					const d = data[i]
+					if (d.id == body.couponId && d.condition < spcDoc.totalPrice && d.expiredTime > now && !d.used && !d.locked) {
+						choosedCoupon = d
+						break
+					}
+				}
+				// 如果找不到，报错
+				if (!choosedCoupon) {
+					return ctx.error({
+						msg: '没有找到相关的优惠券'
+					})
+				}
+			}
+
+			// 计算最终支付金额
+			let paymentPrice = spcDoc.totalPrice + postage
+			if (choosedCoupon) {
+				paymentPrice -= choosedCoupon.worth
+				if (paymentPrice <= 0) {
+					paymentPrice = 1
+				}
 			}
 
 			// 创建个订单号，订单号为当前系统时间的秒级，再加计数器
@@ -330,23 +354,14 @@ class Control {
 				orderNo,
 				wxOrderNo: '',
 				uid: uid,
-				openId: userInfo.openId,
-				city: info.address.city,
-				cityCode: info.address.cityCode,
-				zipCode: info.address.zipCode,
-				mobile: info.address.mobile,
-				name: info.address.name,
-				area: info.address.area,
-				address: info.address.address,
-				lat: info.address.lat,
-				lon: info.address.lon,
-				distance: info.address.distance,
-				totalWeight: info.totalWeight,
-				totalPrice: info.totalPrice,
-				postage: info.postagePrice,
-				needPayment: info.totalPrice + info.postagePrice,
-				status: 1,
-				goodsList: info.list,
+				openId: userDoc.openId,
+				address: choosedAddress,
+				coupon: choosedCoupon,
+				list: spcDoc.list,
+				totalWeight: spcDoc.totalWeight,
+				totalPrice: spcDoc.totalPrice,
+				paymentPrice: paymentPrice,
+				postage: postage,
 				paymentTimeout: after30m
 			}).create()
 
@@ -356,6 +371,20 @@ class Control {
 			}, {
 				shoppingcart: []
 			})
+
+			// 完成前的最后一步，占据商品库存，锁定优惠券
+			await SkuModel.occupyStock(spcDoc.list)
+			
+			if (body.couponId) {
+				await UserModel.update({
+					_id: uid,
+					'couponList.id': body.couponId
+				}, {
+					$set: {
+						'couponList.$.locked': true
+					}
+				})
+			}
 			
 			return ctx.success({
 				data: {
@@ -364,6 +393,7 @@ class Control {
 			})
 		}
 		catch(e) {
+			console.log(e)
 			return ctx.error()
 		}
 		finally {
@@ -419,7 +449,7 @@ class Control {
 					const d = couponDoc[i]
 
 					// 条件，id匹配、总费用大于优惠券的使用条件、未过期、未使用
-					if (d.id == couponId && !d.used && orderDoc.totalPrice >= d.condition && d.expiredTime > new Date()) {
+					if (d.id == couponId && !d.used && !d.locked && orderDoc.totalPrice >= d.condition && d.expiredTime > new Date()) {
 						choosedCoupon = d
 						break
 					}

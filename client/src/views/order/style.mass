@@ -27,7 +27,7 @@
 			opacity: 0.7;
 		}
 		.hd {
-			border-bottom: 1px solid #e5e5e5;
+			border-bottom: 0.02rem solid #f2f4f9;
 			padding: 0.3rem;
 			display: -webkit-box;
 			-webkit-box-align: center;
@@ -41,7 +41,10 @@
 				-webkit-box-flex: 1;
 			}
 		}
-
+		.bd {
+			padding: 0.2rem;
+			border-bottom: 0.02rem solid #f2f4f9;
+		}
 		.ft {
 			padding: 0.3rem;
 			display: -webkit-box;
@@ -58,8 +61,14 @@
 	}
 
 	.goods-item {
-		border-bottom: 1px solid #e5e5e5;
-		padding: 0.2rem;
+		border-bottom: 0.02rem dashed #f2f4f9;
+		padding-bottom: 0.2rem;
+		margin-bottom: 0.2rem;
+		&:last-child {
+			border-bottom: none;
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
 		display: -webkit-box;
 		.info {
 			margin-right: 0.1rem;

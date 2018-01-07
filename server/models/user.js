@@ -69,7 +69,9 @@ user.couponList = [Schema({
 	// 过期时间
 	expiredTime: { type: Date, default: Date.now },
 	// 是否已使用
-	used: { type: Boolean, default: false }
+	used: { type: Boolean, default: false },
+	// 是否被锁了
+	locked: { type: Boolean, default: false }
 }, { _id: false })]
 
 // 创建购物车的schema实例
