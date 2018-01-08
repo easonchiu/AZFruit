@@ -12,8 +12,6 @@ var md5 = require('md5')
 var xml2json = require('xml2json')
 
 
-var tempXml = "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg><appid><![CDATA[wx34d82f12f9ab1942]]></appid><mch_id><![CDATA[1480957522]]></mch_id><device_info><![CDATA[WEB]]></device_info><nonce_str><![CDATA[Hy4OUWBzdchBy0hx]]></nonce_str><sign><![CDATA[1F379FE6A1037AAF3E2C8C0B089E6DEA]]></sign><result_code><![CDATA[SUCCESS]]></result_code><prepay_id><![CDATA[wx20180103001813400b47fc430664315043]]></prepay_id><trade_type><![CDATA[JSAPI]]></trade_type></xml>"
-
 
 class Control {
 
