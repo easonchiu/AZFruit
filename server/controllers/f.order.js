@@ -406,7 +406,6 @@ class Control {
 		try {
 			const id = ctx.params.id
 			const {uid} = ctx.state.jwt
-			const {couponId} = ctx.request.body
 			
 			// 查找相关的订单
 			const orderDoc = await OrderModel.findOne({
@@ -417,9 +416,9 @@ class Control {
 				__v: 0,
 				_id: 0
 			})
-			
+
 			// 如果找不到，报错
-			if (!orderDoc || !orderDoc.needPayment) {
+			if (!orderDoc) {
 				return ctx.error({
 					msg: '找不到相关的订单'
 				})
@@ -428,7 +427,7 @@ class Control {
 			// 查找用户信息
 			const userDoc = await UserModel.findOne({
 				_id: uid
-			}, 'couponList openId')
+			}, 'openId')
 			
 			// openid必须要有，若没有就报错
 			if (!userDoc.openId) {
@@ -437,61 +436,35 @@ class Control {
 				})
 			}
 
-			// 如果有优惠券，验证它是不是可用
-			let choosedCoupon = null
-			let total_fee = orderDoc.needPayment
-			if (couponId) {
-				const couponDoc = userDoc.couponList ? userDoc.couponList : []
-				
-				for (let i = 0; i < couponDoc.length; i++) {
-					const d = couponDoc[i]
-
-					// 条件，id匹配、总费用大于优惠券的使用条件、未过期、未使用
-					if (d.id == couponId && !d.used && !d.locked && orderDoc.totalPrice >= d.condition && d.expiredTime > new Date()) {
-						choosedCoupon = d
-						break
-					}
-				}
-
-				if (!choosedCoupon || !choosedCoupon.worth) {
-					return ctx.error({
-						msg: '该优惠券不可用'
-					})
-				}
-				
-				// 总支付金额减掉优惠券的抵扣
-				total_fee = orderDoc.needPayment - choosedCoupon.worth
-				
-				// 如果被减到0，改成1，即必须支付一次
-				if (total_fee <= 0) {
-					total_fee = 1
-				}
-			}
-
-			// 到这一步，说明订单和优惠券都验证通过了，开始请求微信支付
+			// 验证通过，开始请求微信支付
+			
+			// 需要支付的金额
+			const total_fee = 1
+			// const total_fee = orderDoc.paymentPrice
 
 			// 生成订单失效时间
-			const after10m = new Date((new Date()).getTime() + 1000 * 60 * 10)
-			const time_expire = dateFormat(after10m, 'yyyymmddHHMMss')
-			
+			const time_expire = dateFormat(orderDoc.paymentTimeout, 'yyyymmddHHMMss')
+
 			// 商品简单描述
-			const body = '爱泽阳光ivcsun-爱泽阳光商城支付'
+			const body = 'ivcsunorder'
 			
 			// 客户端ip
-			const spbill_create_ip = ctx.request.ip.replace(/^::\D+:/g, '')
+			const spbill_create_ip = '114.84.112.114'
 
 			// 异步接收地址
 			const notify_url = 'http://www.ivcsun.com/server/api/wx/unifiedorder/callback'
 
+			const nonce_str = 'Wm3WZYTPz0wzccnW'
+
 			// 生成签名
-			const stringA = `appid=${WX.appID}&body=${body}&device_info=WEB&mch_id=${WX.mchID}&nonce_str=${id}&notify_url=${notify_url}&openid=${userDoc.openId}&out_trade_no=${id}&sign_type=MD5&spbill_create_ip=${spbill_create_ip}&time_expire=${time_expire}&total_fee=${total_fee}&trade_type=JSAPI`
+			const stringA = `appid=${WX.appID}&body=${body}&device_info=WEB&mch_id=${WX.mchID}&nonce_str=${nonce_str}&notify_url=${notify_url}&openid=${userDoc.openId}&out_trade_no=${id}&sign_type=MD5&spbill_create_ip=${spbill_create_ip}&time_expire=${time_expire}&total_fee=${total_fee}&trade_type=JSAPI`
 			const stringSign = md5(stringA + '&key=' + WX.key).toUpperCase()
 
 			const data = {
-				appid: WX.appID, // 微信支付分配的公众账号ID
+				appid: WX.appID, // 调用接口提交的公众账号ID
 				mch_id: WX.mchID, // 微信支付分配的商户号
 				device_info: 'WEB',
-				nonce_str: id, // 随机字符串，长度要求在32位以内。
+				nonce_str: nonce_str, // 随机字符串，长度要求在32位以内。
 				sign: stringSign, // 通过签名算法计算得出的签名值，详见签名生成算法
 				sign_type: 'MD5',
 				body: body, // 商品简单描述，该字段请按照规范传递，具体请见参数规定
@@ -517,31 +490,33 @@ class Control {
 				url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
 				data: xmlData
 			})
-			
+
 			// 失败
 			if ((/FAIL/gi).test(res.data)) {
 				return ctx.error({
 					data: xmlData,
-					msg: res.data.replace(/^\D+<return_msg><!\[CDATA\[/gi, '').replace(/\]\]><\/return_msg>\D+/gi, '')
+					msg: JSON.parse(xml2json.toJson(res.data)).xml
 				})
 			}
 			// 成功
 			else {
 				const obj = JSON.parse(xml2json.toJson(res.data)).xml || {}
+
+				console.log(obj)
 				return ctx.success({
 					data: {
 						appid: obj.appid,
 						time_stamp: Math.round(new Date().getTime() / 1000).toString(),
 						nonce_str: obj.nonce_str,
 						sign_type: 'MD5',
-						sign: stringSign,
+						sign: obj.sign,
 						prepay_id: obj.prepay_id,
-						xml: res.data
 					}
 				})
 			}
 		}
 		catch (e) {
+			console.log(e)
 			return ctx.error()
 		}
 	}	

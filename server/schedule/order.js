@@ -4,6 +4,7 @@ var dateFormat = require('dateformat')
 
 
 var OrderModel = require('../models/order')
+var UserModel = require('../models/user')
 var SkuModel = require('../models/sku')
 
 
@@ -22,13 +23,29 @@ var taskOvertimeOrder = async () => {
 	})
 
 	for (let i = 0; i < res.length; i++) {
+		// 解锁商品
 		const goods = res[i].list
 		if (goods.length) {
 			await SkuModel.revertStock(goods)
-			await OrderModel.remove({
-				_id: res[i]._id
+		}
+		
+		// 解锁优惠券
+		const coupon = res[i].coupon ? res[i].coupon.id : ''
+		if (coupon) {
+			await UserModel.update({
+				_id: res[i].uid,
+				'couponList.id': coupon
+			}, {
+				$set: {
+					'couponList.$.locked': false
+				}
 			})
 		}
+		
+		// 删除订单
+		await OrderModel.remove({
+			_id: res[i].id
+		})
 	}
 	console.log('---------------------')
 }

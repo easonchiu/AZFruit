@@ -61,7 +61,7 @@ const fetchAmount = payload => async (dispatch, getState) => {
 const paymentOrder = payload => async (dispatch) => {
 	const res = await http.request({
 		method: 'post',
-        url: `/order/${payload.orderNo}/payment`,
+        url: `/order/${payload.id}/payment`,
         data: payload
 	})
 	return res
