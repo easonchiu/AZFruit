@@ -37,7 +37,7 @@ const getTicketAndConf = payload => async (dispatch, getState) => {
 		method: 'post',
         url: `/wx/getTicket`,
         data: {
-        	url: encodeURIComponent(window.location.href.split('#')[0])
+        	url: window.location.href.split('#')[0]
         }
 	})
 	wx.config({

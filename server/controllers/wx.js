@@ -47,6 +47,8 @@ class Control {
 
 	static async unifiedorderCallback(ctx, next) {
 		try {
+			return ctx.success()
+
 			const {id} = ctx.request.body
 
 			let doc = await OrderModel.aggregate([
@@ -84,9 +86,8 @@ class Control {
 
 	static async getTicket(ctx, next) {
 		try {
-			const TICKET = cache.get('TICKET')
-			let {url} = ctx.request.body
-			url = decodeURIComponent(url)
+			const TICKET = false //cache.get('TICKET')
+			const {url} = ctx.request.body
 
 			const data = {
 				appId: WX.appID
@@ -124,7 +125,7 @@ class Control {
 		}
 	}
 
-	static async asyncGetTicket() {
+	static asyncGetTicket() {
 		return new Promise(async (resolve, reject) => {
 			const atres = await axios.request({
 				method: 'post',
