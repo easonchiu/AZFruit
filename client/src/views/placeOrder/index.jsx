@@ -71,6 +71,7 @@ class ViewOrder extends Component {
 			const list = this.props.$$shoppingcart.list
 			if (!list.length) {
 				this.props.$shoppingcart.clearAmount()
+				this.props.history.goBack()
 			}
 		} catch(e) {
 			console.error(e)
@@ -140,7 +141,7 @@ class ViewOrder extends Component {
 
 			this.props.$shoppingcart.clearAmount()
 			this.props.$order.fetchAmount()
-			this.props.history.replace(`/order/detail/?id=${orderNo}&flag=1`)
+			window.location.href = `/order/detail/?id=${orderNo}&flag=1`
 		}
 		catch (e) {
 			Toast.show(e.msg || '系统错误')

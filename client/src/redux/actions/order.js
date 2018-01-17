@@ -67,6 +67,16 @@ const paymentOrder = payload => async (dispatch) => {
 	return res
 }
 
+// 查询订单状态
+const queryStatus = payload => async (dispatch) => {
+	const res = await http.request({
+		method: 'get',
+        url: `/wx/unifiedorder/status`,
+        params: payload
+	})
+	return res
+}
+
 export default {
 	create,
 	fetchList,
@@ -74,4 +84,5 @@ export default {
 	cancelOrder,
 	fetchAmount,
 	paymentOrder,
+	queryStatus,
 }

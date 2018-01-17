@@ -5196,10 +5196,6 @@ wbuf@^1.1.0, wbuf@^1.7.2:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-we-jssdk@^1.0.0:
-  version "1.0.0"
-  resolved "http://registry.npm.taobao.org/we-jssdk/download/we-jssdk-1.0.0.tgz#69cbff395ab3440ba75661d9f766b6e9baf16451"
-
 webpack-dev-middleware@^1.11.0:
   version "1.12.0"
   resolved "http://registry.npm.taobao.org/webpack-dev-middleware/download/webpack-dev-middleware-1.12.0.tgz#d34efefb2edda7e1d3b5dbe07289513219651709"

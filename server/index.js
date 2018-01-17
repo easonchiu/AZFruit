@@ -35,7 +35,12 @@ onerror(app)
 // 加载中间件
 app
 	.use(logger())
-	.use(bodyParser())
+	.use(bodyParser({
+		enableTypes: ['json', 'form', 'text'],
+		extendTypes: {
+			text: ['text/xml', 'application/xml']
+		}
+	}))
 	.use(helmet())
 	.use(response())
 

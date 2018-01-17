@@ -34,7 +34,8 @@ const webpackConfig = merge(baseWebpackConfig, {
 	    port: config.develop.port,
 	    proxy: {
 	    	'/proxy/*': {
-	            target: 'http://localhost:8080/server/app',
+	            // target: 'http://localhost:8080/server/app',
+	            target: 'http://www.ivcsun.com/server/app',
 	            pathRewrite: {
 	            	'^/proxy/': '/'
 	            },

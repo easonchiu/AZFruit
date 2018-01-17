@@ -75,6 +75,25 @@ SkuSchema.statics.revertStock = function(list) {
 	})
 }
 
+// 批量将库存改为已售卖
+SkuSchema.statics.sellStock = function(list) {
+	return new Promise(async (resolve, reject) => {
+		for (let i = 0; i < list.length; i++) {
+			const data = list[i]
+			await this.update({
+				_id: data.skuId
+			}, {
+				$inc: {
+					lockedStock: -data.amount,
+					sellCount: data.amount
+				}
+			})
+		}
+
+		resolve()
+	})
+}
+
 // 获取信息
 SkuSchema.statics.fetchInfo = function({goodsId, skuId}) {
 	return new Promise(async (resolve, reject) => {

@@ -21,12 +21,12 @@ class ViewOrder extends Component {
 		this.setData({
 			loading: false,
 			errorInfo: '',
-			tabsActive: 1,
+			tabsActive: props.match.params.type || 1,
 		})
 	}
 
 	componentDidMount() {
-		this.fetch()
+		this.fetch(this.props.match.params.type)
 	}
 
 	async fetch(type = 1) {
@@ -58,7 +58,7 @@ class ViewOrder extends Component {
 				styleName="header-tabs"
 			>
 				<Tabs.Item value={1}>进行中</Tabs.Item>
-				<Tabs.Item value={2}>已完成</Tabs.Item>
+				<Tabs.Item value={2}>历史订单</Tabs.Item>
 			</Tabs>
 		)
 	}
@@ -89,15 +89,24 @@ class ViewOrder extends Component {
 	}
 
 	itemClick = data => {
-		this.props.history.push(`/order/detail/?id=${data.orderNo}&flag=${this.data.tabsActive}`)
+		window.location.href = `/order/detail/?id=${data.orderNo}&flag=${this.data.tabsActive}`
 	}
 
 	renderItem = data => {
+		const status = {
+			1: '待支付',
+			11: '已支付',
+			21: '已发货',
+			31: '已完成',
+			41: '已评价',
+			90: '交易关闭',
+		}
+
 		return (
 			<Panel onClick={this.itemClick.bind(this, data)} styleName="item" key={data.id}>
 				<div styleName="hd">
 					<p>订单号：{data.orderNo}</p>
-					<span>待支付</span>
+					<span>{status[data.status]}</span>
 				</div>
 				<div styleName="bd">
 					{

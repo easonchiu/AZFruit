@@ -51,6 +51,13 @@ class ViewOrderDetail extends Component {
 			})
 			const data = this.props.$$order.detail
 
+			// 如果是带支付的订单，每次进来都查一次状态
+			if (data.status == 11) {
+				await this.props.$order.queryStatus({
+					orderNo: data.orderNo
+				})
+			}
+
 			this.setState({
 				timeout: data.paymentTimeout
 			})
@@ -333,19 +340,11 @@ class ViewOrderDetail extends Component {
 			// 唤起微信支付
 			function onBridgeReady() {
 				WeixinJSBridge.invoke(
-					'getBrandWCPayRequest', {
-						"appId": res.appid, //公众号名称，由商户传入     
-						"timeStamp": res.time_stamp, //时间戳，自1970年以来的秒数     
-						"nonceStr": res.nonce_str, //随机串     
-						"package": `prepay_id=${res.prepay_id}`,
-						"signType": res.sign_type, //微信签名方式：     
-						"paySign": res.sign //微信签名 
-					},
+					'getBrandWCPayRequest', res,
 					function(res) {
 						if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-							
+							window.location.reload()
 						}
-						// 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
 					}
 				)
 			}
@@ -354,24 +353,6 @@ class ViewOrderDetail extends Component {
 			} else {
 				onBridgeReady()
 			}
-
-			// const params = {
-			// 	appId: res.appid, //公众号名称，由商户传入     
-			// 	timeStamp: res.time_stamp, //时间戳，自1970年以来的秒数
-			// 	nonceStr: res.nonce_str, //随机串     
-			// 	package: `prepay_id=${res.prepay_id}`,     
-			// 	signType: res.sign_type, //微信签名方式：     
-			// 	paySign: res.sign //微信签名 
-			// }
-
-			// WeixinJSBridge && WeixinJSBridge.invoke(
-			//    'getBrandWCPayRequest', params,
-			// 	function(res){     
-			// 		if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-
-			// 		}
-			// 	}
-			// )
 		}
 		catch (e) {
 			Toast.show(e.msg || '系统错误')

@@ -6,11 +6,7 @@ var UserModel = require('../models/user')
 
 var cache = require('memory-cache')
 var axios = require('axios')
-var WX = require('../conf/wx')
-var dateFormat = require('dateformat')
-var md5 = require('md5')
-var xml2json = require('xml2json')
-
+var WXPay = require('../middlewares/wx')
 
 
 class Control {
@@ -51,7 +47,7 @@ class Control {
 			// 进行中的订单
 			if (type == 1) {
 				list = await OrderModel.aggregate([
-					{ $match: { uid: uid, status: 1, paymentTimeout: { '$gt': new Date() } } },
+					{ $match: { uid: uid } },
 					{ $sort: { createTime: -1 } },
 					{ $project: { _id: 0, __v: 0 } }
 				])
@@ -437,89 +433,26 @@ class Control {
 				})
 			}
 
-			// 验证通过，开始请求微信支付
-			
-			// 需要支付的金额
-			const total_fee = 1
-			// const total_fee = orderDoc.paymentPrice
-
-			// 生成订单失效时间
-			// const time_expire = dateFormat(orderDoc.paymentTimeout, 'yyyymmddHHMMss')
-
-			// 商品简单描述
-			const body = 'ivcsunorder'
-			
-			// 客户端ip
-			const spbill_create_ip = ip || '47.100.22.250'
-
-			// 异步接收地址
-			const notify_url = 'http://www.ivcsun.com/server/api/wx/unifiedorder/callback'
-
-			const nonce_str = 'Wm3WZYTPz0wzccnW'
-
-			// 生成签名
-			// const stringA = `appid=${WX.appID}&body=${body}&device_info=WEB&mch_id=${WX.mchID}&nonce_str=${nonce_str}&notify_url=${notify_url}&openid=${userDoc.openId}&out_trade_no=${id}&sign_type=MD5&spbill_create_ip=${spbill_create_ip}&time_expire=${time_expire}&total_fee=${total_fee}&trade_type=JSAPI`
-			const stringA = `appid=${WX.appID}&body=${body}&mch_id=${WX.mchID}&nonce_str=${nonce_str}&notify_url=${notify_url}&openid=${userDoc.openId}&out_trade_no=${id}&spbill_create_ip=${spbill_create_ip}&total_fee=${total_fee}&trade_type=JSAPI`
-			const stringSign = md5(stringA + '&key=' + WX.key).toUpperCase()
-
-			const data = {
-				appid: WX.appID, // 调用接口提交的公众账号ID
-				mch_id: WX.mchID, // 微信支付分配的商户号
-				// device_info: 'WEB',
-				nonce_str: nonce_str, // 随机字符串，长度要求在32位以内。
-				sign: stringSign, // 通过签名算法计算得出的签名值，详见签名生成算法
-				// sign_type: 'MD5',
-				body: body, // 商品简单描述，该字段请按照规范传递，具体请见参数规定
-				out_trade_no: id, // 商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。
-				total_fee: total_fee, // 订单总金额，单位为分，详见支付金额
-				spbill_create_ip: spbill_create_ip, // APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
-				// time_expire: time_expire, // 订单失效时间，格式为yyyyMMddHHmmss
-				notify_url: notify_url, // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
-				trade_type: 'JSAPI',
-				openid: userDoc.openId
-			}
-
-			// 将请求的值转为xml形式
-			let xmlData = '<xml>'
-			for (let i in data) {
-				xmlData += '<' + i + '>' + data[i] + '</' + i + '>'
-			}
-			xmlData += '</xml>'
-
 			// 微信预支付
-			const res = await axios.request({
-				method: 'post',
-				url: 'https://api.mch.weixin.qq.com/pay/unifiedorder',
-				data: xmlData
+			const result = await WXPay.getPayParams({
+				out_trade_no: id,
+				body: '描述',
+				total_fee: 1,
+				openid: userDoc.openId,
+				spbill_create_ip: ip
+			})
+			
+			return ctx.success({
+				data: result
 			})
 
-			console.log(xmlData)
-
-			// 失败
-			if ((/FAIL/gi).test(res.data)) {
-				return ctx.error({
-					data: xmlData,
-					msg: JSON.parse(xml2json.toJson(res.data)).xml
-				})
-			}
-			// 成功
-			else {
-				const obj = JSON.parse(xml2json.toJson(res.data)).xml || {}
-
-				return ctx.success({
-					data: {
-						appid: obj.appid,
-						time_stamp: Math.round(new Date().getTime() / 1000).toString(),
-						nonce_str: obj.nonce_str,
-						sign_type: 'MD5',
-						sign: obj.sign,
-						prepay_id: obj.prepay_id,
-					}
-				})
-			}
 		}
 		catch (e) {
-			console.log(e)
+			if (e.message === 'ORDERPAID') {
+				return ctx.error({
+					msg: '该订单已支付'
+				})
+			}
 			return ctx.error()
 		}
 	}	
