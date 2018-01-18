@@ -16,7 +16,8 @@ var taskOvertimeOrder = async () => {
 		$or: [{
 			paymentTimeout: {
 				$lt: new Date()
-			}
+			},
+			status: 1
 		}, {
 			status: 90
 		}]
