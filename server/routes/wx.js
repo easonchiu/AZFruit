@@ -12,7 +12,7 @@ router
 	.post(`${prefix.api}/wx/unifiedorder/callback`, WXPay.middleware(), wx.unifiedorderCallback)
 	
 	// 微信查询订单号
-	.get(`${prefix.app}/wx/unifiedorder/status`, wx.unifiedorderQuery)
+	.post(`${prefix.app}/wx/unifiedorder/status`, wx.unifiedorderQuery)
 
 	// 微信获取ticket
 	.post(`${prefix.app}/wx/getTicket`, wx.getTicket)

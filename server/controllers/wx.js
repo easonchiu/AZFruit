@@ -187,10 +187,12 @@ class Control {
 		try {
 			// 得与微信支付回调接口错开，避免同时操作了同一个订单
 			if (cache.get('wx_unifiedorder_lock')) {
-				return ctx.success()
+				return ctx.success({
+					data: {status: 1}
+				})
 			}
 
-			let { orderNo } = ctx.query
+			let { orderNo } = ctx.request.body
 
 			let wxres = await WXPay.orderQuery({
 				out_trade_no: orderNo
@@ -229,13 +231,19 @@ class Control {
 					})
 
 				}
+				return ctx.success({
+					data: {status: 11}
+				})
 			}
 
-			return ctx.success()
-
+			return ctx.success({
+				data: {status: 1}
+			})
 		}
 		catch (e) {
-			return ctx.success()
+			return ctx.success({
+				data: {status: 1}
+			})
 		}
 	}
 
