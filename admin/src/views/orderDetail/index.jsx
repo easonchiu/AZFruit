@@ -52,6 +52,8 @@ class ViewOrderDetail extends Component {
 
 		if (!data) return null
 
+		const address = data.address || {}
+
 		return (
 			<div className="view-orderDetail">
 
@@ -101,12 +103,21 @@ class ViewOrderDetail extends Component {
 				<h6>购买商品信息</h6>
 				<Form labelWidth={120}>
 					{
-						data.goodsList.map((res, i) => (
-							<Form.Item label={'#' + (i+1)}>
+						data.list.map((res, i) => (
+							<Form.Item key={i} label={'#' + (i+1)}>
 								<ul className="item">
-									<li><span>品名：</span>{res.name} - {res.skuName}</li>
-									<li><span>购买数量：</span>{res.amount}{res.unit}</li>
-									<li><span>价格：</span>单价{res.price}，总价{res.totalPrice}</li>
+									<li>
+										<label>品名</label>
+										<p>{res.name} - {res.skuName}</p>
+									</li>
+									<li>
+										<label>购买数量</label>
+										<p>{res.amount}{res.unit}</p>
+									</li>
+									<li>
+										<label>价格</label>
+										<p>单价{res.price}，总价{res.totalPrice}</p>
+									</li>
 								</ul>
 							</Form.Item>
 						))
@@ -120,26 +131,30 @@ class ViewOrderDetail extends Component {
 					</Form.Item>
 
 					<Form.Item label="邮费">
-						<span>{data.postage / 100}元 ({data.totalWeight / 500}斤，{Math.round(data.distance / 100) / 10}公里)</span>
+						<span>{data.postage / 100}元 ({data.totalWeight / 500}斤，{Math.round(data.address.distance / 100) / 10}公里)</span>
+					</Form.Item>
+
+					<Form.Item label="优惠券">
+						<span>{data.coupon}</span>
 					</Form.Item>
 
 					<Form.Item label="需要支付">
-						<p>{data.needPayment / 100}元</p>
+						<p>{data.paymentPrice / 100}元</p>
 					</Form.Item>
 				</Form>
 
 				<h6>收货人信息</h6>
 				<Form labelWidth={120}>
 					<Form.Item label="收货人">
-						<p>{data.name}</p>
+						<p>{address.name}</p>
 					</Form.Item>
 
 					<Form.Item label="收货人手机号">
-						<p>{data.mobile}</p>
+						<p>{address.mobile}</p>
 					</Form.Item>
 
-					<Form.Item label="收货人手机号">
-						<p>{data.city + data.area + data.address}</p>
+					<Form.Item label="收货人地址">
+						<p>{address.area + address.areaAddress + address.address}</p>
 					</Form.Item>
 				</Form>
 

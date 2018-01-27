@@ -16,10 +16,8 @@
 		.hover-row td {
 			background: #fffff0 !important;
 		}
-
-		.offline td {
-			background: #f7f9fc !important;
-			color: #999;
+		.address {
+			padding: 15px 0;
 		}
 		.status {
 			display: -webkit-box;
@@ -51,11 +49,6 @@
 			float: right;
 			padding: 0;
 		}
-	}
-	.bodybtn {
-		margin: 0 auto;
-		display: block;
-		width: 200px;
 	}
 	.console {
 		text-align: center;

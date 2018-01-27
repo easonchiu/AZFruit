@@ -43,7 +43,8 @@ class ViewRecom extends Component {
 	}
 
 	edit = e => {
-		const recom = e.recom ? e.recom : 9999
+		const recom = e.recom != undefined ? e.recom : 9999
+		console.log(recom)
 		this.setState({
 			popupVisible: true,
 			activeRecom: recom,

@@ -132,9 +132,15 @@ class ViewOrder extends Component {
 									return data.totalPrice / 100 + '元'
 								}
 							}, {
-								label: '收货地址',
+								label: '收货人信息',
 								render(data) {
-									return data.city + data.area + data.address
+									const address = data.address || {}
+									return (
+										<div className="address">
+											<p>收货地址：{address.city + address.area + address.address}</p>
+											<p>联系方式：{address.name + ' ' + address.mobile}</p>
+										</div>
+									)
 								}
 							}, {
 								label: '',

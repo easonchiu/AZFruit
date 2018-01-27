@@ -43,7 +43,7 @@ class ViewRanking extends Component {
 	}
 
 	edit = e => {
-		const ranking = e.ranking ? e.ranking : 9999
+		const ranking = e.ranking != undefined ? e.ranking : 9999
 		this.setState({
 			popupVisible: true,
 			activeRanking: ranking,
