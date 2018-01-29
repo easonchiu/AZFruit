@@ -114,10 +114,8 @@ class Control {
 			const list = await GoodsModel.aggregate([
 				{ $match: { online: true, skuCount: { '$gt': 0 } } },
 				{ $sort: { ranking: -1 } },
-				{ $project: { _id: 0, name: 1, cover: 1, ranking: 1 } }
+				{ $project: { _id: 0, id: 1, name: 1, cover: 1, ranking: 1 } }
 			])
-
-			console.log(list)
 
 			return ctx.success({
 				data: list
@@ -134,7 +132,7 @@ class Control {
 			const list = await GoodsModel.aggregate([
 				{ $match: { online: true, skuCount: { '$gt': 0 } } },
 				{ $sort: { recom: -1 } },
-				{ $project: { _id: 0, name: 1, cover: 1, recom: 1 } }
+				{ $project: { _id: 0, id: 1, name: 1, cover: 1, recom: 1 } }
 			])
 
 			return ctx.success({

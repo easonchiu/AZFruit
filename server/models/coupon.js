@@ -36,5 +36,69 @@ CouponSchema.methods.create = function() {
 	return this.save()
 }
 
+// 使用，计数
+CouponSchema.statics.countUsed = function(id) {
+	return new Promise(async resolve => {
+		await this.update({
+			_id: id
+		}, {
+			$inc: {
+				usedAmount: 1
+			}
+		})
+		resolve()
+	})
+}
+
+// 注册完成时获得优惠券
+// 注意：该方法调用就已经加上已发放数量了
+CouponSchema.statics.getCouponWhenRegisterSuccess = function() {
+	return new Promise(async resolve => {
+		// 获取下单即获取的优惠券
+		const couponDoc = await this.find({
+			flag: 1,
+			online: true
+		}, {
+			__v: 0,
+			_id: 0
+		})
+		
+		// 声明结果数组
+		const list = []
+
+		// 处理优惠券
+		for (let i = 0; i < couponDoc.length; i++) {
+			const data = couponDoc[i]
+
+			// 如果还有没发完的优惠券，给该用户
+			if (data.handOutAmount < data.amount) {
+				// 计算过期时间
+				let date = (new Date().getTime()) + 60 * 60 * 1000 * 24 * data.expiredTime
+				date = new Date(date)
+				date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59)
+				
+				list.push({
+					id: new mongoose.Types.ObjectId(),
+					name: data.name,
+					batch: data.batch + '_' + (data.handOutAmount + 1),
+					condition: data.condition,
+					worth: data.worth,
+					expiredTime: date
+				})
+
+				// 已发放数量+1
+				await this.update({
+					_id: data.id
+				}, {
+					$inc: {
+						handOutAmount: 1
+					}
+				})
+			}
+		}
+		resolve(list)
+	})
+}
+
 const model = mongoose.model('Coupon', CouponSchema)
 module.exports = model

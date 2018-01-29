@@ -2,6 +2,7 @@ import './style'
 import React, { Component } from 'react'
 import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
+import dateFormat from 'dateformat'
 
 import { Button, Form, Input, InputNumber, Switch, Message, Loading } from 'element-react'
 
@@ -60,6 +61,14 @@ class ViewUserDetail extends Component {
 						<p>{data.mobile}</p>
 					</Form.Item>
 
+					<Form.Item label="注册时间">
+						<p>{dateFormat(data.createTime, 'yyyy-mm-dd HH:MM:ss')}</p>
+					</Form.Item>
+
+					<Form.Item label="openid">
+						<p>{data.openId}</p>
+					</Form.Item>
+
 					<Form.Item label="消费积分" className="inte">
 						<p>{data.integral}</p>
 						<a href="javascript:;">[查看该用户订单]</a>
@@ -70,32 +79,62 @@ class ViewUserDetail extends Component {
 							data.addressList && data.addressList.map((res, i) => (
 								<ul key={i} className="item">
 									{
-										res._id == data.defaultAddress ?
-										<li>默认地址：</li> :
+										res.id == data.defaultAddress ?
+										<li>
+											<h6>默认地址</h6>
+										</li> :
 										null
 									}
-									<li><span>收货人姓名：</span>{res.name}</li>
-									<li><span>手机号：</span>{res.mobile}</li>
-									<li><span>收货地址：</span>{res.city + res.area + res.address}</li>
-									<li><span>位于：</span>{res.areaAddress}</li>
+									<li>
+										<label>收货人姓名</label>
+										<p>{res.name}</p>
+									</li>
+									<li>
+										<label>手机号</label>
+										<p>{res.mobile}</p>
+									</li>
+									<li>
+										<label>收货地址</label>
+										<p>{res.city + res.area + res.address}</p>
+									</li>
+									<li>
+										<label>位于</label>
+										<p>{res.areaAddress}</p>
+									</li>
 								</ul>
 							))
 						}
 					</Form.Item>
 
-					<Form.Item label="可使用优惠券">
+					<Form.Item label="优惠券">
 						{
 							data.couponList && data.couponList.map((res, i) => {
-								if (res.used) {
-									return null
-								}
 								return (
 									<ul key={i} className="item">
-										<li><span>券名称：</span>{res.name}</li>
-										<li><span>价值：</span>{res.worth / 100}元</li>
-										<li><span>使用条件：</span>满{res.condition / 100}元</li>
-										<li><span>批次：</span>{res.batch}</li>
-										<li><span>过期时间：</span>{res.expiredTime}</li>
+										<li>
+											<label>券名称</label>
+											<p>{res.name}</p>
+										</li>
+										<li>
+											<label>是否已使用</label>
+											<p>{res.used ? '是' : '否'}</p>
+										</li>
+										<li>
+											<label>价值</label>
+											<p>{res.worth / 100}元</p>
+										</li>
+										<li>
+											<label>使用条件</label>
+											<p>满{res.condition / 100}元</p>
+										</li>
+										<li>
+											<label>批次</label>
+											<p>{res.batch}</p>
+										</li>
+										<li>
+											<label>过期时间</label>
+											<p>{dateFormat(res.expiredTime, 'yyyy-mm-dd HH:MM:ss')}</p>
+										</li>
 									</ul>
 								)
 							})

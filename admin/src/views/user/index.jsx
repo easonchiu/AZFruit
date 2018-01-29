@@ -4,6 +4,7 @@ import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 import cn from 'classnames'
 import qs from 'qs'
+import dateFormat from 'dateformat'
 
 import { Button, Table, Pagination, Loading, Message } from 'element-react'
 import { Link } from 'react-router-dom'
@@ -77,6 +78,14 @@ class ViewUser extends Component {
 								prop: 'mobile',
 								width: 150,
 								align: 'center'
+							}, {
+								label: '注册时间',
+								render: data => dateFormat(data.createTime, 'yyyy-mm-dd HH:MM:ss'),
+								width: 200,
+							}, {
+								label: 'openid',
+								prop: 'openId',
+								width: 300,
 							}, {
 								label: '积分',
 								prop: 'integral',

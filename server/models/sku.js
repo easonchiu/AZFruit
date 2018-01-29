@@ -61,12 +61,20 @@ SkuSchema.statics.revertStock = function(list) {
 	return new Promise(async (resolve, reject) => {
 		for (let i = 0; i < list.length; i++) {
 			const data = list[i]
+			
+			const res = this.findOne({
+				_id: data.skuId
+			})
+			
+			// 计算被锁库存的数量，归还时不能还到负值
+			const locked = Math.min(res.lockedStock, data.amount)
+
 			await this.update({
 				_id: data.skuId
 			}, {
 				$inc: {
 					stock: data.amount,
-					lockedStock: -data.amount,
+					lockedStock: -locked,
 				}
 			})
 		}

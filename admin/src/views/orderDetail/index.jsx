@@ -86,14 +86,14 @@ class ViewOrderDetail extends Component {
 					</Form.Item>
 
 					<Form.Item label="下单时间">
-						<p>{dateFormat(data.createTime, 'yyyy-mm-dd hh:MM:ss')}</p>
+						<p>{dateFormat(data.createTime, 'yyyy-mm-dd HH:MM:ss')}</p>
 					</Form.Item>
 
 					<Form.Item label="支付时间">
 						<p>
 							{
 								data.paymentTime ?
-								dateFormat(data.paymentTime, 'yyyy-mm-dd hh:MM:ss'):
+								dateFormat(data.paymentTime, 'yyyy-mm-dd HH:MM:ss'):
 								'-'
 							}
 						</p>

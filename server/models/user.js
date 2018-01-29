@@ -57,7 +57,9 @@ user.addressList = [Schema({
 
 // 优惠券信息
 user.couponList = [Schema({
-	id: { type: Schema.Types.ObjectId },
+	id: { type: String },
+	// 源id，就是这张券在券表中的id
+	originId: { type: String },
 	// 优惠券名称
 	name: { type: String, default: '' },
 	// 批次+id
@@ -117,7 +119,6 @@ UserSchema.statics.usedCoupon = function(uid, cid) {
 			'couponList.$.used': true,
 			'couponList.$.locked': false,
 		})
-
 		resolve()
 	})
 }

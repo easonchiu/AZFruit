@@ -96,7 +96,7 @@ class ViewOrder extends Component {
 								width: 180,
 								align: 'center',
 								render(data) {
-									return dateFormat(data.createTime, 'yyyy-mm-dd hh:MM:ss')
+									return dateFormat(data.createTime, 'yyyy-mm-dd HH:MM:ss')
 								}
 							}, {
 								label: '订单状态',

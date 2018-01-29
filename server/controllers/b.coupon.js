@@ -174,67 +174,7 @@ class Control {
 		}
 	}
 
-	// 注册完成时获得优惠券
-	// 注意：调用这个方法会自动加上领取量
-	static getCouponWhenRegisterSuccess() {
-		return new Promise(async resolve => {
-			// 获取下单即获取的优惠券
-			const couponDoc = await CouponModel.find({
-				flag: 1,
-				online: true
-			}, {
-				__v: 0,
-				_id: 0
-			})
-			
-			// 声明结果数组
-			const list = []
-
-			// 处理优惠券
-			for (let i = 0; i < couponDoc.length; i++) {
-				const data = couponDoc[i]
-
-				// 如果还有没发完的优惠券，给该用户
-				if (data.handOutAmount < data.amount) {
-					const date = (new Date().getTime()) + 60 * 60 * 1000 * 24 * data.expiredTime
-					const dt = new Date(date)
-					list.push({
-						id: new mongoose.Types.ObjectId(),
-						name: data.name,
-						batch: data.batch + '_' + (data.handOutAmount + 1),
-						condition: data.condition,
-						worth: data.worth,
-						expiredTime: new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), 23, 59, 59),
-					})
-
-					// 已发放数量+1
-					// 如果是最后一张优惠券，停用它
-					await CouponModel.update({
-						_id: data.id
-					}, {
-						$inc: {
-							handOutAmount: 1
-						},
-						$set: {
-							online: data.amount > data.handOutAmount + 1
-						}
-					})
-				}
-				// 否则停用它
-				else {
-					await CouponModel.update({
-						_id: data.id
-					}, {
-						$set: {
-							online: false
-						}
-					})
-				}
-			}
-
-			resolve(list)
-		})
-	}
+	
 }
 
 module.exports = Control

@@ -16,12 +16,40 @@
 		}
 	}
 	.item {
-		border-bottom: 1px solid #dfe6ec;
-		padding: 10px 0;
-		span {
-			display: inline-block;
-			width: 100px;
-			color: #999;
+		border-left: 1px solid #dfe6ec;
+		border-top: 1px solid #dfe6ec;
+		border-right: 1px solid #dfe6ec;
+		margin-bottom: 10px;
+		li {
+			display: block;
+			overflow: hidden;
+			border-bottom: 1px solid #dfe6ec;
 		}
+		label {
+			background: #f7f9fc;
+			display: block;
+			float: left;
+			border-right: 1px solid #dfe6ec;
+			padding: 5px 18px;
+			font-size: 14px;
+			font-weight: bold;
+			width: 200px;
+		}
+		h6 {
+			padding: 5px 18px;
+			color: #00bb55;
+		}
+		p {
+			display: block;
+			float: left;
+			padding: 5px 18px;
+			font-size: 14px;
+		}
+		strong {
+			color: #20a0ff;
+		}
+	}
+	.couponList .el-form-item__content {
+		margin-right: -0px;
 	}
 }

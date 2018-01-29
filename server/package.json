@@ -17,7 +17,7 @@
     "node-schedule": "^1.2.5",
     "qiniu": "6",
     "sha1": "^1.1.1",
-    "tenpay": "^2.0.6",
+    "tenpay": "^2.0.9",
     "xml2json": "^0.11.0"
   },
   "name": "server",
