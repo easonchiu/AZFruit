@@ -5,7 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var PostageSchema = Schema({
-	id: { type: Schema.Types.ObjectId },
+	id: { type: String },
 	// 超出公里数
 	km: { type: Number, required: true },
 	// 重量多少以内

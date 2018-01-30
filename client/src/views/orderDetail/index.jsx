@@ -51,13 +51,6 @@ class ViewOrderDetail extends Component {
 			})
 			const data = this.props.$$order.detail
 
-			// 如果是带支付的订单，每次进来都查一次状态
-			if (data.status == 1) {
-				const status = await this.props.$order.queryStatus({
-					orderNo: data.orderNo
-				})
-			}
-
 			this.setState({
 				timeout: data.paymentTimeout
 			})
@@ -74,8 +67,17 @@ class ViewOrderDetail extends Component {
 					})
 				}, 1000)
 			}
+
+			// 如果是带支付的订单，每次进来都查一次状态
+			if (data.status == 1) {
+				(async e => {
+					await this.props.$order.queryStatus({
+						orderNo: data.orderNo
+					})
+				})()
+			}
 		} catch(e) {
-			console.error(e)
+			console.log(e)
 			this.data.errorInfo = e.msg
 		}
 		finally {

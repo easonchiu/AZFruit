@@ -5,7 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var BannerSchema = Schema({
-	id: { type: Schema.Types.ObjectId },
+	id: { type: String },
 	// 描述
 	desc: { type: String, default: '' },
 	// 图片地址

@@ -5,7 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var GoodsSchema = Schema({
-	id: { type: Schema.Types.ObjectId },
+	id: { type: String },
 	// 产品名称
 	name: { type: String, required: true },
 	// 排序

@@ -5,7 +5,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var CategorySchema = Schema({
-	id: { type: Schema.Types.ObjectId },
+	id: { type: String },
 	// 分类名
 	name: { type: String, required: true },
 	// 是否使用中

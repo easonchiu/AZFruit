@@ -6,7 +6,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var SkuSchema = Schema({
-	id: { type: Schema.Types.ObjectId },
+	id: { type: String },
 	// 所属产品
 	pid: { type: String, required: true },
 	// 规格描述
@@ -61,11 +61,11 @@ SkuSchema.statics.revertStock = function(list) {
 	return new Promise(async (resolve, reject) => {
 		for (let i = 0; i < list.length; i++) {
 			const data = list[i]
-			
-			const res = this.findOne({
+
+			const res = await this.findOne({
 				_id: data.skuId
 			})
-			
+
 			// 计算被锁库存的数量，归还时不能还到负值
 			const locked = Math.min(res.lockedStock, data.amount)
 

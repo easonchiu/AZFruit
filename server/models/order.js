@@ -6,7 +6,7 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var OrderSchema = Schema({
-	id: { type: Schema.Types.ObjectId },
+	id: { type: String },
 	// 订单号
 	orderNo: { type: String, required: true, index: true },
 	// 微信支付订单号
@@ -18,9 +18,29 @@ var OrderSchema = Schema({
 	// 收货人信息
 	address: { type: Object, required: true },
 	// 优惠券信息
-	coupon: { type: Object },
+	coupon: Schema({
+		batch: { type: String },
+		id: { type: String },
+		originId: { type: String },
+		expiredTime: { type: Date },
+		condition: { type: Number },
+		worth: { type: Number },
+		name: { type: String }
+	}, { _id: false }),
 	// 商品
-	list: [{}],
+	list: [Schema({
+		totalPrice: { type: String },
+        pid: { type: String },
+        skuId: { type: String },
+        price: { type: Number },
+        unit: { type: String },
+        name: { type: String },
+        cover: { type: String },
+        totalWeight: { type: Number },
+        weight: { type: Number },
+        amount: { type: Number },
+        skuName: { type: String }
+	}, { _id: false })],
 	// 总重量
 	totalWeight: { type: Number, default: 0 },
 	// 总价

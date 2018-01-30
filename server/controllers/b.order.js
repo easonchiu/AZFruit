@@ -1,4 +1,8 @@
 var OrderModel = require('../models/order')
+var VerificationModel = require('../models/verification')
+var UserModel = require('../models/user')
+var CouponModel = require('../models/coupon')
+var SkuModel = require('../models/sku')
 
 class Control {
 
@@ -96,7 +100,71 @@ class Control {
 			return ctx.error()
 		}
 	}
+	
+	// 设置订单状态为已支付
+	static orderFinishPayment(orderNo, wxOrderNo) {
+		return new Promise(async (resolve, reject) => {
+			let doc = await OrderModel.findOne({
+				orderNo: orderNo
+			})
+			
+			// 找到这个订单
+			if (!doc) {
+				return reject('未找到相关订单')
+			}
+			// 订单状态不正常
+			else if (doc.status != 1) {
+				return reject('订单状态不正常')
+			}
 
+			// 更新原表中的订单
+			await OrderModel.update({
+				orderNo: orderNo
+			}, {
+				$set: {
+					// 查找相关的订单将其改成支付完成状态
+					status: 11,
+					// 把微信订单号存进来
+					wxOrderNo: wxOrderNo,
+					// 把支付时间存下来
+					paymentTime: new Date()
+				}
+			})
+
+			// 如果有优惠券，把这张券改为已使用
+			if (doc.coupon) {
+				await UserModel.usedCoupon(doc.uid, doc.coupon.id)
+				
+				// 在核销表中存入信息
+				const find = await VerificationModel.findOne({
+					cid: doc.coupon.id
+				})
+				
+				if (!find) {
+					await new VerificationModel({
+						cid: doc.coupon.id,
+						originId: doc.coupon.originId,
+						userId: doc.uid,
+						orderNo: orderNo,
+						couponName: doc.coupon.name,
+						couponBatch: doc.coupon.batch,
+						couponCondition: doc.coupon.condition,
+						couponWorth: doc.coupon.worth
+					}).create()
+
+					// 在券表中已使用计数器+1
+					await CouponModel.countUsed(doc.coupon.originId)
+				}
+			}
+
+			// 遍历用户购买的商品，在库存表中减掉他们，并在销量中加上
+			if (doc.list && doc.list.length) {
+				await SkuModel.sellStock(doc.list)
+			}
+
+			resolve()
+		})
+	}
 }
 
 module.exports = Control

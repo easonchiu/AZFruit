@@ -125,11 +125,11 @@ class ViewOrder extends Component {
 									)
 								}
 							}, {
-								label: '订单金额',
+								label: '支付金额',
 								width: 120,
 								align: 'center',
 								render(data) {
-									return data.totalPrice / 100 + '元'
+									return data.paymentPrice / 100 + '元'
 								}
 							}, {
 								label: '收货人信息',

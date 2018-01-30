@@ -116,7 +116,7 @@ class ViewOrderDetail extends Component {
 									</li>
 									<li>
 										<label>价格</label>
-										<p>单价{res.price}，总价{res.totalPrice}</p>
+										<p>单价{res.price / 100}元，总价{res.totalPrice / 100}元</p>
 									</li>
 								</ul>
 							</Form.Item>
@@ -135,10 +135,31 @@ class ViewOrderDetail extends Component {
 					</Form.Item>
 
 					<Form.Item label="优惠券">
-						<span>{data.coupon}</span>
+						{
+							data.coupon ?
+							<ul className="item">
+								<li>
+									<label>名称</label>
+									<p>{data.coupon.name}</p>
+								</li>
+								<li>
+									<label>价值</label>
+									<p>{data.coupon.worth / 100}元</p>
+								</li>
+								<li>
+									<label>批次</label>
+									<p>{data.coupon.batch}</p>
+								</li>
+								<li>
+									<label>使用条件</label>
+									<p>{data.coupon.condition / 100}元</p>
+								</li>
+							</ul> :
+							<p>无</p>
+						}
 					</Form.Item>
 
-					<Form.Item label="需要支付">
+					<Form.Item label="支付金额">
 						<p>{data.paymentPrice / 100}元</p>
 					</Form.Item>
 				</Form>

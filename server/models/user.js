@@ -30,7 +30,7 @@ const user = {
 
 // 地址表
 user.addressList = [Schema({
-	id: { type: Schema.Types.ObjectId },
+	id: { type: String },
 	// 城市，目前只能上海
 	city: { type: String, default: '上海', enum: ['上海'], required: true },
 	// 城市编号
