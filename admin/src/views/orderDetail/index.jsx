@@ -4,7 +4,7 @@ import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 import dateFormat from 'dateformat'
 
-import { Button, Form, Input, InputNumber, Switch, Message, Loading } from 'element-react'
+import { Button, Form, Input, InputNumber, Switch, Select, Message, Loading } from 'element-react'
 
 @connect
 @reactStateData
@@ -15,7 +15,9 @@ class ViewOrderDetail extends Component {
 		this.setData({
 			id: '',
 			loading: true,
-			data: null
+			data: null,
+			status: 11,
+			statusMark: ''
 		})
 	}
 
@@ -45,6 +47,14 @@ class ViewOrderDetail extends Component {
 			console.error(e)
 		}
 		this.data.loading = false
+	}
+
+	valueChange(e, target) {
+		this.data[e] = target
+	}
+
+	statusMarkChange = e => {
+		this.data.statusMark = e.target.value
 	}
 
 	render() {
@@ -176,6 +186,32 @@ class ViewOrderDetail extends Component {
 
 					<Form.Item label="收货人地址">
 						<p>{address.area + address.areaAddress + address.address}</p>
+					</Form.Item>
+				</Form>
+
+				<h6>订单处理</h6>
+				<Form labelWidth={120} className="handle">
+					<Form.Item label="订单状态">
+						<Select
+							value={this.data.status}
+							disabled={this.data.id != ''}
+							onChange={this.valueChange.bind(this, 'status')}
+						>
+							<Select.Option label="发货" value={21} />
+							<Select.Option label="关闭" value={90} />
+						</Select>
+					</Form.Item>
+					{
+						this.data.status == 90 &&
+						<Form.Item label="备注">
+							<Input
+								value={this.data.statusMark}
+								onChange={this.statusMarkChange}
+							/>
+						</Form.Item>
+					}
+					<Form.Item label={' '}>
+						<Button type="primary" onClick={this.props.history.goBack}>提交</Button>
 					</Form.Item>
 				</Form>
 
