@@ -40,6 +40,11 @@ var taskOvertimeOrder = async () => {
 		catch (e) {
 			// 说明订单未支付
 			if (e && e.message == 'ORDERNOTEXIST') {
+				// 删除订单
+				await OrderModel.remove({
+					_id: res[i].id
+				})
+
 				// 解锁商品
 				const goods = res[i].list
 				if (goods.length) {
@@ -59,10 +64,7 @@ var taskOvertimeOrder = async () => {
 					})
 				}
 				
-				// 删除订单
-				await OrderModel.remove({
-					_id: res[i].id
-				})
+				
 			}
 		}
 	}
@@ -73,7 +75,7 @@ var taskOvertimeOrder = async () => {
 // 定时器(每1分钟)
 var task = () => {
 	var rule = new schedule.RecurrenceRule()
-	rule.second = [0, 15, 30, 45] // 每分钟的第30秒
+	rule.second = [30] // 每分钟的第30秒
 	schedule.scheduleJob(rule, function(){  
 		taskOvertimeOrder()
 	})

@@ -27,7 +27,6 @@ var VerificationSchema = Schema({
 
 // 创建
 VerificationSchema.methods.create = function() {
-	console.log(this)
 	return this.save()
 }
 

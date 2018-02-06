@@ -162,6 +162,15 @@ class Control {
 				await SkuModel.sellStock(doc.list)
 			}
 
+			// 给用户增加积分
+			await UserModel.update({
+				_id: doc.uid
+			}, {
+				$inc: {
+					integral: doc.paymentPrice || 0
+				}
+			})
+
 			resolve()
 		})
 	}

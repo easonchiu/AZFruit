@@ -76,7 +76,8 @@ class ViewUserDetail extends Component {
 
 					<Form.Item label="收货地址">
 						{
-							data.addressList && data.addressList.map((res, i) => (
+							(data.addressList && data.addressList.length) ?
+							data.addressList.map((res, i) => (
 								<ul key={i} className="item">
 									{
 										res.id == data.defaultAddress ?
@@ -102,13 +103,15 @@ class ViewUserDetail extends Component {
 										<p>{res.areaAddress}</p>
 									</li>
 								</ul>
-							))
+							)) :
+							'-'
 						}
 					</Form.Item>
 
 					<Form.Item label="优惠券">
 						{
-							data.couponList && data.couponList.map((res, i) => {
+							(data.couponList && data.couponList.length) ?
+							data.couponList.map((res, i) => {
 								return (
 									<ul key={i} className="item">
 										<li>
@@ -137,7 +140,8 @@ class ViewUserDetail extends Component {
 										</li>
 									</ul>
 								)
-							})
+							}) :
+							'-'
 						}
 					</Form.Item>
 				</Form>

@@ -133,7 +133,7 @@ class Control {
 		})
 	}
 
-	// 查询订单，注意这个订单只可能返回success
+	// 查询订单，注意这个订单只可能返回success，但在真正支付成功时会将数据存进表
 	static async unifiedorderQuery(ctx, next) {
 		try {
 
