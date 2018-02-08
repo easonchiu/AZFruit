@@ -42,7 +42,7 @@ var GoodsSchema = Schema({
 	ranking: { type: Number, default: 0 },
 	// 上下架
 	online: { type: Boolean, default: false },
-	// 有库存并上架中的规格数量
+	// 上架中的规格数量
 	skuCount: { type: Number, default: 0 },
 	// 规格中价格最低的存入
 	price: { type: Number, default: 0 },
@@ -61,6 +61,57 @@ var GoodsSchema = Schema({
 GoodsSchema.methods.create = function() {
 	this.id = this._id
 	return this.save()
+}
+
+// 更新sku数量与sku最低价等信息，参数：pid -> 商品id
+GoodsSchema.statics.insertSkuInfo = function(pid) {
+	return new Promise(async (resolve, reject) => {
+		// 获取相关sku，在线，库存大于0的
+		const res = await mongoose.model('Sku')
+			.aggregate([{
+				$match: {
+					pid: pid,
+					online: true,
+					stock: { $gt: 0 }
+				}
+			}, {
+				$sort: {
+					price: 1,
+				}
+			}, {
+				$project: {
+					_id: 0,
+					unit: 1,
+					price: 1,
+					prePrice: 1,
+				}
+			}])
+		
+		// 初始化
+		const obj = {
+			skuCount: 0,
+			price: 0,
+			prePrice: 0,
+			unit: ''
+		}
+		
+		// 如果有数据，在商品表中存入库存数量与最低的sku价格
+		if (res[0]) {
+			obj.skuCount = res.length
+			obj.price = res[0].price || 0
+			obj.prePrice = res[0].prePrice || 0
+			obj.unit = res[0].unit || ''
+		}
+
+		// 更新到产品的数据库中
+		await this.update({
+			_id: pid
+		}, obj, {
+			upsert: true
+		})
+
+		resolve()
+	})
 }
 
 const model = mongoose.model('Goods', GoodsSchema)

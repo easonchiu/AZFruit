@@ -83,7 +83,7 @@ class Control {
 				uid,
 				orderNo: id,
 				status: 1
-			}, 'coupon')
+			}, 'coupon list')
 
 			// 找到订单
 			if (doc) {
@@ -108,6 +108,11 @@ class Control {
 						}
 					})
 				}
+
+				console.log(doc)
+				
+				// 归还库存
+				await SkuModel.revertStock(doc.list)
 
 				return ctx.success()
 			}

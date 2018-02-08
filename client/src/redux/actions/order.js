@@ -74,7 +74,6 @@ const queryStatus = payload => async (dispatch) => {
         url: `/wx/unifiedorder/status`,
         data: payload
 	})
-	return res.status
 }
 
 export default {

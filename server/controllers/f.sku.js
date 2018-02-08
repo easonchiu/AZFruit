@@ -18,7 +18,10 @@ class Control {
 				.aggregate([{
 					$match: {
 						pid: id,
-						online: true
+						online: true,
+						stock: {
+							$gt: 0
+						}
 					}
 				},{
 					$sort: {

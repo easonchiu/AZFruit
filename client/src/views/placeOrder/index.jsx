@@ -48,22 +48,21 @@ class ViewOrder extends Component {
 			// 获取地址信息
 			if (aid) {
 				await this.props.$address.fetchDetail({
-					id: aid,
-					distance: 1
+					id: aid
 				})
 			}
 			else {
-				await this.props.$address.fetchDefault({
-					distance: 1
-				})
+				await this.props.$address.fetchDefault()
 			}
+		} catch(e) {}
 
+		try {
 			// 得到请求回来的地址
-			const address = this.props.$$address.detail
+			const address = this.props.$$address.detail || {}
 
 			// 获取购物车内的商品
 			await this.props.$shoppingcart.fetchList({
-				distance: address.distance,
+				distance: address.distance || 0,
 				coupon: cid
 			})
 			
@@ -101,7 +100,7 @@ class ViewOrder extends Component {
 		}
 		const address = this.props.$$address.detail
 
-		if (!address) {
+		if (!address.id) {
 			return (
 				<Panel styleName="address empty">
 					<p>您还没有收货地址哦~</p>
@@ -132,6 +131,11 @@ class ViewOrder extends Component {
 		Loading.show()
 		try {
 			const address = this.props.$$address.detail || {}
+			
+			if (!address.id) {
+				throw { msg: '请先创建收货地址' }
+			}
+
 			const coupon = this.props.$$shoppingcart.choosedCoupon ? this.props.$$shoppingcart.choosedCoupon : {}
 
 			const orderNo = await this.props.$order.create({
@@ -144,6 +148,7 @@ class ViewOrder extends Component {
 			window.location.href = `/order/detail/?id=${orderNo}&flag=1`
 		}
 		catch (e) {
+			console.log(e)
 			Toast.show(e.msg || '系统错误')
 		}
 		finally {
@@ -194,6 +199,8 @@ class ViewOrder extends Component {
 			postage = 0
 		} = this.props.$$shoppingcart
 
+		const address = this.props.$$address.detail || {}
+
 		return (
 			<div styleName="footer">
 				<div styleName="total">
@@ -203,11 +210,15 @@ class ViewOrder extends Component {
 						<span>元</span>
 					</p>
 					<em>
-						总重量约{Math.round(totalWeight / 50) / 10}斤，
+						总重量约{Math.round(totalWeight / 50) / 10}斤
 						{
-							postage ?
-							`运费${postage / 100}元` :
-							'免运费'
+							address.id && postage ?
+							`，运费${postage / 100}元` :
+
+							address.id ?
+							'，免运费' :
+
+							null
 						}
 					</em>
 				</div>

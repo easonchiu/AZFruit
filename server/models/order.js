@@ -1,4 +1,3 @@
-
 var mongoose = require('../conf/mongoose')
 
 // 创建一个schema对象

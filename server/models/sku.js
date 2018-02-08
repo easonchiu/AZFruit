@@ -1,5 +1,4 @@
 var mongoose = require('../conf/mongoose')
-var GoodsModel = require('./goods')
 
 // 创建一个schema对象
 var Schema = mongoose.Schema
@@ -40,6 +39,9 @@ SkuSchema.methods.create = function() {
 // 批量占用库存
 SkuSchema.statics.occupyStock = function(list) {
 	return new Promise(async (resolve, reject) => {
+		const goods = []
+		
+		// 锁定关联到的sku库存
 		for (let i = 0; i < list.length; i++) {
 			const data = list[i]
 			await this.update({
@@ -47,9 +49,18 @@ SkuSchema.statics.occupyStock = function(list) {
 			}, {
 				$inc: {
 					stock: -data.amount,
-					lockedStock: data.amount,
+					lockedStock: data.amount
 				}
 			})
+
+			if (goods.indexOf(data.pid) == -1) {
+				goods.push(data.pid)
+			}
+		}
+		
+		// 批量修改关联到的商品库存信息
+		for (let i = 0; i < goods.length; i++) {
+			await mongoose.model('Goods').insertSkuInfo(goods[i])
 		}
 
 		resolve()
@@ -59,12 +70,13 @@ SkuSchema.statics.occupyStock = function(list) {
 // 批量归还库存
 SkuSchema.statics.revertStock = function(list) {
 	return new Promise(async (resolve, reject) => {
+		const goods = []
+		
+		// 归还关联到的sku库存
 		for (let i = 0; i < list.length; i++) {
 			const data = list[i]
 
-			const res = await this.findOne({
-				_id: data.skuId
-			})
+			const res = await this.findById(data.skuId)
 
 			// 计算被锁库存的数量，归还时不能还到负值
 			const locked = Math.min(res.lockedStock, data.amount)
@@ -77,6 +89,15 @@ SkuSchema.statics.revertStock = function(list) {
 					lockedStock: -locked,
 				}
 			})
+
+			if (goods.indexOf(data.pid) == -1) {
+				goods.push(data.pid)
+			}
+		}
+
+		// 批量修改关联到的商品库存信息
+		for (let i = 0; i < goods.length; i++) {
+			await mongoose.model('Goods').insertSkuInfo(goods[i])
 		}
 
 		resolve()
@@ -105,9 +126,7 @@ SkuSchema.statics.sellStock = function(list) {
 // 获取信息
 SkuSchema.statics.fetchInfo = function({goodsId, skuId}) {
 	return new Promise(async (resolve, reject) => {
-		const skuDoc = await this.findOne({
-			_id: skuId
-		})
+		const skuDoc = await this.findById(skuId)
 
 		// 如果没找到产品信息或没找到规格信息，提示用户没相关产品
 		if (!skuDoc) {
@@ -115,9 +134,7 @@ SkuSchema.statics.fetchInfo = function({goodsId, skuId}) {
 			return
 		}
 
-		const goodsDoc = await GoodsModel.findOne({
-			_id: goodsId
-		})
+		const goodsDoc = await mongoose.model('Goods').findById(goodsId)
 
 		// 如果没找到产品信息或没找到规格信息，提示用户没相关产品
 	 	if (!goodsDoc) {
