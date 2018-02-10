@@ -2,7 +2,6 @@
 var schedule = require('node-schedule')
 var dateFormat = require('dateformat')
 
-
 var OrderModel = require('../models/order')
 var OrderControl = require('../controllers/b.order')
 var UserModel = require('../models/user')
@@ -10,19 +9,15 @@ var SkuModel = require('../models/sku')
 var WXPay = require('../middlewares/wx')
 
 
-// 清理超时没支付，或被手动关闭的订单
+// 清理超时没支付的订单
 var taskOvertimeOrder = async () => {
 	console.log('---------------------')
 	console.log(dateFormat(new Date(), 'yyyy-mm-dd, H:MM:ss'), '清理超时没支付，或被手动关闭的订单')
 	const res = await OrderModel.find({
-		$or: [{
-			paymentTimeout: {
-				$lt: new Date()
-			},
-			status: 1
-		}, {
-			status: 90
-		}]
+		paymentTimeout: {
+			$lt: new Date()
+		},
+		status: 1
 	})
 
 	for (let i = 0; i < res.length; i++) {
@@ -35,6 +30,9 @@ var taskOvertimeOrder = async () => {
 			// 如果支付成功，处理状态，不往下走
 			if (wxres.trade_state == 'SUCCESS' && wxres.cash_fee) {
 				await OrderControl.orderFinishPayment(wxres.out_trade_no, wxres.transaction_id)
+			}
+			else {
+				throw new Error('ORDERNOTEXIST')
 			}
 		}
 		catch (e) {

@@ -1,4 +1,4 @@
-var BannerModel = require('../models/banner')
+var BannerService = require('../services/banner')
 
 class Control {
 	
@@ -14,50 +14,14 @@ class Control {
 	 */
 	static async save(ctx, next) {
 		try {
-			const { method } = ctx.request
+			const { method, body } = ctx.request
 			const { id } = ctx.params
 			
-			// 如果请求中有传id，更新，先查有没有这条数据
-			if (id && method === 'PATCH') {
-				const doc = await BannerModel.findOne({
-					_id: id
-				})
-
-				if (!doc) {
-					return ctx.error({
-						msg: '该banner不存在'
-					})
-				}
-			}
-
-			// 检查body的参数
-			const body = ctx.request.body
-
-			if (!body.uri) {
-				return ctx.error({
-					msg: '图片地址不能为空'
-				})
-			}
-			else if (!(/^[0-9]*$/g).test(body.index)) {
-				return ctx.error({
-					msg: '排序编号不能为空且必须为数字'
-				})
-			}
-		
-			// 有id，更新
-			if (id && method === 'PATCH') {
-				await BannerModel.update({
-					_id: id
-				}, body)
-			}
-			// 没有id，创建
-			else {
-				await new BannerModel(body).create()
-			}
+			await BannerService.save(id, body, method)
 			
 			return ctx.success()
 		} catch(e) {
-			return ctx.error()
+			return ctx.error(e)
 		}
 	}
 
@@ -65,9 +29,9 @@ class Control {
 	static async remove(ctx, next) {
 		try {
 			const { id } = ctx.params
-			await BannerModel.remove({
-				_id: id
-			})
+			
+			await BannerService.removeById(id)
+			
 			return ctx.success()
 		} catch(e) {
 			return ctx.error()
@@ -81,27 +45,10 @@ class Control {
 			skip = parseInt(skip)
 			limit = parseInt(limit)
 			
-			// 计算条目数量
-			const count = await BannerModel.count({})
-
-			// 查找数据
-			let list = []
-			if (count > 0) {
-				list = await BannerModel.aggregate([
-					{ $sort: { online: -1, index: 1 } },
-					{ $project: { _id: 0, __v: 0 } },
-					{ $skip: skip },
-					{ $limit: limit }
-				])
-			}
+			const data = await BannerService.fetchList(skip, limit)
 
 			return ctx.success({
-				data: {
-					list,
-					count,
-					skip,
-					limit,
-				}
+				data
 			})
 		} catch(e) {
 			return ctx.error()
@@ -113,12 +60,7 @@ class Control {
 		try {
 			const { id } = ctx.params
 
-			const doc = await BannerModel.findOne({
-				_id: id
-			}, {
-				_id: 0,
-				__v: 0
-			})
+			const doc = await BannerService.findById(id)
 
 			return ctx.success({
 				data: doc

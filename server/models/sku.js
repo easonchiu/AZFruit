@@ -44,6 +44,7 @@ SkuSchema.statics.occupyStock = function(list) {
 		// 锁定关联到的sku库存
 		for (let i = 0; i < list.length; i++) {
 			const data = list[i]
+
 			await this.update({
 				_id: data.skuId
 			}, {
@@ -59,8 +60,8 @@ SkuSchema.statics.occupyStock = function(list) {
 		}
 		
 		// 批量修改关联到的商品库存信息
-		for (let i = 0; i < goods.length; i++) {
-			await mongoose.model('Goods').insertSkuInfo(goods[i])
+		for (let j = 0; j < goods.length; j++) {
+			await mongoose.model('Goods').insertSkuInfo(goods[j])
 		}
 
 		resolve()
@@ -71,22 +72,17 @@ SkuSchema.statics.occupyStock = function(list) {
 SkuSchema.statics.revertStock = function(list) {
 	return new Promise(async (resolve, reject) => {
 		const goods = []
-		
+
 		// 归还关联到的sku库存
 		for (let i = 0; i < list.length; i++) {
 			const data = list[i]
-
-			const res = await this.findById(data.skuId)
-
-			// 计算被锁库存的数量，归还时不能还到负值
-			const locked = Math.min(res.lockedStock, data.amount)
 
 			await this.update({
 				_id: data.skuId
 			}, {
 				$inc: {
 					stock: data.amount,
-					lockedStock: -locked,
+					lockedStock: -data.amount
 				}
 			})
 
@@ -96,8 +92,8 @@ SkuSchema.statics.revertStock = function(list) {
 		}
 
 		// 批量修改关联到的商品库存信息
-		for (let i = 0; i < goods.length; i++) {
-			await mongoose.model('Goods').insertSkuInfo(goods[i])
+		for (let j = 0; j < goods.length; j++) {
+			await mongoose.model('Goods').insertSkuInfo(goods[j])
 		}
 
 		resolve()

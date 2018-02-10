@@ -87,14 +87,9 @@ class Control {
 
 			// 找到订单
 			if (doc) {
-				// 要将订单状态改为交易关闭，只有待支付的可以
-				await OrderModel.update({
+				await OrderModel.remove({
 					uid,
 					orderNo: id
-				}, {
-					$set: {
-						status: 90
-					}
 				})
 
 				// 如果有使用优惠券，解锁
@@ -109,8 +104,6 @@ class Control {
 					})
 				}
 
-				console.log(doc)
-				
 				// 归还库存
 				await SkuModel.revertStock(doc.list)
 
