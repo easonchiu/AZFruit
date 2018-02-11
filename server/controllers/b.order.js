@@ -17,9 +17,11 @@ class Control {
 			// 计算条目数量
 			let count = 0
 			if (type == 1) {
-				// 只查找已经支付的，待支付的无视
+				// 待支付的无视
 				count = await OrderModel.count({
-					status: 11
+					status: {
+						$ne: 1
+					}
 				})
 			}
 			else {
@@ -31,7 +33,7 @@ class Control {
 			if (count > 0) {
 				if (type == 1) {
 					list = await OrderModel.aggregate([
-						{ $match: { status: 11 } },
+						{ $match: { status: { $ne: 1 } } },
 						{ $sort: { createTime: -1 } },
 						{ $project: { _id: 0, __v: 0 } },
 						{ $skip: skip },
@@ -56,6 +58,51 @@ class Control {
 					limit,
 				}
 			})
+		} catch(e) {
+			return ctx.error()
+		}
+	}
+
+	// 设置订单状态
+	static async updateStatus(ctx, next) {
+		try {
+			const id = ctx.params.id
+			
+			// 查询相关的订单
+			const doc = await OrderModel.findById(id)
+			if (!doc) {
+				return ctx.error({
+					msg: '该订单不存在'
+				})
+			}
+			
+			// 获取参数并验证
+			const body = ctx.request.body
+			
+			if (body.status !== 90 && body.status !== 21) {
+				return ctx.error({
+					msg: 'status参数错误'
+				})
+			}
+			else if (body.status === 90 && body.statusMark === '') {
+				return ctx.error({
+					msg: 'statusMark不能为空'
+				})
+			}
+			else {
+				// 操作表
+				await OrderModel.update({
+					_id: id
+				}, {
+					$set: {
+						status: body.status,
+						statusMark: body.statusMark
+					}
+				})
+				
+				// 返回成功
+				return ctx.success()
+			}
 		} catch(e) {
 			return ctx.error()
 		}

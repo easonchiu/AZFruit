@@ -8,6 +8,7 @@ const fetchList = (payload = {}) => async (dispatch, getState) => {
 		method: 'get',
         url: `/order/list`,
         params: {
+        	type: payload.type,
         	skip: payload.skip || 0,
         	limit: payload.limit || 10,
         }
@@ -24,7 +25,22 @@ const fetchDetail = payload => async (dispatch, getState) => {
 	return res
 }
 
+const setStatus = payload => async (dispatch, getState) => {
+	const res = await http.request({
+		method: 'patch',
+        url: `/order/${payload.id}/status`,
+        data: {
+        	status: payload.status,
+        	statusMark: payload.statusMark
+        }
+	})
+	return res
+}
+
+
+
 export default {
 	fetchList,
 	fetchDetail,
+	setStatus,
 }

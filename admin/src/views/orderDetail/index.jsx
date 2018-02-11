@@ -54,7 +54,30 @@ class ViewOrderDetail extends Component {
 	}
 
 	statusMarkChange = e => {
-		this.data.statusMark = e.target.value
+		this.data.statusMark = e
+	}
+
+	setOrderStatus = async e => {
+		if (this.data.status === 11) {
+			Message.error('请设置订单状态')
+		}
+		else if (this.data.status === 90 && this.data.statusMark.trim() === '') {
+			Message.error('关闭订单必须填写备注')
+		}
+		else {
+			try {
+				await this.props.$order.setStatus({
+					id: this.props.match.params.id,
+					status: this.data.status,
+					statusMark: this.data.statusMark
+				})
+				Message.success('操作成功')
+				this.props.history.goBack()
+			}
+			catch (e) {
+				Message.error(e.msg)
+			}
+		}
 	}
 
 	render() {
@@ -81,7 +104,7 @@ class ViewOrderDetail extends Component {
 					</Form.Item>
 					
 					<Form.Item label="订单状态">
-						<p>
+						<p><strong>
 							{
 								{
 									1: '待支付',
@@ -92,7 +115,7 @@ class ViewOrderDetail extends Component {
 									90: '交易关闭',
 								}[data.status]
 							}
-						</p>
+						</strong></p>
 					</Form.Item>
 
 					<Form.Item label="下单时间">
@@ -170,7 +193,7 @@ class ViewOrderDetail extends Component {
 					</Form.Item>
 
 					<Form.Item label="支付金额">
-						<p>{data.paymentPrice / 100}元</p>
+						<p><strong>{data.paymentPrice / 100}元</strong></p>
 					</Form.Item>
 				</Form>
 
@@ -188,32 +211,38 @@ class ViewOrderDetail extends Component {
 						<p>{address.area + address.areaAddress + address.address}</p>
 					</Form.Item>
 				</Form>
-
-				<h6>订单处理</h6>
-				<Form labelWidth={120} className="handle">
-					<Form.Item label="订单状态">
-						<Select
-							value={this.data.status}
-							disabled={this.data.id != ''}
-							onChange={this.valueChange.bind(this, 'status')}
-						>
-							<Select.Option label="发货" value={21} />
-							<Select.Option label="关闭" value={90} />
-						</Select>
-					</Form.Item>
-					{
-						this.data.status == 90 &&
-						<Form.Item label="备注">
-							<Input
-								value={this.data.statusMark}
-								onChange={this.statusMarkChange}
-							/>
+				
+				{
+					data.status == 11 &&
+					<h6>订单处理</h6>
+				}
+				{
+					data.status == 11 &&
+					<Form labelWidth={120} className="handle">
+						<Form.Item label="订单状态">
+							<Select
+								value={this.data.status}
+								disabled={this.data.id != ''}
+								onChange={this.valueChange.bind(this, 'status')}
+							>
+								<Select.Option label="发货" value={21} />
+								<Select.Option label="关闭" value={90} />
+							</Select>
 						</Form.Item>
-					}
-					<Form.Item label={' '}>
-						<Button type="primary" onClick={this.props.history.goBack}>提交</Button>
-					</Form.Item>
-				</Form>
+						{
+							this.data.status == 90 &&
+							<Form.Item label="备注">
+								<Input
+									value={this.data.statusMark}
+									onChange={this.statusMarkChange}
+								/>
+							</Form.Item>
+						}
+						<Form.Item label={' '}>
+							<Button type="primary" onClick={this.setOrderStatus}>提交</Button>
+						</Form.Item>
+					</Form>
+				}
 
 				<div className="btns">
 					<Button size="large" onClick={this.props.history.goBack}>返回</Button>

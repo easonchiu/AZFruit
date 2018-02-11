@@ -120,7 +120,10 @@ class ViewUserDetail extends Component {
 										</li>
 										<li>
 											<label>是否已使用</label>
-											<p>{res.used ? '是' : '否'}</p>
+											<p>{res.used ?
+												<strong>是</strong> :
+												<em>否</em>
+											}</p>
 										</li>
 										<li>
 											<label>价值</label>

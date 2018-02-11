@@ -10,6 +10,8 @@ router
 	.get(`${prefix.api}/order/list`, jwt, b_order.fetchList)
 	// 获取详情
 	.get(`${prefix.api}/order/detail/:id`, jwt, b_order.fetchDetail)
+	// 设置订单状态
+	.patch(`${prefix.api}/order/:id/status`, jwt, b_order.updateStatus)
 	
 	// 用户下单
 	.post(`${prefix.app}/order`, clientJWT, f_order.create)

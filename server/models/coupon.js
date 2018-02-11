@@ -79,6 +79,7 @@ CouponSchema.statics.getCouponWhenRegisterSuccess = function() {
 				
 				list.push({
 					id: new mongoose.Types.ObjectId(),
+					originId: data.id,
 					name: data.name,
 					batch: data.batch + '_' + (data.handOutAmount + 1),
 					condition: data.condition,
