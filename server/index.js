@@ -60,6 +60,7 @@ app
 	.use(addressRoute.routes(), addressRoute.allowedMethods())
 	.use(wxRoute.routes(), wxRoute.allowedMethods())
 
+
 // 引入计划任务
 var taskOrder = require('./schedule/order')
 
@@ -67,6 +68,7 @@ var taskOrder = require('./schedule/order')
 const server = http.createServer(app.callback())
 server.listen(port, '0.0.0.0', () => {
 	console.log(`✅  The server is running at http://localhost:${port}/`)
+
 	taskOrder()
 })
 

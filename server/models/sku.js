@@ -68,7 +68,7 @@ SkuSchema.statics.occupyStock = function(list) {
 	})
 }
 
-// 批量归还库存
+// 批量归还库存（从锁定的状态归还）
 SkuSchema.statics.revertStock = function(list) {
 	return new Promise(async (resolve, reject) => {
 		const goods = []
@@ -111,6 +111,25 @@ SkuSchema.statics.sellStock = function(list) {
 				$inc: {
 					lockedStock: -data.amount,
 					sellCount: data.amount
+				}
+			})
+		}
+
+		resolve()
+	})
+}
+
+// 还原库存，与revertStock不同的是，它是从销量中减掉还原到库存数量
+SkuSchema.statics.resetStock = function(list) {
+	return new Promise(async (resolve, reject) => {
+		for (let i = 0; i < list.length; i++) {
+			const data = list[i]
+			await this.update({
+				_id: data.skuId
+			}, {
+				$inc: {
+					stock: data.amount,
+					sellCount: -data.amount
 				}
 			})
 		}

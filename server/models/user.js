@@ -110,13 +110,41 @@ user.shoppingcart = [Schema({
 var UserSchema = Schema(user)
 
 // 将coupon改为已使用
-UserSchema.statics.usedCoupon = function(uid, cid) {
+UserSchema.statics.useCoupon = function(uid, cid) {
 	return new Promise(async (resolve, reject) => {
 		await this.update({
 			_id: uid,
 			'couponList.id': cid
 		}, {
 			'couponList.$.used': true,
+			'couponList.$.locked': false,
+		})
+		resolve()
+	})
+}
+
+// 将coupon锁定
+UserSchema.statics.lockCoupon = function(uid, cid) {
+	return new Promise(async (resolve, reject) => {
+		await this.update({
+			_id: uid,
+			'couponList.id': cid
+		}, {
+			'couponList.$.used': false,
+			'couponList.$.locked': true,
+		})
+		resolve()
+	})
+}
+
+// 将coupon恢复
+UserSchema.statics.resetCoupon = function(uid, cid) {
+	return new Promise(async (resolve, reject) => {
+		await this.update({
+			_id: uid,
+			'couponList.id': cid
+		}, {
+			'couponList.$.used': false,
 			'couponList.$.locked': false,
 		})
 		resolve()

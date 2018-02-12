@@ -19,7 +19,7 @@ const fetchList = (payload = {}) => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/order/detail/${payload.id}`,
+        url: `/order/${payload.orderNo}/detail`,
         params: {}
 	})
 	return res
@@ -28,7 +28,7 @@ const fetchDetail = payload => async (dispatch, getState) => {
 const setStatus = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'patch',
-        url: `/order/${payload.id}/status`,
+        url: `/order/${payload.orderNo}/status`,
         data: {
         	status: payload.status,
         	statusMark: payload.statusMark

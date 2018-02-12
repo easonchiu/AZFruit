@@ -9,9 +9,9 @@ router
 	// 获取列表
 	.get(`${prefix.api}/order/list`, jwt, b_order.fetchList)
 	// 获取详情
-	.get(`${prefix.api}/order/detail/:id`, jwt, b_order.fetchDetail)
+	.get(`${prefix.api}/order/:orderNo/detail`, jwt, b_order.fetchDetail)
 	// 设置订单状态
-	.patch(`${prefix.api}/order/:id/status`, jwt, b_order.updateStatus)
+	.patch(`${prefix.api}/order/:orderNo/status`, jwt, b_order.updateStatus)
 	
 	// 用户下单
 	.post(`${prefix.app}/order`, clientJWT, f_order.create)

@@ -77,7 +77,7 @@ const Main = ({children}) => {
 				<Route exact path="/postage/detail/:id?" component={ ViewPostageDetail } />
 
 				<Route exact path="/order/list" component={ ViewOrder } />
-				<Route exact path="/order/detail/:id?" component={ ViewOrderDetail } />
+				<Route exact path="/order/detail/:orderNo?" component={ ViewOrderDetail } />
 
 				<Route exact path="/comment/list" component={ ViewComment } />
 

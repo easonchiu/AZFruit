@@ -9,19 +9,30 @@ class Control {
 	// 获取订单列表
 	static async fetchList(ctx, next) {
 		try {
-			// type: 1 等待处理的，2 历史订单
+			// type: 1 等待处理的, 2 历史订单, 3 已发货的
 			let { skip = 0, limit = 10, type = 1 } = ctx.query
 			skip = parseInt(skip)
 			limit = parseInt(limit)
+			type = parseInt(type)
 			
 			// 计算条目数量
 			let count = 0
+			// 等待处理的
 			if (type == 1) {
-				// 待支付的无视
 				count = await OrderModel.count({
-					status: {
-						$ne: 1
-					}
+					status: 11
+				})
+			}
+			// 已发货的
+			else if (type == 3) {
+				count = await OrderModel.count({
+					status: 21
+				})
+			}
+			// 等待发货的
+			else if (type == 4) {
+				count = await OrderModel.count({
+					status: 20
 				})
 			}
 			else {
@@ -31,9 +42,30 @@ class Control {
 			// 查找数据
 			let list = []
 			if (count > 0) {
+				// 等待处理的
 				if (type == 1) {
 					list = await OrderModel.aggregate([
-						{ $match: { status: { $ne: 1 } } },
+						{ $match: { status: 11 } },
+						{ $sort: { createTime: -1 } },
+						{ $project: { _id: 0, __v: 0 } },
+						{ $skip: skip },
+						{ $limit: limit }
+					])
+				}
+				// 已发货的
+				else if (type == 3) {
+					list = await OrderModel.aggregate([
+						{ $match: { status: 21 } },
+						{ $sort: { createTime: -1 } },
+						{ $project: { _id: 0, __v: 0 } },
+						{ $skip: skip },
+						{ $limit: limit }
+					])
+				}
+				// 等待发货的
+				else if (type == 4) {
+					list = await OrderModel.aggregate([
+						{ $match: { status: 20 } },
 						{ $sort: { createTime: -1 } },
 						{ $project: { _id: 0, __v: 0 } },
 						{ $skip: skip },
@@ -66,10 +98,16 @@ class Control {
 	// 设置订单状态
 	static async updateStatus(ctx, next) {
 		try {
-			const id = ctx.params.id
+			const orderNo = ctx.params.orderNo
 			
 			// 查询相关的订单
-			const doc = await OrderModel.findById(id)
+			const doc = await OrderModel.findOne({
+				orderNo
+			}, {
+				_id: 0,
+				__v: 0,
+			})
+
 			if (!doc) {
 				return ctx.error({
 					msg: '该订单不存在'
@@ -79,7 +117,8 @@ class Control {
 			// 获取参数并验证
 			const body = ctx.request.body
 			
-			if (body.status !== 90 && body.status !== 21) {
+			// 只可以关闭、发货、等待发货
+			if (body.status !== 90 && body.status !== 21 && body.status !== 20) {
 				return ctx.error({
 					msg: 'status参数错误'
 				})
@@ -91,19 +130,49 @@ class Control {
 			}
 			else {
 				// 操作表
-				await OrderModel.update({
-					_id: id
-				}, {
-					$set: {
-						status: body.status,
-						statusMark: body.statusMark
+				if (body.status === 20 || body.status === 21) {
+					await OrderModel.update({
+						orderNo
+					}, {
+						$set: {
+							status: body.status,
+							statusMark: body.statusMark
+						}
+					})
+				}
+				// 转移表
+				else {
+					// 修改状态并存入历史表中
+					doc._doc.status = body.status
+					await new OrderModel.history(doc._doc).create()
+
+					// 删除原来表中的数据
+					await OrderModel.remove({
+						orderNo
+					})
+
+					// 如果是关闭订单
+					if (body.status === 90) {
+						// 恢复coupon
+						if (doc.coupon && doc.coupon.id) {
+							await UserModel.resetCoupon(doc.uid, doc.coupon.id)
+							await VerificationModel.remove({
+								cid: doc.coupon.id
+							})
+						}
+
+						// 减掉销量，返还库存
+						if (doc.list) {
+							await SkuModel.resetStock(doc.list)
+						}
 					}
-				})
+				}
 				
 				// 返回成功
 				return ctx.success()
 			}
 		} catch(e) {
+			console.log(e)
 			return ctx.error()
 		}
 	}
@@ -111,11 +180,11 @@ class Control {
 	// 获取订单详情
 	static async fetchDetail(ctx, next) {
 		try {
-			const id = ctx.params.id
+			const orderNo = ctx.params.orderNo
 			
 			// 查询相关的订单
 			let res = await OrderModel.findOne({
-				_id: id
+				orderNo
 			}, {
 				_id: 0,
 				__v: 0
@@ -124,7 +193,7 @@ class Control {
 			// 如果在order表中找不到，再去history表中找找，history表更多，所以找不到再找它
 			if (!res) {
 				res = await OrderModel.history.findOne({
-					_id: id
+					orderNo
 				}, {
 					_id: 0,
 					__v: 0
@@ -152,7 +221,7 @@ class Control {
 	static orderFinishPayment(orderNo, wxOrderNo) {
 		return new Promise(async (resolve, reject) => {
 			let doc = await OrderModel.findOne({
-				orderNo: orderNo
+				orderNo
 			})
 			
 			// 找到这个订单
@@ -166,7 +235,7 @@ class Control {
 
 			// 更新原表中的订单
 			await OrderModel.update({
-				orderNo: orderNo
+				orderNo
 			}, {
 				$set: {
 					// 查找相关的订单将其改成支付完成状态
@@ -180,7 +249,7 @@ class Control {
 
 			// 如果有优惠券，把这张券改为已使用
 			if (doc.coupon) {
-				await UserModel.usedCoupon(doc.uid, doc.coupon.id)
+				await UserModel.useCoupon(doc.uid, doc.coupon.id)
 				
 				// 在核销表中存入信息
 				const find = await VerificationModel.findOne({

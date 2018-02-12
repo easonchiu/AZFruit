@@ -5,7 +5,6 @@ var Schema = mongoose.Schema
 
 // 创建一个schema实例
 var OrderSchema = Schema({
-	id: { type: String },
 	// 订单号
 	orderNo: { type: String, required: true, index: true },
 	// 微信支付订单号
@@ -51,6 +50,7 @@ var OrderSchema = Schema({
 	// 状态 
 	// 1: 待支付
 	// 11: 已支付
+	// 20: 待发货
 	// 21: 已发货
 	// 31: 已完成
 	// 41: 已评价
@@ -70,7 +70,6 @@ var OrderSchema = Schema({
 
 // 创建
 OrderSchema.methods.create = function() {
-	this.id = this._id
 	return this.save()
 }
 

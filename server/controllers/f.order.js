@@ -368,14 +368,7 @@ class Control {
 			await SkuModel.occupyStock(spcDoc.list)
 			
 			if (body.couponId) {
-				await UserModel.update({
-					_id: uid,
-					'couponList.id': body.couponId
-				}, {
-					$set: {
-						'couponList.$.locked': true
-					}
-				})
+				await UserModel.lockCoupon(uid, body.couponId)
 			}
 			
 			return ctx.success({

@@ -96,6 +96,7 @@ class ViewOrder extends Component {
 		const status = {
 			1: '待支付',
 			11: '已支付',
+			20: '商家打包中',
 			21: '已发货',
 			31: '已完成',
 			41: '已评价',

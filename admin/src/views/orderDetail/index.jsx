@@ -13,7 +13,7 @@ class ViewOrderDetail extends Component {
 		super(props)
 
 		this.setData({
-			id: '',
+			orderNo: '',
 			loading: true,
 			data: null,
 			status: 11,
@@ -26,18 +26,18 @@ class ViewOrderDetail extends Component {
 	}
 
 	componentDidMount() {
-		const id = this.props.match.params.id
-		if (id) {
-			this.fetch(id)
+		const orderNo = this.props.match.params.orderNo
+		if (orderNo) {
+			this.fetch(orderNo)
 		} else {
 			this.data.loading = false
 		}
 	}
 
-	async fetch(id) {
+	async fetch(orderNo) {
 		try {
 			const res = await this.props.$order.fetchDetail({
-				id
+				orderNo
 			})
 			this.setState({
 				data: res
@@ -67,7 +67,7 @@ class ViewOrderDetail extends Component {
 		else {
 			try {
 				await this.props.$order.setStatus({
-					id: this.props.match.params.id,
+					orderNo: this.props.match.params.orderNo,
 					status: this.data.status,
 					statusMark: this.data.statusMark
 				})
@@ -109,6 +109,7 @@ class ViewOrderDetail extends Component {
 								{
 									1: '待支付',
 									11: '已支付',
+									20: '待发货',
 									21: '已发货',
 									31: '已完成',
 									41: '已评价',
@@ -213,19 +214,26 @@ class ViewOrderDetail extends Component {
 				</Form>
 				
 				{
-					data.status == 11 &&
+					(data.status == 11 || data.status == 20 || data.status == 21) &&
 					<h6>订单处理</h6>
 				}
 				{
-					data.status == 11 &&
+					(data.status == 11 || data.status == 20 || data.status == 21) &&
 					<Form labelWidth={120} className="handle">
 						<Form.Item label="订单状态">
 							<Select
 								value={this.data.status}
-								disabled={this.data.id != ''}
+								disabled={this.data.orderNo != ''}
 								onChange={this.valueChange.bind(this, 'status')}
 							>
-								<Select.Option label="发货" value={21} />
+								{
+									data.status == 11 &&
+									<Select.Option label="接单" value={20} />
+								}
+								{
+									data.status == 20 &&
+									<Select.Option label="发货" value={21} />
+								}
 								<Select.Option label="关闭" value={90} />
 							</Select>
 						</Form.Item>

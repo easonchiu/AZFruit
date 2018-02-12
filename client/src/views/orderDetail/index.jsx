@@ -189,6 +189,7 @@ class ViewOrderDetail extends Component {
 		const status = {
 			1: '待支付',
 			11: '已支付',
+			20: '商家打包中',
 			21: '已发货',
 			31: '已完成',
 			41: '已评价',
@@ -212,6 +213,13 @@ class ViewOrderDetail extends Component {
 						<label>订单状态</label>
 						<p>{status[data.status]}</p>
 					</li>
+					{
+						data.status === 90 &&
+						<li>
+							<label>交易关闭原因</label>
+							<p>{data.statusMark}</p>
+						</li>
+					}
 					{
 						data.status !== 1 &&
 						data.status !== 90 ?
@@ -423,12 +431,7 @@ class ViewOrderDetail extends Component {
 							微信支付￥{data.paymentPrice / 100}元
 						</Button> :
 
-						data.status == 90 ?
-						<Button type="gray">
-							订单已取消
-						</Button> :
-
-						<Button>
+						<Button onClick={e => {window.location.href = 'tel:021-54378616'}}>
 							联系客服
 						</Button>
 					}
