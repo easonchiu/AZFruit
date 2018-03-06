@@ -1,12 +1,12 @@
 'use strict';
 
-const home = require('./routers/home')
+const banner = require('./routers/banner')
 
 /**
  * @param {Egg.Application} app - egg application
  */
-module.exports = app => {
+module.exports = function(app) {
 	const { router, controller } = app;
-	
-	home(router, controller)
+
+    banner(router, controller)
 };

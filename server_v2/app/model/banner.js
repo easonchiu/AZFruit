@@ -1,4 +1,4 @@
-module.exports = app => {
+module.exports = function(app) {
 	
 	const {mongoose} = app
 
