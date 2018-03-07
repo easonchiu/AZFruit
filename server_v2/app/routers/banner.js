@@ -1,10 +1,12 @@
 'use strict';
 
-const router = function (router, controller) {
+const prefix = require('../../config/prefix')
 
-    router.post('/', controller.banner.save)
-    router.patch('/', controller.banner.save)
-    router.get('/', controller.banner.save)
+const router = function (router, controller) {
+    router.post(prefix.api + '/banner', controller.banner.save)
+    router.patch(prefix.api + '/banner', controller.banner.update)
+    router.get(prefix.api + '/banner/:id', controller.banner.getById)
+    router.delete(prefix.api + '/banner/:id', controller.banner.deleteById)
 }
 
 module.exports = router

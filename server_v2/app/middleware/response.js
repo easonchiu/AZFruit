@@ -26,6 +26,12 @@ module.exports = e => async (ctx, next) => {
                 msg: res,
             }
         }
+        else if (res && res.message) {
+            ctx.body = {
+                code: 3,
+                msg: res.message,
+            }
+        }
         else {
             const SERVER_ERROR = 'server error'
             let { data, msg = SERVER_ERROR, code } = res

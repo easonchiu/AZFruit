@@ -7,28 +7,48 @@ class BannerController extends Controller {
 	async save(ctx) {
         try {
             const { body } = ctx.request
-            if (ctx.method === 'PATCH' && body.id) {
-                await ctx.service.banner.update(body)
-                ctx.success()
-            }
-            else if (ctx.method === 'POST') {
-                await ctx.service.banner.save(body)
-                ctx.success()
-            }
-            else if (ctx.method === 'GET') {
-                const data = await ctx.service.banner.get()
-                ctx.success({
-                    data
-                })
-            }
-            else {
-                ctx.error()
-            }
+            await ctx.service.banner.save(body)
+            ctx.success()
 		}
 		catch (e) {
-        	return ctx.error(e.message)
+            return ctx.error(e)
 		}
 	}
+
+    async update(ctx) {
+        try {
+            const { body } = ctx.request
+            await ctx.service.banner.update(body)
+            ctx.success()
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
+    }
+
+	async getById(ctx) {
+	    try {
+	        const { id } = ctx.params
+            const data = await ctx.service.banner.getById(id)
+            ctx.success({
+                data
+            })
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
+    }
+
+    async deleteById(ctx) {
+        try {
+            const { id } = ctx.params
+            const data = await ctx.service.banner.deleteById(id)
+            ctx.success()
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
+    }
 }
 
 module.exports = BannerController;
