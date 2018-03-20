@@ -4,11 +4,28 @@ const Controller = require('egg').Controller;
 
 class BannerController extends Controller {
 
+    async list(ctx) {
+        try {
+            let { skip = 0, limit = 10 } = ctx.query
+            skip = parseInt(skip)
+            limit = parseInt(limit)
+
+            const data = await ctx.service.banner.list(skip, limit)
+
+            return ctx.success({
+                data
+            })
+        } catch(e) {
+            return ctx.error()
+        }
+    }
+
 	async save(ctx) {
         try {
             const { body } = ctx.request
             await ctx.service.banner.save(body)
-            ctx.success()
+
+            return ctx.success()
 		}
 		catch (e) {
             return ctx.error(e)
@@ -17,9 +34,12 @@ class BannerController extends Controller {
 
     async update(ctx) {
         try {
+            const { id } = ctx.params
             const { body } = ctx.request
-            await ctx.service.banner.update(body)
-            ctx.success()
+
+            await ctx.service.banner.update(id, body)
+
+            return ctx.success()
         }
         catch (e) {
             return ctx.error(e)
@@ -30,7 +50,8 @@ class BannerController extends Controller {
 	    try {
 	        const { id } = ctx.params
             const data = await ctx.service.banner.getById(id)
-            ctx.success({
+
+            return ctx.success({
                 data
             })
         }
@@ -42,8 +63,9 @@ class BannerController extends Controller {
     async deleteById(ctx) {
         try {
             const { id } = ctx.params
-            const data = await ctx.service.banner.deleteById(id)
-            ctx.success()
+            await ctx.service.banner.deleteById(id)
+
+            return ctx.success()
         }
         catch (e) {
             return ctx.error(e)

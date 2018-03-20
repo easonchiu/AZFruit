@@ -3,10 +3,11 @@
 const prefix = require('../../config/prefix')
 
 const router = function (router, controller) {
-    router.post(prefix.api + '/banner', controller.banner.save)
-    router.patch(prefix.api + '/banner', controller.banner.update)
-    router.get(prefix.api + '/banner/:id', controller.banner.getById)
-    router.delete(prefix.api + '/banner/:id', controller.banner.deleteById)
+    router.get(prefix + '/banner/list', controller.banner.list)
+    router.post(prefix + '/banner', controller.banner.save)
+    router.patch(prefix + '/banner/detail/:id', controller.banner.update)
+    router.get(prefix + '/banner/detail/:id', controller.banner.getById)
+    router.delete(prefix + '/banner/detail/:id', controller.banner.deleteById)
 }
 
 module.exports = router
