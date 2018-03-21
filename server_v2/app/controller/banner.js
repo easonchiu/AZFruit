@@ -4,6 +4,9 @@ const Controller = require('egg').Controller;
 
 class BannerController extends Controller {
 
+    /**
+     * 获取banner列表
+     */
     async list(ctx) {
         try {
             let { skip = 0, limit = 10 } = ctx.query
@@ -16,14 +19,17 @@ class BannerController extends Controller {
                 data
             })
         } catch(e) {
-            return ctx.error()
+            return ctx.error(e)
         }
     }
 
-	async save(ctx) {
+    /**
+     * 创建banner
+     */
+	async create(ctx) {
         try {
             const { body } = ctx.request
-            await ctx.service.banner.save(body)
+            await ctx.service.banner.create(body)
 
             return ctx.success()
 		}
@@ -32,6 +38,9 @@ class BannerController extends Controller {
 		}
 	}
 
+    /**
+     * 更新banner
+     */
     async update(ctx) {
         try {
             const { id } = ctx.params
@@ -46,7 +55,10 @@ class BannerController extends Controller {
         }
     }
 
-	async getById(ctx) {
+    /**
+     * 根据id获取banner
+     */
+	async detail(ctx) {
 	    try {
 	        const { id } = ctx.params
             const data = await ctx.service.banner.getById(id)
@@ -60,7 +72,10 @@ class BannerController extends Controller {
         }
     }
 
-    async deleteById(ctx) {
+    /**
+     * 根据id删除banner
+     */
+    async remove(ctx) {
         try {
             const { id } = ctx.params
             await ctx.service.banner.deleteById(id)

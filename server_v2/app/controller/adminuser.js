@@ -4,6 +4,10 @@ const Controller = require('egg').Controller;
 const jwt = require('../middleware/jwt')
 
 class AdminuserController extends Controller {
+
+    /**
+     * 创建管理员
+     */
     async create(ctx) {
         const name = 'admin'
         const pwd = 'a123456'
@@ -27,10 +31,13 @@ class AdminuserController extends Controller {
             return ctx.success()
         }
         catch(e) {
-            return ctx.error()
+            return ctx.error(e)
         }
     }
 
+    /**
+     * 登录
+     */
     async login(ctx) {
         try {
             const { username, password } = ctx.request.body
@@ -70,7 +77,7 @@ class AdminuserController extends Controller {
             }
         }
         catch (e) {
-            return ctx.error()
+            return ctx.error(e)
         }
     }
 

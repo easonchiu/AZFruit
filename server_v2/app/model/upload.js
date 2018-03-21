@@ -3,7 +3,7 @@ module.exports = function(app) {
 	const {mongoose} = app
 
 	// 创建一个schema实例
-	const BannerSchema = new mongoose.Schema({
+	const UploadSchema = new mongoose.Schema({
 		id: { type: String },
 		// 描述
 		desc: { type: String, default: '' },
@@ -18,10 +18,10 @@ module.exports = function(app) {
 	})
 	
 	// 创建
-	BannerSchema.methods.create = function() {
+	UploadSchema.methods.create = function() {
 		this.id = this._id
 		return this.save()
 	}
 
-	return mongoose.model('Banner', BannerSchema)
+	return mongoose.model('Upload', UploadSchema)
 }
