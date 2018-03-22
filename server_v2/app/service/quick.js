@@ -3,6 +3,32 @@ const Service = require('egg').Service;
 class quick extends Service {
     
     /**
+     * 创建快捷入口
+     */
+    async create(data) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            // 检查data的参数
+            if (!data.name) {
+                return reject('名称不能为空')
+            }
+            else if (!data.uri) {
+                return reject('图标地址不能为空')
+            }
+            else if (!data.link) {
+                return reject('链接不能为空')
+            }
+            else if (!(/^[0-9]*$/g).test(data.index)) {
+                return reject('排序编号不能为空且必须为数字')
+            }
+
+            await new ctx.model.Quick(data).create()
+
+            resolve()
+        })
+    }
+
+    /**
      * 获取列表
      */
     async list(skip, limit) {

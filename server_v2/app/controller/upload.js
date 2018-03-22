@@ -24,11 +24,11 @@ class QuickController extends Controller {
      */
     async list(ctx) {
         try {
-            let { skip = 0, limit = 10 } = ctx.query
+            let { skip = 0, limit = 10, classes } = ctx.query
             skip = parseInt(skip)
             limit = parseInt(limit)
 
-            const data = await ctx.service.upload.list(skip, limit)
+            const data = await ctx.service.upload.list(skip, limit, classes)
 
             return ctx.success({
                 data
