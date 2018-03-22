@@ -3,6 +3,87 @@ const Service = require('egg').Service;
 class coupon extends Service {
     
     /**
+     * 创建优惠券
+     */
+    async create(data) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            // 检查data的参数
+            if (!data.name) {
+                return reject('优惠券名称不能为空')
+            }
+            else if (!data.batch) {
+                return reject('优惠券批次号不能为空')
+            }
+            else if (data.amount == undefined || data.amount <= 0) {
+                return reject('预设数量必须大于0')
+            }
+            else if (data.worth == undefined || data.worth <= 0) {
+                return reject('可抵扣金额必须大于0')
+            }
+            else if (data.condition == undefined || data.condition < 0) {
+                return reject('使用条件必须大于等于0')
+            }
+            else if (!data.flag) {
+                return reject('请选择发放方式')
+            }
+            else if (data.expiredTime == undefined || data.expiredTime < 0) {
+                return reject('过期期限必须大于0天')
+            }
+
+            await new ctx.model.Banner(data).create()
+
+            resolve()
+        })
+    }
+
+    /**
+     * 更新优惠券
+     */
+    async update(id, data) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            // 检查data的参数
+            if (!id) {
+                return reject('id不能为空')
+            }
+            if (!data.name) {
+                return reject('优惠券名称不能为空')
+            }
+            else if (!data.batch) {
+                return reject('优惠券批次号不能为空')
+            }
+            else if (data.amount == undefined || data.amount <= 0) {
+                return reject('预设数量必须大于0')
+            }
+            else if (data.worth == undefined || data.worth <= 0) {
+                return reject('可抵扣金额必须大于0')
+            }
+            else if (data.condition == undefined || data.condition < 0) {
+                return reject('使用条件必须大于等于0')
+            }
+            else if (!data.flag) {
+                return reject('请选择发放方式')
+            }
+            else if (data.expiredTime == undefined || data.expiredTime < 0) {
+                return reject('过期期限必须大于0天')
+            }
+
+            const res = await ctx.model.Coupon.update({
+                _id: id
+            }, data)
+
+            if (res.n) {
+                resolve()
+            }
+            else {
+                reject('修改失败')
+            }
+
+        })
+    }
+
+    /**
      * 获取列表
      */
     async list(skip, limit) {
@@ -38,10 +119,10 @@ class coupon extends Service {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             if (!id) {
-                reject('id不能为空')
+                return reject('id不能为空')
             }
             else if (id.length !== 24) {
-                reject('id不正确')
+                return reject('id不正确')
             }
 
             const data = await ctx.model.Coupon.findOne({
@@ -52,10 +133,10 @@ class coupon extends Service {
             })
 
             if (data) {
-                resolve(data)
+                return resolve(data)
             }
             else {
-                reject('未找到相关的优惠券')
+                return reject('未找到相关的优惠券')
             }
         })
     }
@@ -67,21 +148,21 @@ class coupon extends Service {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             if (!id) {
-                reject('id不能为空')
+                return reject('id不能为空')
             }
             else if (id.length !== 24) {
-                reject('id不正确')
+                return reject('id不正确')
             }
 
             const data = await ctx.model.Coupon.remove({
                 _id: id
             })
 
-            if (data) {
-                resolve(data)
+            if (data.result.n) {
+                return resolve(data)
             }
             else {
-                reject('未找到相关的优惠券')
+                return reject('未找到相关的优惠券')
             }
         })
     }

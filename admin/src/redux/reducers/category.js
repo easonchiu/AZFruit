@@ -20,7 +20,7 @@ const reducer = handleActions({
 	},
 	CATEGORY_FETCH_ONLINE_LIST (state, action) {
 		return Immutable.merge(state, {
-			onlineList: action.payload,
+			onlineList: action.payload ? action.payload.list : [],
 		})
 	}
 }, initialState)

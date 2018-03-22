@@ -5,7 +5,6 @@ const key = '!@#zaq2017_azfruit'
 
 class Jwt {
     static createToken(data) {
-        console.log(data)
         return jwt.sign(data, key)
     }
 }

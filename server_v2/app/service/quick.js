@@ -43,23 +43,28 @@ class quick extends Service {
                 return reject('id不能为空')
             }
             else if (!data.name) {
-                reject('名称不能为空')
+                return reject('名称不能为空')
             }
             else if (!data.uri) {
-                reject('图标地址不能为空')
+                return reject('图标地址不能为空')
             }
             else if (!data.link) {
-                reject('链接不能为空')
+                return reject('链接不能为空')
             }
             else if (!(/^[0-9]*$/g).test(data.index)) {
-                reject('排序编号不能为空且必须为数字')
+                return reject('排序编号不能为空且必须为数字')
             }
 
-            await ctx.model.Quick.update({
+            const res = await ctx.model.Quick.update({
                 _id: id
             }, data)
 
-            resolve()
+            if (res.n) {
+                resolve()
+            }
+            else {
+                reject('修改失败')
+            }
         })
     }
 
@@ -70,10 +75,10 @@ class quick extends Service {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             if (!id) {
-                reject('id不能为空')
+                return reject('id不能为空')
             }
             else if (id.length !== 24) {
-                reject('id不正确')
+                return reject('id不正确')
             }
 
             const data = await ctx.model.Quick.findOne({
@@ -84,10 +89,10 @@ class quick extends Service {
             })
 
             if (data) {
-                resolve(data)
+                return resolve(data)
             }
             else {
-                reject('未找到相关的快捷入口')
+                return reject('未找到相关的快捷入口')
             }
         })
     }
@@ -99,21 +104,21 @@ class quick extends Service {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             if (!id) {
-                reject('id不能为空')
+                return reject('id不能为空')
             }
             else if (id.length !== 24) {
-                reject('id不正确')
+                return reject('id不正确')
             }
 
             const data = await ctx.model.Quick.remove({
                 _id: id
             })
 
-            if (data) {
-                resolve(data)
+            if (data.result.n) {
+                return resolve(data)
             }
             else {
-                reject('未找到相关的快捷入口')
+                return reject('未找到相关的快捷入口')
             }
         })
     }

@@ -66,10 +66,10 @@ class category extends Service {
         const ctx = this.ctx
     	return new Promise(async function(resolve, reject) {
     	    if (!id) {
-                reject('id不能为空')
+                return reject('id不能为空')
             }
             else if (id.length !== 24) {
-                reject('id不正确')
+                return reject('id不正确')
             }
 
             const data = await ctx.model.Category.findOne({
@@ -80,10 +80,10 @@ class category extends Service {
             })
 
             if (data) {
-                resolve(data)
+                return resolve(data)
             }
             else {
-    	        reject('未找到相关的分类')
+    	        return reject('未找到相关的分类')
             }
 		})
 	}
@@ -95,21 +95,21 @@ class category extends Service {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             if (!id) {
-                reject('id不能为空')
+                return reject('id不能为空')
             }
             else if (id.length !== 24) {
-                reject('id不正确')
+                return reject('id不正确')
             }
 
             const data = await ctx.model.Category.remove({
                 _id: id
             })
 
-            if (data) {
-                resolve(data)
+            if (data.result.n) {
+                return resolve(data)
             }
             else {
-                reject('未找到相关的分类')
+                return reject('未找到相关的分类')
             }
         })
     }

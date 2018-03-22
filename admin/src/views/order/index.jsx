@@ -59,6 +59,7 @@ class ViewOrder extends Component {
 			}
 		} catch(e) {
 			console.error(e)
+			Message.error(e.msg)
 		}
 		this.data.loading = false
 	}

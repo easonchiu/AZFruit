@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getToken, setToken, clearToken} from './token'
+import Cookies from 'js-cookie'
 
 const config = {
 	production: '/server/api',
@@ -26,6 +27,12 @@ http.interceptors.request.use(config => {
 	if (token) {
 		config.headers.Authorization = 'Bearer ' + token
 	}
+
+	const csrfToken = Cookies.get('csrfToken')
+	if (csrfToken) {
+		config.headers['x-csrf-token'] = csrfToken
+	}
+	
 	return config
 })
 

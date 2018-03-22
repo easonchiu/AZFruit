@@ -4,7 +4,7 @@ import connect from 'src/redux/connect'
 import reactStateData from 'react-state-data'
 import ReactMde, { ReactMdeCommands } from 'react-mde'
 
-import { Button, Form, Input, InputNumber, Switch, Loading, Message, Select, Toast, Table } from 'element-react'
+import { Button, Form, Input, InputNumber, Switch, Loading, Message, Select, Table } from 'element-react'
 import Colors from 'src/components/colors'
 import Upload from 'src/components/upload'
 import CDN from 'src/assets/libs/cdn'
@@ -91,8 +91,8 @@ class ViewGoodsDetail extends Component {
 
 			await this.props.$category.fetchOnlineList()
 		} catch(e) {
-			Message.error(e.msg)
 			console.error(e)
+			Message.error(e.msg)
 		}
 		this.data.loading = false
 	}
