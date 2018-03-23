@@ -1,57 +1,63 @@
 const Service = require('egg').Service;
 
-class quick extends Service {
-    
+class sku extends Service {
+
     /**
-     * 创建快捷入口
+	 * 创建sku
      */
-    async create(data) {
+	async create(data) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
                 // 检查data的参数
-                if (!data.name) {
-                    return reject('名称不能为空')
+                if (!data.pid) {
+                    return reject('所属产品不能为空')
                 }
-                else if (!data.uri) {
-                    return reject('图标地址不能为空')
-                }
-                else if (!data.link) {
-                    return reject('链接不能为空')
-                }
-                else if (!(/^[0-9]*$/g).test(data.index)) {
-                    return reject('排序编号不能为空且必须为数字')
+                else if (!data.unit) {
+                    return reject('计量单位不能为空')
                 }
 
-                await new ctx.model.Quick(data).create()
+                await new ctx.model.Sku(data).create()
+
+                // 更新商品表的sku信息
+                await ctx.service.goods.updateSkuInfo(data.pid)
 
                 resolve()
             }
             catch (e) {
+                if (typeof e === 'string') {
+                    return reject(e)
+                }
                 reject('系统错误')
             }
         })
-    }
+	}
 
     /**
      * 获取列表
      */
-    async list(skip, limit) {
+    async list(skip, limit, match = {}) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
                 // 计算条目数量
-                const count = await ctx.model.Quick.count({})
+                const count = await ctx.model.Sku.count(match)
 
                 // 查找数据
                 let list = []
                 if (count > 0) {
-                    list = await ctx.model.Quick.aggregate([
+                    const sql = [
                         { $sort: { online: -1, index: 1 } },
                         { $project: { _id: 0, __v: 0 } },
                         { $skip: skip },
                         { $limit: limit }
-                    ])
+                    ]
+                    if (match) {
+                        sql.unshift({
+                            $match: match
+                        })
+                    }
+                    list = await ctx.model.Sku.aggregate(sql)
                 }
 
                 resolve({
@@ -68,7 +74,7 @@ class quick extends Service {
     }
 
     /**
-     * 更新快捷入口
+     * 更新sku
      */
     async update(id, data) {
         const ctx = this.ctx
@@ -78,26 +84,23 @@ class quick extends Service {
                 if (!id) {
                     return reject('id不能为空')
                 }
-                else if (!data.name) {
-                    return reject('名称不能为空')
+                else if (!data.pid) {
+                    return reject('所属产品不能为空')
                 }
-                else if (!data.uri) {
-                    return reject('图标地址不能为空')
-                }
-                else if (!data.link) {
-                    return reject('链接不能为空')
-                }
-                else if (!(/^[0-9]*$/g).test(data.index)) {
-                    return reject('排序编号不能为空且必须为数字')
+                else if (!data.unit) {
+                    return reject('计量单位不能为空')
                 }
 
-                const res = await ctx.model.Quick.update({
+                const res = await ctx.model.Sku.update({
                     _id: id
                 }, {
                     $set: data
                 })
 
                 if (res.n) {
+                    // 更新商品表的sku信息
+                    await ctx.service.goods.updateSkuInfo(data.pid)
+
                     resolve()
                 }
                 else {
@@ -105,18 +108,21 @@ class quick extends Service {
                 }
             }
             catch (e) {
+                if (typeof e === 'string') {
+                    return reject(e)
+                }
                 reject('系统错误')
             }
         })
     }
 
     /**
-     * 根据id获取分类
+     * 根据id获取sku
      */
     async getById(id) {
         const ctx = this.ctx
-        return new Promise(async function(resolve, reject) {
-            try {
+    	return new Promise(async function(resolve, reject) {
+    	    try {
                 if (!id) {
                     return reject('id不能为空')
                 }
@@ -124,7 +130,7 @@ class quick extends Service {
                     return reject('id不正确')
                 }
 
-                const data = await ctx.model.Quick.findOne({
+                const data = await ctx.model.Sku.findOne({
                     _id: id
                 }, {
                     _id: 0,
@@ -135,17 +141,17 @@ class quick extends Service {
                     return resolve(data)
                 }
                 else {
-                    return reject('未找到相关的快捷入口')
+                    return reject('未找到相关的sku')
                 }
             }
             catch (e) {
                 reject('系统错误')
             }
-        })
-    }
+		})
+	}
 
     /**
-     * 根据id删除快捷入口
+     * 根据id删除sku
      */
     async deleteById(id) {
         const ctx = this.ctx
@@ -158,23 +164,34 @@ class quick extends Service {
                     return reject('id不正确')
                 }
 
-                const data = await ctx.model.Quick.remove({
+                const find = await ctx.model.Sku.findById(id)
+
+                if (!find) {
+                    return reject('未找到相关的sku')
+                }
+
+                const data = await ctx.model.Sku.remove({
                     _id: id
                 })
 
                 if (data.result.n) {
+                    // 更新商品表的sku信息
+                    await ctx.service.goods.updateSkuInfo(find.pid)
+
                     return resolve(data)
                 }
                 else {
-                    return reject('未找到相关的快捷入口')
+                    return reject('未找到相关的sku')
                 }
             }
             catch (e) {
+                if (typeof e === 'string') {
+                    return reject(e)
+                }
                 reject('系统错误')
             }
         })
     }
-    
 }
 
-module.exports = quick
+module.exports = sku

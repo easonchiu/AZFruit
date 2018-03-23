@@ -14,7 +14,7 @@ module.exports = function(app) {
 		// 标签底色
 		badgeColor: { type: String, default: '' },
 		// 排序
-		index: { type: Number, required: true },
+		index: { type: Number, default: 0 },
 	})
 	
 	// 创建

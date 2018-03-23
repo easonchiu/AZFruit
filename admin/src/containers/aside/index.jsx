@@ -42,16 +42,19 @@ class Aside extends Component {
 			link: '/goods/list',
 			match: '/goods',
 			name: '产品管理',
-			badge: '差sku'
+			badge: 'ok'
 		}, {
 			link: '/order/list',
 			match: '/order',
 			name: '订单管理'
-		}, {
-			link: '/comment/list',
-			match: '/comment',
-			name: '评价管理'
-		}, {
+		},
+		// {
+		// 	link: '/comment/list',
+		// 	match: '/comment',
+		// 	name: '评价管理',
+		// 	badge: 'delay'
+		// },
+		{
 			link: '/user/list',
 			match: '/user',
 			name: '用户管理'
@@ -65,11 +68,14 @@ class Aside extends Component {
 			match: '/postage',
 			name: '运费规则管理',
 			badge: 'ok'
-		}, {
-			link: '/discount/list',
-			match: '/discount',
-			name: '满减规则管理'
-		}]
+		},
+		// {
+		// 	link: '/discount/list',
+		// 	match: '/discount',
+		// 	name: '满减规则管理',
+		// 	badge: 'delay'
+		// }
+		]
 
 		const current = this.props.location.pathname
 

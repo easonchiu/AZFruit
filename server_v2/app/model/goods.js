@@ -8,7 +8,7 @@ module.exports = function(app) {
 		// 产品名称
 		name: { type: String, required: true },
 		// 排序
-		index: { type: Number, required: true },
+		index: { type: Number, default: 0 },
 		// 产品描述
 		desc: { type: String, default: '' },
 		// 封面图

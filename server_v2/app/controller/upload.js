@@ -10,9 +10,11 @@ class QuickController extends Controller {
     async create(ctx) {
         try {
             const { body } = ctx.request
-            await ctx.service.upload.create(body)
+            const res = await ctx.service.upload.create(body)
 
-            return ctx.success()
+            return ctx.success({
+                data: res
+            })
         }
         catch (e) {
             return ctx.error(e)

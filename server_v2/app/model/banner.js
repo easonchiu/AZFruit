@@ -14,7 +14,7 @@ module.exports = function(app) {
 		// 是否上架中
 		online: { type: Boolean, defaut: true },
 		// 排序
-		index: { type: Number, required: true },
+		index: { type: Number, default: 0 },
 	})
 	
 	// 创建

@@ -7,6 +7,7 @@ const coupon = require('./routers/coupon')
 const goods = require('./routers/goods')
 const postage = require('./routers/postage')
 const quick = require('./routers/quick')
+const sku = require('./routers/sku')
 const upload = require('./routers/upload')
 
 /**
@@ -22,6 +23,7 @@ module.exports = function(app) {
     goods(router, controller)
     postage(router, controller)
     quick(router, controller)
+    sku(router, controller)
     upload(router, controller)
     
 }

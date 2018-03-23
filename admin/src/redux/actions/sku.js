@@ -6,7 +6,7 @@ const _fetchList = createAction('SKU_FETCH_LIST')
 const fetchList = (payload = {}) => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/goods/sku/list`,
+        url: `/sku/list`,
         params: {
         	skip: payload.skip || 0,
         	limit: payload.limit || 10,
@@ -19,7 +19,7 @@ const fetchList = (payload = {}) => async (dispatch, getState) => {
 const fetchDetail = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'get',
-        url: `/goods/sku/detail/${payload.sid}`,
+        url: `/sku/detail/${payload.sid}`,
         params: {}
 	})
 	return res
@@ -28,7 +28,7 @@ const fetchDetail = payload => async (dispatch, getState) => {
 const update = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'patch',
-        url: `/goods/sku/detail/${payload.sid}`,
+        url: `/sku/detail/${payload.sid}`,
         data: payload
 	})
 }
@@ -36,7 +36,7 @@ const update = payload => async (dispatch, getState) => {
 const create = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'post',
-        url: `/goods/sku`,
+        url: `/sku`,
         data: payload
 	})
 }
@@ -44,7 +44,7 @@ const create = payload => async (dispatch, getState) => {
 const remove = payload => async (dispatch, getState) => {
 	const res = await http.request({
 		method: 'delete',
-        url: `/goods/sku/detail/${payload.sid}`,
+        url: `/sku/detail/${payload.sid}`,
         data: payload
 	})
 }

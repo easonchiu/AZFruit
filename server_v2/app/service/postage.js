@@ -8,20 +8,25 @@ class postage extends Service {
 	async create(data) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
-            // 检查data的参数
-            if (!(/^[0-9]*$/g).test(data.km)) {
-                return reject('超出距离不能为空')
-            }
-            else if (!(/^[0-9]*$/g).test(data.weight)) {
-                return reject('重量不能为空')
-            }
-            else if (!(/^[0-9]*$/g).test(data.postage)) {
-                return reject('基础运费不能为空')
-            }
+            try {
+                // 检查data的参数
+                if (!(/^[0-9]*$/g).test(data.km)) {
+                    return reject('超出距离不能为空')
+                }
+                else if (!(/^[0-9]*$/g).test(data.weight)) {
+                    return reject('重量不能为空')
+                }
+                else if (!(/^[0-9]*$/g).test(data.postage)) {
+                    return reject('基础运费不能为空')
+                }
 
-            await new ctx.model.Postage(data).create()
+                await new ctx.model.Postage(data).create()
 
-            resolve()
+                resolve()
+            }
+            catch (e) {
+                reject('系统错误')
+            }
         })
 	}
 
@@ -31,26 +36,31 @@ class postage extends Service {
     async list(skip, limit) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
-            // 计算条目数量
-            const count = await ctx.model.Postage.count({})
+            try {
+                // 计算条目数量
+                const count = await ctx.model.Postage.count({})
 
-            // 查找数据
-            let list = []
-            if (count > 0) {
-                list = await ctx.model.Postage.aggregate([
-                    { $sort: { online: -1, index: 1 } },
-                    { $project: { _id: 0, __v: 0 } },
-                    { $skip: skip },
-                    { $limit: limit }
-                ])
+                // 查找数据
+                let list = []
+                if (count > 0) {
+                    list = await ctx.model.Postage.aggregate([
+                        { $sort: { online: -1, index: 1 } },
+                        { $project: { _id: 0, __v: 0 } },
+                        { $skip: skip },
+                        { $limit: limit }
+                    ])
+                }
+
+                resolve({
+                    list,
+                    count,
+                    skip,
+                    limit
+                })
             }
-
-            resolve({
-                list,
-                count,
-                skip,
-                limit
-            })
+            catch (e) {
+                reject('系统错误')
+            }
         })
     }
 
@@ -60,29 +70,36 @@ class postage extends Service {
     async update(id, data) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
-            // 检查data的参数
-            if (!id) {
-                return reject('id不能为空')
-            }
-            else if (!(/^[0-9]*$/g).test(data.km)) {
-                return reject('超出距离不能为空')
-            }
-            else if (!(/^[0-9]*$/g).test(data.weight)) {
-                return reject('重量不能为空')
-            }
-            else if (!(/^[0-9]*$/g).test(data.postage)) {
-                return reject('基础运费不能为空')
-            }
+            try {
+                // 检查data的参数
+                if (!id) {
+                    return reject('id不能为空')
+                }
+                else if (!(/^[0-9]*$/g).test(data.km)) {
+                    return reject('超出距离不能为空')
+                }
+                else if (!(/^[0-9]*$/g).test(data.weight)) {
+                    return reject('重量不能为空')
+                }
+                else if (!(/^[0-9]*$/g).test(data.postage)) {
+                    return reject('基础运费不能为空')
+                }
 
-            const res = await ctx.model.Postage.update({
-                _id: id
-            }, data)
+                const res = await ctx.model.Postage.update({
+                    _id: id
+                }, {
+                    $set: data
+                })
 
-            if (res.n) {
-                resolve()
+                if (res.n) {
+                    resolve()
+                }
+                else {
+                    reject('修改失败')
+                }
             }
-            else {
-                reject('修改失败')
+            catch (e) {
+                reject('系统错误')
             }
         })
     }
@@ -93,25 +110,30 @@ class postage extends Service {
     async getById(id) {
         const ctx = this.ctx
     	return new Promise(async function(resolve, reject) {
-    	    if (!id) {
-                return reject('id不能为空')
-            }
-            else if (id.length !== 24) {
-                return reject('id不正确')
-            }
+    	    try {
+                if (!id) {
+                    return reject('id不能为空')
+                }
+                else if (id.length !== 24) {
+                    return reject('id不正确')
+                }
 
-            const data = await ctx.model.Postage.findOne({
-                _id: id
-            }, {
-                _id: 0,
-                __v: 0
-            })
+                const data = await ctx.model.Postage.findOne({
+                    _id: id
+                }, {
+                    _id: 0,
+                    __v: 0
+                })
 
-            if (data) {
-                resolve(data)
+                if (data) {
+                    resolve(data)
+                }
+                else {
+                    reject('未找到相关的运费规则')
+                }
             }
-            else {
-    	        reject('未找到相关的运费规则')
+            catch (e) {
+                reject('系统错误')
             }
 		})
 	}
@@ -122,22 +144,27 @@ class postage extends Service {
     async deleteById(id) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
-            if (!id) {
-                return reject('id不能为空')
-            }
-            else if (id.length !== 24) {
-                return reject('id不正确')
-            }
+            try {
+                if (!id) {
+                    return reject('id不能为空')
+                }
+                else if (id.length !== 24) {
+                    return reject('id不正确')
+                }
 
-            const data = await ctx.model.Postage.remove({
-                _id: id
-            })
+                const data = await ctx.model.Postage.remove({
+                    _id: id
+                })
 
-            if (data.result.n) {
-                return resolve(data)
+                if (data.result.n) {
+                    return resolve(data)
+                }
+                else {
+                    reject('未找到相关的运费规则')
+                }
             }
-            else {
-                reject('未找到相关的运费规则')
+            catch (e) {
+                reject('系统错误')
             }
         })
     }

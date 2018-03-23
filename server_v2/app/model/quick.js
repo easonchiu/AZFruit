@@ -14,7 +14,7 @@ module.exports = function(app) {
         // 是否使用中
         online: { type: Boolean, defaut: true },
         // 排序
-        index: { type: Number, required: true },
+        index: { type: Number, default: 0 },
         // 创建时间
         createTime: { type: Date, default: Date.now }
     })

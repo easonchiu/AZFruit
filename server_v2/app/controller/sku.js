@@ -2,18 +2,20 @@
 
 const Controller = require('egg').Controller;
 
-class BannerController extends Controller {
+class SkuController extends Controller {
 
     /**
-     * 获取banner列表
+     * 获取sku列表
      */
     async list(ctx) {
         try {
-            let { skip = 0, limit = 10 } = ctx.query
+            let { skip = 0, limit = 10, pid } = ctx.query
             skip = parseInt(skip)
             limit = parseInt(limit)
 
-            const data = await ctx.service.banner.list(skip, limit)
+            const data = await ctx.service.sku.list(skip, limit, {
+                pid: pid
+            })
 
             return ctx.success({
                 data
@@ -24,12 +26,12 @@ class BannerController extends Controller {
     }
 
     /**
-     * 创建banner
+     * 创建sku
      */
 	async create(ctx) {
         try {
             const { body } = ctx.request
-            await ctx.service.banner.create(body)
+            await ctx.service.sku.create(body)
 
             return ctx.success()
 		}
@@ -39,14 +41,14 @@ class BannerController extends Controller {
 	}
 
     /**
-     * 更新banner
+     * 更新sku
      */
     async update(ctx) {
         try {
             const { id } = ctx.params
             const { body } = ctx.request
 
-            await ctx.service.banner.update(id, body)
+            await ctx.service.sku.update(id, body)
 
             return ctx.success()
         }
@@ -56,12 +58,12 @@ class BannerController extends Controller {
     }
 
     /**
-     * banner详情
+     * sku详情
      */
 	async detail(ctx) {
 	    try {
 	        const { id } = ctx.params
-            const data = await ctx.service.banner.getById(id)
+            const data = await ctx.service.sku.getById(id)
 
             return ctx.success({
                 data
@@ -73,12 +75,12 @@ class BannerController extends Controller {
     }
 
     /**
-     * 删除banner
+     * 删除sku
      */
     async remove(ctx) {
         try {
             const { id } = ctx.params
-            await ctx.service.banner.deleteById(id)
+            await ctx.service.sku.deleteById(id)
 
             return ctx.success()
         }
@@ -88,4 +90,4 @@ class BannerController extends Controller {
     }
 }
 
-module.exports = BannerController;
+module.exports = SkuController;
