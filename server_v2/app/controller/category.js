@@ -71,6 +71,23 @@ class CategoryController extends Controller {
     }
 
     /**
+     * m.获取列表
+     */
+    async m_list(ctx) {
+        try {
+            const data = await ctx.service.category.list(0, 99, {
+                online: true
+            })
+
+            return ctx.success({
+                data: data.list
+            })
+        } catch(e) {
+            return ctx.error(e)
+        }
+    }
+
+    /**
      * 获取在线列表
      */
     async onlineList(ctx) {

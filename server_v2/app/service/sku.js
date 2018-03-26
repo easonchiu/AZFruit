@@ -36,7 +36,7 @@ class sku extends Service {
     /**
      * 获取列表
      */
-    async list(skip, limit, match = {}) {
+    async list(skip = 0, limit = 10, match = {}) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
@@ -48,7 +48,7 @@ class sku extends Service {
                 if (count > 0) {
                     const sql = [
                         { $sort: { online: -1, index: 1 } },
-                        { $project: { _id: 0, __v: 0 } },
+                        { $project: { _id: 0, __v: 0, createTime: 0 } },
                         { $skip: skip },
                         { $limit: limit }
                     ]

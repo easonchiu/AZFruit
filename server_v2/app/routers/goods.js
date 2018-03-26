@@ -23,6 +23,17 @@ const router = function (router, controller) {
     router.get(`${prefix}/goods/recom`, controller.goods.recomList)
     // 更新推荐榜
     router.patch(`${prefix}/goods/recom`, controller.goods.updateRecom)
+
+    //---------------------
+
+    // 拉取排行榜数据
+    router.get(`${prefix}/m/goods/ranking`, controller.goods.m_rankingList)
+    // 拉取推荐榜数据
+    router.get(`${prefix}/m/goods/recommend`, controller.goods.m_recomList)
+    // 用户端获取全部产品列表
+    router.get(`${prefix}/m/goods`, controller.goods.m_list)
+    // 用户端获取产品详情
+    router.get(`${prefix}/m/goods/:id`, controller.goods.m_detail)
 }
 
 module.exports = router

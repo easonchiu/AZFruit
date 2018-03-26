@@ -26,6 +26,25 @@ class SkuController extends Controller {
     }
 
     /**
+     * m.获取sku列表
+     */
+    async m_list(ctx) {
+        try {
+            const { pid } = ctx.params
+
+            const data = await ctx.service.sku.list(0, 99, {
+                pid: pid
+            })
+
+            return ctx.success({
+                data: data.list
+            })
+        } catch(e) {
+            return ctx.error(e)
+        }
+    }
+
+    /**
      * 创建sku
      */
 	async create(ctx) {

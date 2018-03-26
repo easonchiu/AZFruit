@@ -16,7 +16,7 @@ const baseUrl = config[process.env.ENV_NAME] || config['develop']
 
 const http = axios.create({
 	baseURL: baseUrl,
-	header: {
+	headers: {
 		'Accept': 'application/json;version=3.0;compress=false',
 		'Content-Type': 'application/json;charset=utf-8'
 	}

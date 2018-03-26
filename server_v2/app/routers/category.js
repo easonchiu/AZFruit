@@ -15,6 +15,11 @@ const router = function (router, controller) {
     router.get(`${prefix}/category/onlinelist`, controller.category.onlineList)
     // 获取分类详情
     router.get(`${prefix}/category/detail/:id`, controller.category.detail)
+    
+    //---------------------
+
+    // 用户端获取列表
+    router.get(`${prefix}/m/category`, controller.category.m_list)
 }
 
 module.exports = router

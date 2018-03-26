@@ -60,6 +60,7 @@
   "dependencies": {
     "babel-plugin-lodash": "^3.3.2",
     "fastclick": "^1.0.6",
+    "js-cookie": "^2.2.0",
     "lodash-webpack-plugin": "^0.11.4",
     "react-swipe": "^5.1.0"
   }

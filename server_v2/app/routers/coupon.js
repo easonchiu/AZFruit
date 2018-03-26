@@ -11,6 +11,9 @@ const router = function (router, controller) {
     router.patch(`${prefix}/coupon/detail/:id`, controller.coupon.update)
     // 添加
     router.post(`${prefix}/coupon`, controller.coupon.create)
+
+    //------------------
+    
 }
 
 module.exports = router

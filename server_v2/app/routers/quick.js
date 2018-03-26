@@ -13,6 +13,11 @@ const router = function (router, controller) {
     router.get(`${prefix}/quick/list`, controller.quick.list)
     // 获取快捷详情
     router.get(`${prefix}/quick/detail/:id`, controller.quick.detail)
+
+    //---------------------
+
+    // 获取列表
+    router.get(`${prefix}/m/quick`, controller.quick.m_list)
 }
 
 module.exports = router

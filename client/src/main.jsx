@@ -29,7 +29,7 @@ class Wrapper extends Component {
 
 	render() {
 		if (!isWeixin) {
-			return <p>请在微信客户端中打开</p>
+			// return <p>请在微信客户端中打开</p>
 		}
 		return (
 			<Provider store={store}>

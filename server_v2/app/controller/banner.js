@@ -22,6 +22,24 @@ class BannerController extends Controller {
             return ctx.error(e)
         }
     }
+    
+    /**
+     * m.获取banner列表
+     */
+    async m_list(ctx) {
+        try {
+
+            const data = await ctx.service.banner.list(0, 99, {
+                online: true
+            })
+
+            return ctx.success({
+                data: data.list
+            })
+        } catch(e) {
+            return ctx.error(e)
+        }
+    }
 
     /**
      * 创建banner

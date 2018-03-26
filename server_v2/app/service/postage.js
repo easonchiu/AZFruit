@@ -33,7 +33,7 @@ class postage extends Service {
     /**
      * 获取列表
      */
-    async list(skip, limit) {
+    async list(skip = 0, limit = 10) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {

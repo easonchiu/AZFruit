@@ -22,6 +22,28 @@ class GoodsController extends Controller {
             return ctx.error(e)
         }
     }
+    
+    /**
+     * m.获取商品列表
+     */
+    async m_list(ctx) {
+        try {
+            let { category } = ctx.query
+
+            const search = {}
+            if (category) {
+                search['category.id'] = category
+            }
+
+            const data = await ctx.service.goods.list(0, 99, search)
+
+            return ctx.success({
+                data: data.list
+            })
+        } catch(e) {
+            return ctx.error(e)
+        }
+    }
 
     /**
      * 创建商品
@@ -71,11 +93,44 @@ class GoodsController extends Controller {
             return ctx.error(e)
         }
     }
+
+    /**
+     * m.根据id获取商品
+     */
+    async m_detail(ctx) {
+        try {
+            const { id } = ctx.params
+            const data = await ctx.service.goods.getById(id)
+
+            return ctx.success({
+                data
+            })
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
+    }
     
     /**
      * 获取排行榜列表
      */
     async rankingList(ctx) {
+        try {
+            const data = await ctx.service.goods.rankingList(10)
+
+            return ctx.success({
+                data
+            })
+        }
+        catch(e) {
+            return ctx.error(e)
+        }
+    }
+
+    /**
+     * m.获取排行榜列表
+     */
+    async m_rankingList(ctx) {
         try {
             const data = await ctx.service.goods.rankingList(10)
 
@@ -108,6 +163,22 @@ class GoodsController extends Controller {
      * 获取推荐列表
      */
     async recomList(ctx) {
+        try {
+            const data = await ctx.service.goods.recomList(10)
+
+            return ctx.success({
+                data
+            })
+        }
+        catch(e) {
+            return ctx.error(e)
+        }
+    }
+
+    /**
+     * m.获取推荐列表
+     */
+    async m_recomList(ctx) {
         try {
             const data = await ctx.service.goods.recomList(10)
 

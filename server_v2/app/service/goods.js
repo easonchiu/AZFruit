@@ -33,19 +33,20 @@ class goods extends Service {
     /**
      * 获取列表
      */
-    async list(skip, limit) {
+    async list(skip = 0, limit = 10, search = {}) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
                 // 计算条目数量
-                const count = await ctx.model.Goods.count({})
+                const count = await ctx.model.Goods.count(search)
 
                 // 查找数据
                 let list = []
                 if (count > 0) {
                     list = await ctx.model.Goods.aggregate([
+                        { $match: search },
                         { $sort: { online: -1, index: 1 } },
-                        { $project: { _id: 0, __v: 0 } },
+                        { $project: { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 } },
                         { $skip: skip },
                         { $limit: limit }
                     ])
@@ -180,7 +181,7 @@ class goods extends Service {
                     { $match: { online: true, skuCount: { '$gt': 0 } } },
                     { $sort: { ranking: -1 } },
                     { $limit: length },
-                    { $project: { _id: 0, id: 1, name: 1, cover: 1, ranking: 1 } }
+                    { $project: { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 } },
                 ])
 
                 if (data) {
@@ -248,7 +249,7 @@ class goods extends Service {
                     { $match: { online: true, skuCount: { '$gt': 0 } } },
                     { $sort: { recom: -1 } },
                     { $limit: length },
-                    { $project: { _id: 0, id: 1, name: 1, cover: 1, recom: 1 } }
+                    { $project: { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 } },
                 ])
 
                 if (data) {

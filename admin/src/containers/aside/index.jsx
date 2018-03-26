@@ -57,7 +57,8 @@ class Aside extends Component {
 		{
 			link: '/user/list',
 			match: '/user',
-			name: '用户管理'
+			name: '用户管理',
+			badge: 'ok'
 		}, {
 			link: '/coupon/list',
 			match: '/coupon',

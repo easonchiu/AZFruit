@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { getToken, setToken, clearToken} from './token'
+import Cookies from 'js-cookie'
 
 const config = {
-	production: '/server/app',
+	production: '/server/api/m',
 	develop: '/proxy',
 }
 
@@ -10,7 +11,7 @@ const baseUrl = config[process.env.ENV_NAME] || config['develop']
 
 const http = axios.create({
 	baseURL: baseUrl,
-	header: {
+	headers: {
 		'Accept': 'application/json;version=3.0;compress=false',
 		'Content-Type': 'application/json;charset=utf-8'
 	}
@@ -20,6 +21,11 @@ http.interceptors.request.use(config => {
 	const token = getToken()
 	if (token) {
 		config.headers.Authorization = 'Bearer ' + token
+	}
+
+	const csrfToken = Cookies.get('csrfToken')
+	if (csrfToken) {
+		config.headers['x-csrf-token'] = csrfToken
 	}
 	return config
 })

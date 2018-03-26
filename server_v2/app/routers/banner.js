@@ -13,6 +13,11 @@ const router = function (router, controller) {
     router.get(`${prefix}/banner/detail/:id`, controller.banner.detail)
     // 删除
     router.delete(`${prefix}/banner/detail/:id`, controller.banner.remove)
+
+    //---------------------
+
+    // 获取列表
+    router.get(`${prefix}/m/banner`, controller.banner.m_list)
 }
 
 module.exports = router

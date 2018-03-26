@@ -136,28 +136,28 @@ class upload extends Service {
     /**
      * 获取列表
      */
-    async list(skip, limit, classes) {
+    async list(skip = 0, limit = 10, classes) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
+                // search
+                const search = {}
+                if (classes) {
+                    search.class = classes
+                }
+
                 // 计算条目数量
-                const count = await ctx.model.Upload.count({})
+                const count = await ctx.model.Upload.count(search)
 
                 // 查找数据
                 let list = []
                 if (count > 0) {
-                    const sql = [
+                    list = await ctx.model.Upload.aggregate([
+                        { $match: search },
                         { $project: { _id: 0, __v: 0 } },
                         { $skip: skip },
                         { $limit: limit }
-                    ]
-                    // 如果是要查询某个分类的话
-                    if (classes != '') {
-                        sql.unshift({
-                            $match: { class: classes }
-                        })
-                    }
-                    list = await ctx.model.Upload.aggregate(sql)
+                    ])
                 }
 
                 resolve({
