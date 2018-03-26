@@ -18,6 +18,8 @@ const router = function (router, controller) {
     router.get(`${prefix}/m/shoppingcart/amount`, clientJwt, controller.user.m_shoppingcartAmount)
     // 获取购物车内的产品
     router.get(`${prefix}/m/shoppingcart`, clientJwt, controller.user.m_shoppingcart)
+    // 将商品加入到购物车
+    router.post(`${prefix}/m/shoppingcart`, clientJwt, controller.user.m_addToShoppingcart)
     // 获取用户详情
     router.get(`${prefix}/m/user`, clientJwt, controller.user.m_detail)
     // 获取优惠券列表

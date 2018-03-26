@@ -101,6 +101,9 @@ class sku extends Service {
                     // 更新商品表的sku信息
                     await ctx.service.goods.updateSkuInfo(data.pid)
 
+                    // 更新缓存
+                    await ctx.service.redis.setSkuStock(id, data.stock)
+
                     resolve()
                 }
                 else {
@@ -119,7 +122,7 @@ class sku extends Service {
     /**
      * 根据id获取sku
      */
-    async getById(id) {
+    async getById(id, wrong = true) {
         const ctx = this.ctx
     	return new Promise(async function(resolve, reject) {
     	    try {
@@ -138,10 +141,19 @@ class sku extends Service {
                 })
 
                 if (data) {
+                    // 更新缓存
+                    await ctx.service.redis.setSkuStock(id, data.stock)
+
                     return resolve(data)
                 }
                 else {
-                    return reject('未找到相关的sku')
+                    // 更新缓存
+                    await ctx.service.redis.setSkuStock(id, 0)
+
+                    if (wrong) {
+                        return reject('未找到相关的sku')
+                    }
+                    return resolve(null)
                 }
             }
             catch (e) {
@@ -177,6 +189,9 @@ class sku extends Service {
                 if (data.result.n) {
                     // 更新商品表的sku信息
                     await ctx.service.goods.updateSkuInfo(find.pid)
+
+                    // 删除缓存
+                    await ctx.service.redis.setSkuStock(id, 0)
 
                     return resolve(data)
                 }

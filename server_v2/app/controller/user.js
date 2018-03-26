@@ -72,6 +72,23 @@ class UserController extends Controller {
             return ctx.error(e)
         }
     }
+
+    /**
+     * m.购物车内容
+     */
+    async m_addToShoppingcart(ctx) {
+        try {
+            const { uid } = ctx.jwt || {}
+            const { body } = ctx.request
+            
+            await ctx.service.user.addToShoppingCartById(uid, body)
+
+            return ctx.success()
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
+    }
     
     /**
      * m.购物车内容
@@ -81,6 +98,45 @@ class UserController extends Controller {
             const { uid } = ctx.jwt || {}
             const data = await ctx.service.user.getById(uid)
             const shoppingcart = data.shoppingcart || []
+
+            if (!shoppingcart.length) {
+                return ctx.error('购物车是空的哦~')
+            }
+
+            // 更新购物车，因为有可能库存会没有或产品会下架
+            let needUpdate = false
+            for (let i = 0; i < shoppingcart.length; i++) {
+                const d = shoppingcart[i]
+                const stock = await ctx.service.redis.getSkuStock(d.skuId)
+                // 如果命中缓存
+                if (stock) {
+                    // 库存匹配
+                    if (stock !== d.stock) {
+                        d.stock = stock
+                        needUpdate = true
+                    }
+                }
+                // 没命中缓存，从数据库查
+                else {
+                    const sku = await ctx.service.sku.getById(d.skuId, false)
+                    if (!sku) {
+                        d.stock = 0
+                        needUpdate = true
+                    }
+                    // 库存匹配
+                    else if (sku.stock !== d.stock) {
+                        d.stock = sku.stock
+                        needUpdate = true
+                    }
+                }
+            }
+
+            // 需要更新购物车
+            if (needUpdate) {
+                await ctx.service.user.update(uid, {
+                    shoppingcart
+                })
+            }
 
             return ctx.success({
                 data: {

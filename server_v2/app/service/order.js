@@ -23,14 +23,44 @@ class order extends Service {
                 if (!address) {
                     return reject('找不到相关的地址信息')
                 }
+                
+                // 获取购物车内容
+                const shoppingcart = userData.shoppingcart || []
 
+                if (!shoppingcart.length) {
+                    return reject('购物车是空的哦~')
+                }
 
+                // 判断购物车内的商品库存
+                for (let i = 0; i < shoppingcart.length; i++) {
+                    const d = shoppingcart[i]
+                    const stock = await ctx.service.redis.getSkuStock(d.skuId)
+                    // 如果命中缓存
+                    if (stock !== null) {
+                        // 库存不够
+                        if (stock < d.stock) {
+                            return reject(`商品【${d.name}-${d.skuName}】库存不足`)
+                        }
+                    }
+                    // 没命中缓存，从数据库查
+                    else {
+                        const sku = await ctx.service.sku.getById(d.skuId, false)
+                        if (!sku) {
+                            return reject(`商品【${d.name}-${d.skuName}】已下架`)
+                        }
+                        // 判断库存
+                        else if (sku.stock < d.stock) {
+                            return reject(`商品【${d.name}-${d.skuName}】库存不足`)
+                        }
+                    }
+                }
+
+                // 生成订单
 
 
                 resolve()
             }
             catch (e) {
-                console.log(e)
                 reject('系统错误')
             }
         })

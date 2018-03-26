@@ -28,7 +28,6 @@ class BannerController extends Controller {
      */
     async m_list(ctx) {
         try {
-
             const data = await ctx.service.banner.list(0, 99, {
                 online: true
             })
