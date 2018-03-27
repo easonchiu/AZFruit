@@ -15,8 +15,8 @@ class redis extends Service {
                 }
                 
                 const key = 'SKU_STOCK.' + id
-                redis.expire(key, 300) // 缓存5分钟
                 await redis.set(key, stock)
+                redis.expire(key, 300) // 缓存5分钟
 
                 resolve()
             }

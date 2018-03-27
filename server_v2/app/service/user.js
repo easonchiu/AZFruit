@@ -124,6 +124,7 @@ class user extends Service {
                     hasBuy.totalWeight = hasBuy.weight * willAmount
                     hasBuy.totalPrice = hasBuy.price * willAmount
                 }
+                // 购物车中没有，新增
                 else {
                     const newSku = {
                         skuName: sku.desc,
