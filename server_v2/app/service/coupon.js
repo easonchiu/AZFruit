@@ -32,11 +32,12 @@ class coupon extends Service {
                     return reject('过期期限必须大于0天')
                 }
 
-                await new ctx.model.Banner(data).create()
+                await new ctx.model.Coupon(data).create()
 
                 resolve()
             }
             catch (e) {
+                console.log(e)
                 reject('系统错误')
             }
         })

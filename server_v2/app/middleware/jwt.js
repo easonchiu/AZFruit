@@ -1,7 +1,5 @@
 const jwt = require('jsonwebtoken')
-
-// 管理后台jwt key
-const key = '!@#zaq2017_azfruit'
+const key = require('../conf/jwt')
 
 class Jwt {
     static createToken(data) {

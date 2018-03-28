@@ -20,7 +20,7 @@ class ViewLogin extends Component {
 		super(props)
 
 		this.state = {
-			mobile: '',
+			mobile: '18201938590',
 			verifcode: '',
 			smskey: '',
 			timeout: 0

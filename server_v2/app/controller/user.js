@@ -44,14 +44,60 @@ class UserController extends Controller {
      * m.用户登录
      */
     async m_login(ctx) {
+        try {
+            const { mobile, verifcode, smskey } = ctx.request.body
 
+            await ctx.service.redis.checkSmsVerifcode(mobile, verifcode, smskey)
+
+            // 获取用户信息
+            let userData = await ctx.service.user.getByMobile(mobile)
+
+            // 新用户
+            if (!userData) {
+                const id = await ctx.service.user.create(mobile, false)
+                userData = {
+                    openId: false,
+                    id: id
+                }
+                // 发优惠券
+
+                // 更新用户标识为有效用户
+                await ctx.service.user.update(id, {
+                    valid: true
+                })
+            }
+
+            // 验证通过，生成token给用户
+            const token = await ctx.service.user.createToken(mobile, userData.id)
+
+            return ctx.success({
+                data: {
+                    token,
+                    hasOpenId: !!userData.openId
+                }
+            })
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
     }
 
     /**
      * m.用户获取验证码
      */
     async m_getVerifcode(ctx) {
+        try {
+            const { mobile } = ctx.request.body
 
+            const data = await ctx.service.sms.sendVerifcode(mobile)
+
+            return ctx.success({
+                data: data
+            })
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
     }
 
     /**

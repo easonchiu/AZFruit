@@ -109,6 +109,7 @@ user.shoppingcart = [Schema({
 // 创建一个schema实例
 var UserSchema = Schema(user)
 
+
 // 将coupon改为已使用
 UserSchema.statics.useCoupon = function(uid, cid) {
 	return new Promise(async (resolve, reject) => {
