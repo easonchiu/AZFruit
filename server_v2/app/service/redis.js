@@ -3,20 +3,24 @@ const Service = require('egg').Service;
 class redis extends Service {
 
     /**
-	 * 创建订单库存缓存
+	 * 创建订单缓存
      */
-	async setSkuStock(id, stock) {
+	async setSkuInfo(id, info = null) {
         const redis = this.app.redis
         return new Promise(async function(resolve, reject) {
             try {
                 // 检查data的参数
-                if (!id || !stock) {
+                if (!id) {
                     return resolve()
                 }
-                
-                const key = 'SKU_STOCK.' + id
-                await redis.set(key, stock)
-                redis.expire(key, 300) // 缓存5分钟
+
+                const key = 'SKU_INFO.' + id
+                if (info) {
+                    await redis.set(key, JSON.stringify(info))
+                }
+                else {
+                    await redis.set(key, info)
+                }
 
                 resolve()
             }
@@ -27,24 +31,75 @@ class redis extends Service {
     }
 
     /**
-     * 获取订单库存缓存
+     * 获取订单缓存
      */
-    async getSkuStock(id) {
+    async getSkuInfo(id) {
         const redis = this.app.redis
         return new Promise(async function(resolve, reject) {
             try {
                 // 检查data的参数
                 if (!id) {
-                    return resolve(0)
+                    return resolve(null)
                 }
                 
-                const key = 'SKU_STOCK.' + id
+                const key = 'SKU_INFO.' + id
                 const res = await redis.get(key)
 
-                resolve(res)
+                resolve(JSON.parse(res))
             }
             catch (e) {
-                resolve(0)
+                resolve(null)
+            }
+        })
+    }
+
+    /**
+     * 创建商品缓存
+     */
+    async setGoodsInfo(id, info = null) {
+        const redis = this.app.redis
+        return new Promise(async function(resolve, reject) {
+            try {
+                // 检查data的参数
+                if (!id) {
+                    return resolve()
+                }
+
+                const key = 'GOODS_INFO.' + id
+                if (info) {
+                    await redis.set(key, JSON.stringify(info))
+                }
+                else {
+                    await redis.set(key, info)
+                }
+
+                resolve()
+            }
+            catch (e) {
+                resolve()
+            }
+        })
+    }
+
+    /**
+     * 获取商品缓存
+     */
+    async getGoodsInfo(id) {
+        const redis = this.app.redis
+        return new Promise(async function(resolve, reject) {
+            try {
+                // 检查data的参数
+                if (!id) {
+                    return resolve(null)
+                }
+                
+                const key = 'GOODS_INFO.' + id
+                const res = await redis.get(key)
+
+                resolve(JSON.parse(res))
+            }
+            catch (e) {
+                resolve(null)
             }
         })
     }

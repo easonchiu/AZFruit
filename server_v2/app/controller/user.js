@@ -120,7 +120,7 @@ class UserController extends Controller {
     }
 
     /**
-     * m.购物车内容
+     * m.添加新商品到购物车
      */
     async m_addToShoppingcart(ctx) {
         try {
@@ -146,47 +146,76 @@ class UserController extends Controller {
             const shoppingcart = data.shoppingcart || []
 
             if (!shoppingcart.length) {
-                return ctx.error('购物车是空的哦~')
-            }
-
-            // 更新购物车，因为有可能库存会没有或产品会下架
-            let needUpdate = false
-            for (let i = 0; i < shoppingcart.length; i++) {
-                const d = shoppingcart[i]
-                const stock = await ctx.service.redis.getSkuStock(d.skuId)
-                // 如果命中缓存
-                if (stock) {
-                    // 库存匹配
-                    if (stock !== d.stock) {
-                        d.stock = stock
-                        needUpdate = true
+                return ctx.success({
+                    data: {
+                        list: []
                     }
-                }
-                // 没命中缓存，从数据库查
-                else {
-                    const sku = await ctx.service.sku.getById(d.skuId, false)
-                    if (!sku) {
-                        d.stock = 0
-                        needUpdate = true
-                    }
-                    // 库存匹配
-                    else if (sku.stock !== d.stock) {
-                        d.stock = sku.stock
-                        needUpdate = true
-                    }
-                }
-            }
-
-            // 需要更新购物车
-            if (needUpdate) {
-                await ctx.service.user.update(uid, {
-                    shoppingcart
                 })
             }
 
+            // 更新购物车，因为有可能库存会没有或产品会下架
+            let totalWeight = 0
+            let totalPrice = 0
+            for (let i = 0; i < shoppingcart.length; i++) {
+                const d = shoppingcart[i]
+
+                // 从缓存中找sku的信息
+                let sku = await ctx.service.redis.getSkuInfo(d.skuId)
+                let goods = null
+                
+                // 如果没有，从数据库找
+                if (!sku) {
+                    sku = await ctx.service.sku.getById(d.skuId, false)
+                }
+                
+                // 有商品的话更新
+                if (sku) {
+                    // 从缓存找商品信息
+                    goods = await ctx.service.redis.getGoodsInfo(sku.pid)
+                    
+                    // 如果没有，从数据库找
+                    if (!goods) {
+                        goods = await ctx.service.goods.getById(sku.pid)
+                    }
+                    
+                    // 找到商品信息
+                    if (goods) {
+                        // 更新商品信息
+                        d.stock = sku.stock
+                        d.weight = sku.weight
+                        d.totalWeight = d.amount * sku.weight
+                        d.online = sku.online
+                        d.price = sku.price
+                        d.totalPrice = d.amount * sku.price
+                        d.unit = sku.unit
+                        d.skuName = sku.desc
+                        d.name = goods.name
+
+                        // 计算购物车内商品的总重量与总费用
+                        totalWeight += d.totalWeight
+                        totalPrice += d.totalPrice
+                    }
+                    // 找不到商品信息，同样，删了
+                    else {
+                        shoppingcart.splice(i, 1)
+                    }
+                }
+                // 如果找不到，就删了
+                else {
+                    shoppingcart.splice(i, 1)
+                }
+            }
+
+            // 更新购物车
+            await ctx.service.user.update(uid, {
+                shoppingcart
+            })
+
             return ctx.success({
                 data: {
-                    list: shoppingcart
+                    list: shoppingcart,
+                    totalWeight,
+                    totalPrice
                 }
             })
         }
@@ -209,6 +238,54 @@ class UserController extends Controller {
                     amount: shoppingcart.length
                 }
             })
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
+    }
+
+    /**
+     * m.更新购物车
+     */
+    async m_updateShoppingcart(ctx) {
+        try {
+            const { uid } = ctx.jwt || {}
+            const { amount, id } = ctx.request.body
+
+            if (!amount) {
+                return ctx.error('请输入正确的购买数量')
+            }
+            else if (amount > 9) {
+                return ctx.error('一次最多可购买9件哦~')
+            }
+            else if (!id) {
+                return ctx.error('商品id不能为空')
+            }
+            
+            let needUpdate = false
+            const userData = await ctx.service.user.getById(uid)
+            const shoppingcart = userData.shoppingcart || []
+            
+            for (let i = 0; i < shoppingcart.length; i++) {
+                const d = shoppingcart[i]
+                // 先找到匹配中的商品
+                if (d.skuId === id) {
+                    if (amount <= d.stock && amount !== d.amount) {
+                        d.amount = amount
+                        needUpdate = true
+                    }
+                }
+            }
+
+            // 更新购物车
+            if (needUpdate) {
+                await ctx.service.user.update(uid, {
+                    shoppingcart
+                })
+            }
+
+            return ctx.success()
+
         }
         catch (e) {
             return ctx.error(e)
@@ -268,6 +345,51 @@ class UserController extends Controller {
                 }
             })
         } catch(e) {
+            return ctx.error(e)
+        }
+    }
+    
+    /**
+     * m.添加地址
+     */
+    async m_createAddress(ctx) {
+        try {
+            const { uid } = ctx.jwt || {}
+            const { body } = ctx.request
+            await ctx.service.user.createAddress(uid, body, true)
+
+            return ctx.success()
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
+    }
+
+    /**
+     * m.更新地址
+     */
+    async m_updateAddress(ctx) {
+        try {
+            const { uid } = ctx.jwt || {}
+            const { body } = ctx.request
+            await ctx.service.user.createAddress(uid, body, false)
+
+            return ctx.success()
+        }
+        catch (e) {
+            return ctx.error(e)
+        }
+    }
+
+    async m_removeAddress(ctx) {
+        try {
+            const { uid } = ctx.jwt || {}
+            const { body } = ctx.request
+            await ctx.service.user.removeAddress(uid, body.id)
+
+            return ctx.success()
+        }
+        catch (e) {
             return ctx.error(e)
         }
     }

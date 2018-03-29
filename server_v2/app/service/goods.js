@@ -93,6 +93,9 @@ class goods extends Service {
                 })
 
                 if (res.n) {
+                    // 更新缓存
+                    await ctx.service.redis.setGoodsInfo(id, data)
+
                     resolve()
                 }
                 else {
@@ -127,6 +130,9 @@ class goods extends Service {
                 })
 
                 if (data) {
+                    // 更新缓存
+                    await ctx.service.redis.setGoodsInfo(id, data)
+                    
                     return resolve(data)
                 }
                 else {
@@ -158,6 +164,9 @@ class goods extends Service {
                 })
 
                 if (data.result.n) {
+                    // 删除缓存
+                    await ctx.service.redis.setGoodsInfo(id, null)
+
                     return resolve(data)
                 }
                 else {

@@ -46,14 +46,10 @@ class OrderController extends Controller {
      */
     async m_amount(ctx) {
         try {
-            // type: 1 等待处理的
-            const data = await ctx.service.order.list(0, 99, 1, {
-                uid: '5ab1d0b1a24d524515d47f58'
-            })
 
             return ctx.success({
                 data: {
-                    amount: data.list.length
+                    amount: 0
                 }
             })
         }

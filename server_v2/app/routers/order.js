@@ -1,7 +1,7 @@
 'use strict';
 
 const prefix = require('../../config/prefix')
-const clientJwt = require('../middleware/clientJwt')
+const clientJwt = require('../middleware/clientJwt').check
 
 const router = function (router, controller) {
 	// 获取列表

@@ -102,7 +102,7 @@ class sku extends Service {
                     await ctx.service.goods.updateSkuInfo(data.pid)
 
                     // 更新缓存
-                    await ctx.service.redis.setSkuStock(id, data.stock)
+                    await ctx.service.redis.setSkuInfo(id, data)
 
                     resolve()
                 }
@@ -142,14 +142,11 @@ class sku extends Service {
 
                 if (data) {
                     // 更新缓存
-                    await ctx.service.redis.setSkuStock(id, data.stock)
-
+                    await ctx.service.redis.setSkuInfo(id, data)
+                    
                     return resolve(data)
                 }
                 else {
-                    // 更新缓存
-                    await ctx.service.redis.setSkuStock(id, 0)
-
                     if (wrong) {
                         return reject('未找到相关的sku')
                     }
@@ -191,7 +188,7 @@ class sku extends Service {
                     await ctx.service.goods.updateSkuInfo(find.pid)
 
                     // 删除缓存
-                    await ctx.service.redis.setSkuStock(id, 0)
+                    await ctx.service.redis.setSkuInfo(id, null)
 
                     return resolve(data)
                 }
