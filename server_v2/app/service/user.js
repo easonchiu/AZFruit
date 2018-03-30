@@ -387,10 +387,6 @@ class user extends Service {
                     }
                 })
 
-
-
-
-
                 if (res.n) {
                     resolve()
                 }
@@ -480,9 +476,10 @@ class user extends Service {
                 else if (!data.amount || data.amount !== ~~data.amount) {
                     return reject('请选择购买数量')
                 }
+
+                const userData = await ctx.service.user.getById(id)
             
                 // 先查看购物车中是否有相同的商品
-                const userData = await ctx.service.user.getById(id)
                 const shoppingcart = userData.shoppingcart
                 let hasBuy = false
                 for (let i = 0; i < shoppingcart.length; i++) {

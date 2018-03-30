@@ -11,13 +11,10 @@ class postage extends Service {
             try {
                 // 检查data的参数
                 if (!(/^[0-9]*$/g).test(data.km)) {
-                    return reject('超出距离不能为空')
-                }
-                else if (!(/^[0-9]*$/g).test(data.weight)) {
-                    return reject('重量不能为空')
+                    return reject('公里数不能为空')
                 }
                 else if (!(/^[0-9]*$/g).test(data.postage)) {
-                    return reject('基础运费不能为空')
+                    return reject('运费不能为空')
                 }
 
                 await new ctx.model.Postage(data).create()
@@ -76,13 +73,10 @@ class postage extends Service {
                     return reject('id不能为空')
                 }
                 else if (!(/^[0-9]*$/g).test(data.km)) {
-                    return reject('超出距离不能为空')
-                }
-                else if (!(/^[0-9]*$/g).test(data.weight)) {
-                    return reject('重量不能为空')
+                    return reject('公里数不能为空')
                 }
                 else if (!(/^[0-9]*$/g).test(data.postage)) {
-                    return reject('基础运费不能为空')
+                    return reject('运费不能为空')
                 }
 
                 const res = await ctx.model.Postage.update({
@@ -164,6 +158,45 @@ class postage extends Service {
                 }
             }
             catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
+
+    /**
+     * 根据距离计算运费价格
+     */
+    async getPriceByDistance(distance = 0) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                const list = await ctx.model.Postage.aggregate([
+                    { $match: { online: true } },
+                    { $sort: { km: -1 } },
+                    { $project: { _id: 0, __v: 0 } },
+                    { $limit: 10 }
+                ])
+
+                // 找到最合适的规则
+                let data
+                for (let i = 0; i < list.length; i++) {
+                    if (list[i].km * 1000 < distance) {
+                        break
+                    }
+                    else {
+                        data = list[i]
+                    }
+                }
+
+                if (data) {
+                    return resolve(data.postage)
+                }
+                else {
+                    reject('未找到相关的运费规则')
+                }
+            }
+            catch (e) {
+                console.log(e)
                 reject('系统错误')
             }
         })

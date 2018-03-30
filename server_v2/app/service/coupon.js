@@ -1,4 +1,5 @@
 const Service = require('egg').Service;
+const mongoose = require('mongoose')
 
 class coupon extends Service {
     
@@ -183,6 +184,111 @@ class coupon extends Service {
                 })
 
                 if (data.result.n) {
+                    return resolve(data)
+                }
+                else {
+                    return reject('未找到相关的优惠券')
+                }
+            }
+            catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
+    
+    /**
+     * 发放优惠券
+     */
+    async giveCouponsToUser(id, couponData) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                // 检查data的参数
+                if (!id) {
+                    return reject('id不能为空')
+                }
+                
+                // 从参数中整理出可发放的券
+                let targetCoupon = []
+                if (couponData && couponData.length) {
+                    for (let i = 0; i < couponData.length; i++) {
+                        const d = couponData[i]
+
+                        if (d.handOutAmount < d.amount) {
+                            // 计算过期时间
+                            let date = (new Date().getTime()) + 60 * 60 * 1000 * 24 * d.expiredTime
+                            date = new Date(date)
+                            date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59)
+
+                            // 加入发放列表
+                            targetCoupon.push({
+                                id: new mongoose.Types.ObjectId(),
+                                originId: d.id,
+                                name: d.name,
+                                batch: d.batch + '_' + (d.handOutAmount + 1),
+                                worth: d.worth,
+                                condition: d.condition,
+                                expiredTime: date
+                            })
+                        }
+                    }
+                }
+
+                // 发给用户
+                const res = await ctx.model.User.update({
+                    _id: id
+                }, {
+                    $set: {
+                        valid: true
+                    },
+                    $push: {
+                        couponList: {
+                            $each: targetCoupon
+                        }
+                    }
+                })
+
+                // 标记发放量
+                for (let i = 0; i < targetCoupon.length; i++) {
+                    const d = targetCoupon[i]
+                    if (d) {
+                        await ctx.service.coupon.handOut(d.originId)
+                    }
+                }
+
+                if (res.n) {
+                    resolve()
+                }
+                else {
+                    reject('修改失败')
+                }
+            }
+            catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
+
+    /**
+     * 发放优惠券
+     */
+    async handOut(id) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                if (!id) {
+                    return reject('id不能为空')
+                }
+
+                const data = await ctx.model.Coupon.update({
+                    _id: id
+                }, {
+                    $inc: {
+                        handOutAmount: 1
+                    }
+                })
+
+                if (data.n) {
                     return resolve(data)
                 }
                 else {

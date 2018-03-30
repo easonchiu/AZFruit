@@ -16,10 +16,7 @@ class ViewPostageDetail extends Component {
 			id: '',
 			
 			km: 0,
-			weight: 10,
 			postage: 0,
-			eachWeight: 0,
-			eachPostage: 0,
 			freePostage: 0,
 			online: false,
 
@@ -50,10 +47,7 @@ class ViewPostageDetail extends Component {
 
 			data.id = id
 			data.km = res.km
-			data.weight = res.weight / 500
 			data.postage = res.postage / 100
-			data.eachWeight = res.eachWeight / 500
-			data.eachPostage = res.eachPostage / 100
 			data.freePostage = res.freePostage / 100
 			data.online = res.online
 
@@ -76,10 +70,7 @@ class ViewPostageDetail extends Component {
 		try {
 			const data = {
 				km: this.data.km,
-				weight: this.data.weight * 500,
 				postage: this.data.postage * 100,
-				eachWeight: this.data.eachWeight * 500,
-				eachPostage: this.data.eachPostage * 100,
 				freePostage: this.data.freePostage * 100,
 				online: this.data.online,
 			}
@@ -109,7 +100,7 @@ class ViewPostageDetail extends Component {
 				
 				<Form labelWidth={150}>
 
-					<Form.Item label="超出距离">
+					<Form.Item label="多少公里内">
 						<InputNumber
 							defaultValue={this.data.km}
 							value={this.data.km}
@@ -117,36 +108,11 @@ class ViewPostageDetail extends Component {
 						<em>单位：公里</em>
 					</Form.Item>
 
-					<Form.Item label="重量上限">
-						<InputNumber
-							defaultValue={this.data.weight}
-							value={this.data.weight}
-							onChange={this.valueChange.bind(this, 'weight')} />
-						<em>单位：斤</em>
-					</Form.Item>
-
-					<Form.Item label="基础运费">
+					<Form.Item label="运费">
 						<InputNumber
 							defaultValue={this.data.postage}
 							value={this.data.postage}
 							onChange={this.valueChange.bind(this, 'postage')} />
-						<em>单位：元</em>
-					</Form.Item>
-
-					<Form.Item label="超出后每档重量">
-						<InputNumber
-							defaultValue={this.data.eachWeight}
-							value={this.data.eachWeight}
-							onChange={this.valueChange.bind(this, 'eachWeight')} />
-						<em>单位：斤</em>
-						<em>超出重量上限后会按该设置递增价格，直到更远的距离规则匹配</em>
-					</Form.Item>
-
-					<Form.Item label="每档重量的价格">
-						<InputNumber
-							defaultValue={this.data.eachPostage}
-							value={this.data.eachPostage}
-							onChange={this.valueChange.bind(this, 'eachPostage')} />
 						<em>单位：元</em>
 					</Form.Item>
 

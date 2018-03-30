@@ -63,6 +63,7 @@ class CouponController extends Controller {
     async create(ctx) {
         try {
             const { body } = ctx.request
+            body.worth *= 100
             await ctx.service.coupon.create(body)
 
             return ctx.success()

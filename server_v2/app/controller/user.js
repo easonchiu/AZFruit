@@ -53,18 +53,21 @@ class UserController extends Controller {
             let userData = await ctx.service.user.getByMobile(mobile)
 
             // 新用户
-            if (!userData) {
+            if (true || !userData) {
                 const id = await ctx.service.user.create(mobile, false)
                 userData = {
                     openId: false,
                     id: id
                 }
-                // 发优惠券
 
-                // 更新用户标识为有效用户
-                await ctx.service.user.update(id, {
-                    valid: true
+                // 找在线全部券
+                let couponData = await ctx.service.coupon.list(0, 999, {
+                    online: true
                 })
+                couponData = couponData.list || []
+
+                // 发放优惠券，更新用户标识为有效用户
+                await ctx.service.coupon.giveCouponsToUser(id, couponData)
             }
 
             // 验证通过，生成token给用户
@@ -142,8 +145,10 @@ class UserController extends Controller {
     async m_shoppingcart(ctx) {
         try {
             const { uid } = ctx.jwt || {}
+            const { couponId = 1, addressId } = ctx.query
             const data = await ctx.service.user.getById(uid)
             const shoppingcart = data.shoppingcart || []
+            const address = data.addressList
 
             if (!shoppingcart.length) {
                 return ctx.success({
@@ -211,11 +216,28 @@ class UserController extends Controller {
                 shoppingcart
             })
 
+            // 找相关的地址
+            let postage = 0
+            if (addressId) {
+                let targetAddress
+                for (let i = 0; i < address.length; i++) {
+                    if (addressId === address[i].id) {
+                        targetAddress = address[i]
+                    }
+                }
+                if (!targetAddress) {
+                    return ctx.error('找不到相关的地址')
+                }
+                // 获取运费
+                postage = await ctx.service.postage.getPriceByDistance(targetAddress.distance)
+            }
+
             return ctx.success({
                 data: {
                     list: shoppingcart,
                     totalWeight,
-                    totalPrice
+                    totalPrice: totalPrice + postage,
+                    postage
                 }
             })
         }
@@ -381,6 +403,9 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * m.删除地址
+     */
     async m_removeAddress(ctx) {
         try {
             const { uid } = ctx.jwt || {}

@@ -3,7 +3,7 @@ const Service = require('egg').Service;
 class redis extends Service {
 
     /**
-	 * 创建订单缓存
+	 * 创建sku缓存
      */
 	async setSkuInfo(id, info = null) {
         const redis = this.app.redis
@@ -19,8 +19,10 @@ class redis extends Service {
                     await redis.set(key, JSON.stringify(info))
                 }
                 else {
-                    await redis.set(key, info)
+                    await redis.set(key, null)
                 }
+
+                redis.expire(key, 60 * 60 * 24)
 
                 resolve()
             }
@@ -31,7 +33,7 @@ class redis extends Service {
     }
 
     /**
-     * 获取订单缓存
+     * 获取sku缓存
      */
     async getSkuInfo(id) {
         const redis = this.app.redis
@@ -70,8 +72,10 @@ class redis extends Service {
                     await redis.set(key, JSON.stringify(info))
                 }
                 else {
-                    await redis.set(key, info)
+                    await redis.set(key, null)
                 }
+
+                redis.expire(key, 60 * 60 * 24)
 
                 resolve()
             }

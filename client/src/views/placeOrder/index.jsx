@@ -62,8 +62,8 @@ class ViewOrder extends Component {
 
 			// 获取购物车内的商品
 			await this.props.$shoppingcart.fetchList({
-				distance: address.distance || 0,
-				coupon: cid
+				addressId: address.id || 0,
+				couponId: cid
 			})
 			
 			// 如果没有内容

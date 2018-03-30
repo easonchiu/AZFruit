@@ -23,7 +23,7 @@ class sms extends Service {
                 }
 
                 // 生成验证码
-                const code = th._randomCreator(6)
+                const code = '111111' // th._randomCreator(6)
 
                 // 生成随机码
                 const smskey = Math.random().toString(33).substr(2, 10)
@@ -32,7 +32,7 @@ class sms extends Service {
                 await ctx.service.redis.setSmsVerifcode(mobile, code, smskey)
 
                 // 发送验证码
-                await th.sendSms(mobile, '您的验证码为：' + code)
+                // await th.sendSms(mobile, '您的验证码为：' + code)
 
                 resolve({
                     smskey
