@@ -16,6 +16,12 @@ const router = function (router, controller) {
     router.get(`${prefix}/m/order/amount`, clientJwt, controller.order.m_amount)
     // 创建订单
     router.post(`${prefix}/m/order`, clientJwt, controller.order.m_create)
+    // 获取订单列表
+    router.get(`${prefix}/m/order`, clientJwt, controller.order.m_list)
+    // 获取订单详情
+    router.get(`${prefix}/m/order/:orderNo`, clientJwt, controller.order.m_detail)
+    // 删除订单
+    router.delete(`${prefix}/m/order/:orderNo`, clientJwt, controller.order.m_remove)
 }
 
 module.exports = router

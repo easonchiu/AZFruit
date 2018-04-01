@@ -123,7 +123,9 @@ class sku extends Service {
      * 根据id获取sku
      */
     async getById(id, wrong = true) {
-        const ctx = this.ctx
+        const th = this
+        const ctx = th.ctx
+        const redis = th.app.redis
     	return new Promise(async function(resolve, reject) {
     	    try {
                 if (!id) {
@@ -132,13 +134,18 @@ class sku extends Service {
                 else if (id.length !== 24) {
                     return reject('id不正确')
                 }
-
-                const data = await ctx.model.Sku.findOne({
-                    _id: id
-                }, {
-                    _id: 0,
-                    __v: 0
-                })
+                
+                // 先从缓存找，如果没有再从数据库找
+                let data = await ctx.service.redis.getSkuInfo(id)
+                
+                if (!data) {
+                    data = await ctx.model.Sku.findOne({
+                        _id: id
+                    }, {
+                        _id: 0,
+                        __v: 0
+                    })
+                }
 
                 if (data) {
                     // 更新缓存

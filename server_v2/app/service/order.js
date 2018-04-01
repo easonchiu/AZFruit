@@ -5,25 +5,41 @@ class order extends Service {
     /**
      * 创建订单
      */
-    async create(data) {
-        const ctx = this.ctx
-        const {uid} = ctx.jwt || {}
+    async create(uid, data) {
+        const th = this
+        const ctx = th.ctx
         return new Promise(async function(resolve, reject) {
             try {
                 const addressId = data.addressId
-                if (!addressId) {
+                const couponId = data.couponId
+                const now = new Date()
+                
+                if (!uid) {
+                    return reject('用户信息不正确')
+                }
+                else if (!addressId) {
                     return reject('地址不能为空')
                 }
                 
-                // 找到用户的选中地址
                 const userData = await ctx.service.user.getById(uid)
                 
+                // 找到用户的选中地址
                 const address = userData.addressList.find(res => res.id === addressId)
 
                 if (!address) {
                     return reject('找不到相关的地址信息')
                 }
-                
+
+                // 找到用户的选中优惠券
+                const coupon = couponId && userData.couponList.find(res => res.id === couponId)
+
+                // 验证优惠券状态
+                if (coupon) {
+                    if (coupon.used || coupon.locked || now > coupon.expiredTime) {
+                        return reject('该优惠券不可用')
+                    }
+                }
+
                 // 获取购物车内容
                 const shoppingcart = userData.shoppingcart || []
 
@@ -34,38 +50,53 @@ class order extends Service {
                 // 判断购物车内的商品库存
                 for (let i = 0; i < shoppingcart.length; i++) {
                     const d = shoppingcart[i]
-                    const stock = await ctx.service.redis.getSkuStock(d.skuId)
-                    // 如果命中缓存
-                    if (stock !== null) {
-                        // 库存不够
-                        if (stock < d.stock) {
-                            return reject(`商品【${d.name}-${d.skuName}】库存不足`)
-                        }
+                    
+                    const sku = await ctx.service.sku.getById(d.skuId, false)
+                    const skuLock = await ctx.service.redis.getSkuLock(d.skuId)
+
+                    if (!sku) {
+                        return reject(`商品【${d.name}-${d.skuName}】已下架`)
                     }
-                    // 没命中缓存，从数据库查
-                    else {
-                        const sku = await ctx.service.sku.getById(d.skuId, false)
-                        if (!sku) {
-                            return reject(`商品【${d.name}-${d.skuName}】已下架`)
-                        }
-                        // 判断库存
-                        else if (sku.stock < d.stock) {
-                            return reject(`商品【${d.name}-${d.skuName}】库存不足`)
-                        }
+                    // 判断库存
+                    else if (sku.stock < d.stock - skuLock) {
+                        return reject(`商品【${d.name}-${d.skuName}】库存不足`)
                     }
+                }
+                
+                // 通过判定之后，计算总费用这些
+                const postage = await ctx.service.postage.getPriceByDistance(address.distance)
+                let totalWeight = 0
+                let totalPrice = 0
+                for (let i = 0; i < shoppingcart.length; i++) {
+                    const d = shoppingcart[i]
+                    totalWeight += d.totalWeight
+                    totalPrice += d.totalPrice
                 }
 
                 // 生成订单
+                const orderData = {
+                    uid: uid,
+                    openId: userData.openId,
+                    address: address,
+                    coupon: coupon,
+                    list: shoppingcart,
+                    totalWeight: totalWeight,
+                    totalPrice: totalPrice,
+                    paymentPrice: totalPrice + postage - (coupon ? coupon.worth : 0),
+                    postage: postage
+                }
+                
+                // 创建预支付订单，同时占用库存
+                const orderNo = await ctx.service.redis.createPreOrder(orderData)
 
-
-                resolve()
+                resolve(orderNo)
             }
             catch (e) {
                 reject('系统错误')
             }
         })
     }
-
+    
     /**
      * 获取列表
      */

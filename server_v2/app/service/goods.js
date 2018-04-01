@@ -121,13 +121,18 @@ class goods extends Service {
                 else if (id.length !== 24) {
                     return reject('id不正确')
                 }
+                
+                // 先从缓存找，如果没有再从数据库找
+                let data = await ctx.service.redis.getGoodsInfo(id)
 
-                const data = await ctx.model.Goods.findOne({
-                    _id: id
-                }, {
-                    _id: 0,
-                    __v: 0
-                })
+                if (!data) {
+                    data = await ctx.model.Goods.findOne({
+                        _id: id
+                    }, {
+                        _id: 0,
+                        __v: 0
+                    })
+                }
 
                 if (data) {
                     // 更新缓存

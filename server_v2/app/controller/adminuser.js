@@ -1,5 +1,3 @@
-'use strict';
-
 const Controller = require('egg').Controller;
 const jwt = require('../middleware/jwt')
 

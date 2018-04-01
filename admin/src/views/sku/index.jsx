@@ -116,11 +116,6 @@ class ViewSku extends Component {
 								align: 'center',
 								prop: 'stock'
 							}, {
-								label: '锁定库存',
-								width: 100,
-								align: 'center',
-								prop: 'lockedStock'
-							}, {
 								label: '重量',
 								width: 100,
 								align: 'center',

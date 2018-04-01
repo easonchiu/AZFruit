@@ -41,7 +41,7 @@ const fetchDetail = payload => async (dispatch, getState) => {
 // 取消订单
 const cancelOrder = payload => async (dispatch) => {
 	const res = await http.request({
-		method: 'patch',
+		method: 'delete',
         url: `/order/${payload}`,
 	})
 	return res

@@ -89,7 +89,7 @@ class ViewOrder extends Component {
 	}
 
 	itemClick = data => {
-		window.location.href = `/order/detail/?id=${data.orderNo}&flag=${this.data.tabsActive}`
+		window.location.href = `/order/detail/?id=${data.orderNo}&type=${this.data.tabsActive}`
 	}
 
 	renderItem = data => {
@@ -104,7 +104,7 @@ class ViewOrder extends Component {
 		}
 
 		return (
-			<Panel onClick={this.itemClick.bind(this, data)} styleName="item" key={data.id}>
+			<Panel onClick={this.itemClick.bind(this, data)} styleName="item" key={data.orderNo}>
 				<div styleName="hd">
 					<p>订单号：{data.orderNo}</p>
 					<span>{status[data.status]}</span>

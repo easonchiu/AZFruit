@@ -36,8 +36,16 @@ class SkuController extends Controller {
                 pid: pid
             })
 
+            const list = data.list || []
+
+            // 查找被占用的库存，并减去
+            for (let i = 0; i < list.length; i++) {
+                const lock = await ctx.service.redis.getSkuLock(list[i].id)
+                list[i].stock -= lock
+            }
+
             return ctx.success({
-                data: data.list
+                data: list
             })
         } catch(e) {
             return ctx.error(e)

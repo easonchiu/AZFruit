@@ -180,7 +180,7 @@ class postage extends Service {
                 // 找到最合适的规则
                 let data
                 for (let i = 0; i < list.length; i++) {
-                    if (list[i].km * 1000 < distance) {
+                    if (list[i].km * 1000 < distance * 1.2) {
                         break
                     }
                     else {

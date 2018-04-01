@@ -73,6 +73,45 @@ class CouponController extends Controller {
         }
     }
 
+    /**
+     * m.获取优惠券列表
+     */
+    async m_list(ctx) {
+        try {
+            const { uid } = ctx.jwt || {}
+            let { flag = 1 } = ctx.query
+            flag = parseInt(flag)
+
+            const data = await ctx.service.user.getById(uid)
+            let couponList = data.couponList || []
+
+            // 过滤
+            const now = new Date()
+            couponList = couponList.filter(res => {
+                // 已锁定或已经过期的不返回
+                if (res.locked || now > res.expiredTime) {
+                    return false
+                }
+                
+                // 过滤状态
+                if (!res.used && flag === 1) {
+                    return true
+                }
+                else if (res.used && flag !== 1) {
+                    return true
+                }
+            })
+
+            return ctx.success({
+                data: {
+                    list: couponList
+                }
+            })
+        } catch(e) {
+            return ctx.error(e)
+        }
+    }
+
 }
 
 module.exports = CouponController;
