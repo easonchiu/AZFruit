@@ -40,9 +40,10 @@ class OrderController extends Controller {
             // 清空购物车
             await ctx.service.shoppingcart.clear(uid)
             
-            // 如果有优惠券，锁定它
+            // 如果有优惠券，锁定它-----------------改用redis锁库存
+            // 在查可用coupon时也同样从redis找
             if (body.couponId) {
-                await ctx.service.coupon.lockByUid(uid, body.couponId)
+                await ctx.service.redis.lockCouponByUid(uid, body.couponId)
             }
 
             return ctx.success({

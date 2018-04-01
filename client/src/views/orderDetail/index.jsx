@@ -97,7 +97,13 @@ class ViewOrderDetail extends Component {
 						{data.name}
 					</h1>
 					<p>
-						{data.skuName} 约{Math.round(data.weight/50)/10}斤
+						{data.skuName}
+						{' '}
+						{
+							data.weight < 500 ?
+							`约${data.weight}克` :
+							`约${Math.round(data.weight/50)/10}斤`
+						}
 					</p>
 					<strong>
 						￥{data.price / 100}元 / {data.unit}
@@ -252,7 +258,13 @@ class ViewOrderDetail extends Component {
 					}
 					<li>
 						<label>总重量</label>
-						<p>{Math.round(data.totalWeight /50)/10}斤</p>
+						<p>
+							{
+								data.totalWeight < 500 ?
+								`约${data.totalWeight}克` :
+								`约${Math.round(data.totalWeight/50)/10}斤`
+							}
+						</p>
 					</li>
 					<li>
 						<label>金额</label>

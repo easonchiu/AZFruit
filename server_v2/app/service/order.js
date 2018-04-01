@@ -98,6 +98,30 @@ class order extends Service {
     }
     
     /**
+     * 成交订单，在完成支付后调用
+     */
+    dealOrder(uid, orderNo) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                const order = ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
+
+                if (!order) {
+                    reject('订单有误，请联系管理员')
+                }
+
+                
+            }
+            catch (e) {
+                if (typeof e === 'string') {
+                    return reject(e)
+                }
+                reject('系统错误')
+            }
+        })
+    }
+    
+    /**
      * 获取列表
      */
     async list(skip = 0, limit = 10, type = 1, search = {}) {
