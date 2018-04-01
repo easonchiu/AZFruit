@@ -176,7 +176,13 @@ class ViewShoppingcart extends Component {
 					{res.name}
 				</h1>
 				<p>
-					{res.skuName} 约{Math.round(res.weight/50)/10}斤
+					{res.skuName}
+					{' '}
+					{
+						res.weight < 500 ?
+						`约${res.weight}克` :
+						`约${Math.round(res.weight/50)/10}斤`
+					}
 				</p>
 				<strong>
 					￥{res.price / 100}元 / {res.unit}

@@ -270,7 +270,7 @@ class coupon extends Service {
     }
 
     /**
-     * 发放优惠券
+     * 记一下优惠券的发放量
      */
     async handOut(id) {
         const ctx = this.ctx
@@ -296,6 +296,40 @@ class coupon extends Service {
                 }
             }
             catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
+
+    /**
+     * 锁定用户的优惠券
+     */
+    async lockByUid(uid, couponId) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                if (!uid || !couponId) {
+                    return reject('参数错误')
+                }
+
+                const res = await ctx.model.User.update({
+                    _id: uid,
+                    'couponList.id': couponId
+                }, {
+                    $set: {
+                        'couponList.$.locked': true
+                    }
+                })
+
+                if (res.n === 1) {
+                    resolve()
+                }
+                else {
+                    reject('系统错误')
+                }
+            }
+            catch (e) {
+                console.log(e)
                 reject('系统错误')
             }
         })

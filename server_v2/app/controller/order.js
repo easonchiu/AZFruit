@@ -33,9 +33,17 @@ class OrderController extends Controller {
         try {
             const { body } = ctx.request
             const { uid } = ctx.jwt || {}
-
+            
+            // 生成预支付订单
             const orderNo = await ctx.service.order.create(uid, body)
+            
+            // 清空购物车
             await ctx.service.shoppingcart.clear(uid)
+            
+            // 如果有优惠券，锁定它
+            if (body.couponId) {
+                await ctx.service.coupon.lockByUid(uid, body.couponId)
+            }
 
             return ctx.success({
                 data: {
