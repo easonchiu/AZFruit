@@ -62,9 +62,7 @@ module.exports = function(app) {
 		// 过期时间
 		expiredTime: { type: Date, default: Date.now },
 		// 是否已使用
-		used: { type: Boolean, default: false },
-		// 是否被锁了
-		locked: { type: Boolean, default: false }
+		used: { type: Boolean, default: false }
 	}, { _id: false })]
 
 	// 购物车信息

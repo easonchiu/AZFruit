@@ -34,17 +34,11 @@ class OrderController extends Controller {
             const { body } = ctx.request
             const { uid } = ctx.jwt || {}
             
-            // 生成预支付订单
+            // 生成预支付订单（生成redis订单，占库存，标记优惠券为正在用）
             const orderNo = await ctx.service.order.create(uid, body)
             
             // 清空购物车
             await ctx.service.shoppingcart.clear(uid)
-            
-            // 如果有优惠券，锁定它-----------------改用redis锁库存
-            // 在查可用coupon时也同样从redis找
-            if (body.couponId) {
-                await ctx.service.redis.lockCouponByUid(uid, body.couponId)
-            }
 
             return ctx.success({
                 data: {

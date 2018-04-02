@@ -124,6 +124,18 @@ class redis extends Service {
             }
         })
     }
+    
+    /**
+     * 标记优惠券为正在用
+     */
+    lockCouponByUid(uid, couponId) {
+        const redis = this.app.redis
+        // 如果有优惠券，锁定它-----------------改用redis锁库存
+            // 在查可用coupon时也同样从redis找
+            if (body.couponId) {
+                // await ctx.service.redis.lockCouponByUid(uid, body.couponId)
+            }
+    }
 
 
     /**
