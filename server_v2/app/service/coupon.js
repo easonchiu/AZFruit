@@ -38,7 +38,6 @@ class coupon extends Service {
                 resolve()
             }
             catch (e) {
-                console.log(e)
                 reject('系统错误')
             }
         })
@@ -300,40 +299,50 @@ class coupon extends Service {
             }
         })
     }
-
+    
     /**
-     * 锁定用户的优惠券
+     * 用户使用优惠券
      */
-    async lockByUid(uid, couponId) {
+    async userUsed(uid, couponId, couponOriginId) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
                 if (!uid || !couponId) {
                     return reject('参数错误')
                 }
-
-                const res = await ctx.model.User.update({
+                
+                // 把用户的优惠券标记为已经使用
+                const data = await ctx.model.User.update({
                     _id: uid,
                     'couponList.id': couponId
                 }, {
                     $set: {
-                        'couponList.$.locked': true
+                        'couponList.$.used': true
                     }
                 })
 
-                if (res.n === 1) {
-                    resolve()
+                if (data.n) {
+                    // 优惠券表中该优惠券使用量+1
+                    await ctx.model.Coupon.update({
+                        _id: couponOriginId
+                    }, {
+                        $inc: {
+                            usedAmount: 1
+                        }
+                    })
+
+                    return resolve(data)
                 }
                 else {
-                    reject('系统错误')
+                    return reject('未找到相关的优惠券')
                 }
             }
             catch (e) {
-                console.log(e)
                 reject('系统错误')
             }
         })
     }
+    
     
 }
 

@@ -22,6 +22,8 @@ const router = function (router, controller) {
     router.get(`${prefix}/m/order/:orderNo`, clientJwt, controller.order.m_detail)
     // 删除订单
     router.delete(`${prefix}/m/order/:orderNo`, clientJwt, controller.order.m_remove)
+    // 支付订单
+    router.post(`${prefix}/m/order/:orderNo/payment`, clientJwt, controller.order.m_payment)
 }
 
 module.exports = router

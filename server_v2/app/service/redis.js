@@ -22,13 +22,22 @@ class redis extends Service {
                 orderData.createTime = new Date()
 
                 const key = 'ORDER.' + orderNo + ':' + orderData.uid
-                redis.set(key, JSON.stringify(orderData))
+                await redis.set(key, JSON.stringify(orderData))
                 redis.expire(key, 60 * 35) // 35分钟（支付30分钟）
 
                 // 把库存占用起来
                 for (let i = 0; i < orderData.list.length; i++) {
                     const d = orderData.list[i]
                     await ctx.service.redis.appendSkuLock(d.skuId, orderNo, orderData.uid, d.amount)
+                }
+
+                // 占用优惠券
+                const couponId = orderData.coupon ? orderData.coupon.id : ''
+                if (couponId) {
+                    const uid = orderData.uid
+                    const couponKey = `COUPON_LOCK.${couponId}:${orderNo}:${uid}`
+                    await redis.set(couponKey, couponId)
+                    redis.expire(couponKey, 60 * 35) // 35分钟（支付30分钟）
                 }
 
                 resolve(orderNo)
@@ -38,6 +47,7 @@ class redis extends Service {
             }
         })
     }
+
 
     /**
      * 生成订单号
@@ -64,6 +74,43 @@ class redis extends Service {
 
         return orderNo
     }
+    
+    /**
+     * 获取用户被锁定的优惠券列表
+     */
+    getCouponLockListByUid(uid) {
+        const redis = this.app.redis
+        return new Promise(async function(resolve, reject) {
+            try {
+                const key = `COUPON_LOCK.*:${uid}`
+                let keys = await redis.keys(key)
+
+                if (!keys) {
+                    keys = []
+                }
+                
+                // 管道获取所有相关的优惠券
+                const pipeline = redis.pipeline()
+                for (let i = 0; i < keys.length; i++) {
+                    pipeline.get(keys[i])
+                }
+                const arr = await pipeline.exec()
+                
+                // 处理列表数据
+                const list = []
+                for (let i = 0; i < arr.length; i++) {
+                    if (!arr[i][0]) {
+                        list.push(arr[i][1])
+                    }
+                }
+
+                resolve(list)
+            }
+            catch (e) {
+                resolve()
+            }
+        })
+    }
 
     /**
      * 占用库存
@@ -87,7 +134,7 @@ class redis extends Service {
     /**
      * 获取sku的占用库存
      */
-    async getSkuLock(id) {
+    getSkuLock(id) {
         const redis = this.app.redis
         return new Promise(async function(resolve, reject) {
             try {
@@ -124,24 +171,11 @@ class redis extends Service {
             }
         })
     }
-    
-    /**
-     * 标记优惠券为正在用
-     */
-    lockCouponByUid(uid, couponId) {
-        const redis = this.app.redis
-        // 如果有优惠券，锁定它-----------------改用redis锁库存
-            // 在查可用coupon时也同样从redis找
-            if (body.couponId) {
-                // await ctx.service.redis.lockCouponByUid(uid, body.couponId)
-            }
-    }
-
 
     /**
      * 获取预支付订单列表
      */
-    async getPreOrderListByUid(uid) {
+    getPreOrderListByUid(uid) {
         const redis = this.app.redis
         return new Promise(async function(resolve, reject) {
             try {
@@ -241,10 +275,18 @@ class redis extends Service {
                         const key = 'SKU_LOCK.' + d.skuId + ':' + orderNo + ':' + uid
                         pipeline.del(key)
                     }
-                    await pipeline.exec()
+                    
+                    // 解除优惠券占用
+                    if (order.coupon) {
+                        const couponKey = 'COUPON_LOCK.' + order.coupon.id + ':' + orderNo + ':' + uid
+                        pipeline.del(couponKey)
+                    }
 
                     // 删除订单
-                    await redis.del(orderKey)
+                    pipeline.del(orderKey)
+                    
+                    // 执行管道
+                    await pipeline.exec()
 
                     resolve(true)
                 }
@@ -287,7 +329,7 @@ class redis extends Service {
                     return resolve()
                 }
 
-                const key = 'SKU_INFO.' + id
+                const key = 'SKU.' + id
                 if (info) {
                     await redis.set(key, JSON.stringify(info))
                 }
@@ -317,7 +359,7 @@ class redis extends Service {
                     return resolve(null)
                 }
                 
-                const key = 'SKU_INFO.' + id
+                const key = 'SKU.' + id
                 const res = await redis.get(key)
 
                 resolve(JSON.parse(res))
@@ -340,7 +382,7 @@ class redis extends Service {
                     return resolve()
                 }
 
-                const key = 'GOODS_INFO.' + id
+                const key = 'GOODS.' + id
                 if (info) {
                     await redis.set(key, JSON.stringify(info))
                 }
@@ -370,7 +412,7 @@ class redis extends Service {
                     return resolve(null)
                 }
                 
-                const key = 'GOODS_INFO.' + id
+                const key = 'GOODS.' + id
                 const res = await redis.get(key)
 
                 resolve(JSON.parse(res))

@@ -86,10 +86,11 @@ class CouponController extends Controller {
             let couponList = data.couponList || []
 
             // 过滤
+            const lockedCoupon = await ctx.service.redis.getCouponLockListByUid(uid)
             const now = new Date()
             couponList = couponList.filter(res => {
                 // 已锁定或已经过期的不返回
-                if (res.locked || now > res.expiredTime) {
+                if (lockedCoupon.includes(res.id) || now > res.expiredTime) {
                     return false
                 }
                 

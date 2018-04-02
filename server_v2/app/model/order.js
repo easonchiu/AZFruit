@@ -7,7 +7,7 @@ module.exports = function(app) {
 		// 订单号
 		orderNo: { type: String, required: true, index: true },
 		// 微信支付订单号
-		wxOrderNo: { type: String, default: '' },
+		wxOrderNo: { type: String, required: true },
 		// 用户id
 		uid: { type: String, required: true },
 		// 用户openId
@@ -54,15 +54,15 @@ module.exports = function(app) {
 		// 31: 已完成
 		// 41: 已评价
 		// 90: 交易关闭
-		status: { type: Number, default: 1 },
+		status: { type: Number, required: true },
 		// 订单状态备注(交易关闭时客服人员填写)
 		statusMark: { type: String, default: '' },
 		// 订单备注(客户下单时填写的)
 		mark: { type: String, default: '' },
 		// 创建时间
-		createTime: { type: Date, default: Date.now },
+		createTime: { type: Date, required: true },
 		// 支付时间
-		paymentTime: { type: Date, default: '' },
+		paymentTime: { type: Date, default: Date.now },
 	})
 	
 	// 创建

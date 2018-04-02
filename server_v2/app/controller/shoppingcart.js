@@ -115,8 +115,9 @@ class Shoppingcart extends Controller {
                 let bestCoupon
                 
                 // 找到可用的放到一个数组并按价值高的排序
+                const lockedCoupon = await ctx.service.redis.getCouponLockListByUid(uid)
                 couponList = coupon.filter(d => {
-                    if (d.condition < totalPrice + postage && !d.used && !d.locked && now < d.expiredTime) {
+                    if (d.condition < totalPrice + postage && !d.used && !lockedCoupon.includes(d.id) && now < d.expiredTime) {
                         // 找到选中的那张
                         if (couponId === d.id) {
                             targetCoupon = d

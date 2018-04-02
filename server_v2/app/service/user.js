@@ -78,6 +78,39 @@ class user extends Service {
     }
 
     /**
+     * 用户增加积分
+     */
+    async incIntegral(id, int) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {    
+                // 检查data的参数
+                if (!id || int < 0) {
+                    return reject('id不能为空')
+                }
+
+                const res = await ctx.model.User.update({
+                    _id: id
+                }, {
+                    $inc: {
+                        integral: int
+                    }
+                })
+
+                if (res.n) {
+                    resolve()
+                }
+                else {
+                    reject('修改失败')
+                }
+            }
+            catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
+
+    /**
      * 生成token(jwt)
      */
     async createToken(mobile, uid) {

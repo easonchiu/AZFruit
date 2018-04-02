@@ -120,7 +120,7 @@ class ViewOrder extends Component {
 					总计
 					{
 						data.postage ?
-						'（' + data.postage + '运费）：' :
+						'（含' + (data.postage / 100) + '元运费）：' :
 						'（免运费）：'
 					}
 					<span>￥{data.paymentPrice / 100}元</span>

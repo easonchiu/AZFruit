@@ -90,6 +90,17 @@ class OrderController extends Controller {
 
             if (type === 1) {
                 list = await ctx.service.redis.getPreOrderListByUid(uid)
+                const dealedList = await ctx.model.Order.find({
+                    uid: uid
+                }, {
+                    _id: 0,
+                    __v: 0,
+                    openId: 0,
+                })
+
+                if (dealedList && dealedList.length) {
+                    list = list.concat(dealedList)
+                }
             }
             
             return ctx.success({
@@ -110,14 +121,23 @@ class OrderController extends Controller {
     async m_detail(ctx) {
         try {
             const orderNo = ctx.params.orderNo
+            let { flag = 1 } = ctx.request.query
             const { uid } = ctx.jwt || {}
+            flag = parseInt(flag)
 
+            let res
+            
             // 先从缓存数据库查找，如果找不到再去正式库找
-            let res = await ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
+            if (flag === 1) {
+                res = await ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
+            }
 
             // 去正式库找
             if (!res) {
-
+                res = await ctx.service.order.getByOrderNo(orderNo)
+                if (!res) {
+                    return ctx.error('找不到相关订单')
+                }
             }
 
             return ctx.success({
@@ -143,6 +163,31 @@ class OrderController extends Controller {
                     amount
                 }
             })
+        }
+        catch(e) {
+            return ctx.error(e)
+        }
+    }
+    
+    /**
+     * 支付订单
+     */
+    async m_payment(ctx) {
+        try {
+            const { uid } = ctx.jwt || {}
+            const { orderNo } = ctx.params
+
+            const order = await ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
+            
+            if (!order) {
+                return ctx.error('找不到相关订单')
+            }
+            
+            // 调试用
+            await ctx.service.order.deal(orderNo, uid, 'wxOrderNo', 'openId')
+
+            return ctx.success()
+
         }
         catch(e) {
             return ctx.error(e)

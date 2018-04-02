@@ -92,27 +92,63 @@ class order extends Service {
                 resolve(orderNo)
             }
             catch (e) {
+                if (typeof e === 'string') {
+                    return reject(e)
+                }
                 reject('系统错误')
             }
         })
     }
     
     /**
-     * 成交订单，在完成支付后调用
+     * 成交订单，在完成支付后调用(应该由微信的接口发起调用)
      */
-    dealOrder(uid, orderNo) {
+    deal(orderNo, uid, wxOrderNo, openId) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
-                const order = ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
+                const order = await ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
 
                 if (!order) {
                     reject('订单有误，请联系管理员')
                 }
 
-                
+                // 生成正式订单
+                order.status = 11 // 表示已支付
+                order.wxOrderNo = wxOrderNo // 微信支付号
+                order.openId = openId // openId
+                await new ctx.model.Order(order).create()
+
+                // 消耗库存
+                for (let i = 0; i < order.list.length; i++) {
+                    const d = order.list[i]
+                    if (d) {
+                        await ctx.model.Sku.update({
+                            _id: d.skuId
+                        }, {
+                            $inc: {
+                                sellCount: 1,
+                                stock: -1
+                            }
+                        })
+                    }
+                }
+
+                // 删除redis中的预支付订单
+                await ctx.service.redis.deletePreOrderByUid(orderNo, uid)
+
+                // 用户增加积分
+                await ctx.service.user.incIntegral(uid, order.paymentPrice)
+
+                // 处理优惠券，标记为已使用并在优惠券库使用量+1
+                if (order.coupon && order.coupon.id) {
+                    await ctx.service.coupon.userUsed(uid, order.coupon.id, order.coupon.originId)
+                }
+
+                resolve()
             }
             catch (e) {
+                console.log(e)
                 if (typeof e === 'string') {
                     return reject(e)
                 }
@@ -153,7 +189,6 @@ class order extends Service {
                 if (count > 0) {
                     list = await ctx.model.Order.aggregate([
                         { $match: search },
-                        { $sort: { online: -1, index: 1 } },
                         { $project: { _id: 0, __v: 0 } },
                         { $skip: skip },
                         { $limit: limit }
