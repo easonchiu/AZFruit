@@ -103,11 +103,11 @@ class order extends Service {
     /**
      * 成交订单，在完成支付后调用(应该由微信的接口发起调用)
      */
-    deal(orderNo, uid, wxOrderNo, openId) {
+    deal(orderNo, wxOrderNo, openId) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
-                const order = await ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
+                const order = await ctx.service.redis.getPreOrderDetailByUid(orderNo)
 
                 if (!order) {
                     reject('订单有误，请联系管理员')
@@ -120,29 +120,17 @@ class order extends Service {
                 await new ctx.model.Order(order).create()
 
                 // 消耗库存
-                for (let i = 0; i < order.list.length; i++) {
-                    const d = order.list[i]
-                    if (d) {
-                        await ctx.model.Sku.update({
-                            _id: d.skuId
-                        }, {
-                            $inc: {
-                                sellCount: 1,
-                                stock: -1
-                            }
-                        })
-                    }
-                }
+                await ctx.service.sku.useStock(order.list)
 
                 // 删除redis中的预支付订单
-                await ctx.service.redis.deletePreOrderByUid(orderNo, uid)
+                await ctx.service.redis.deletePreOrderByUid(orderNo, order.uid)
 
                 // 用户增加积分
-                await ctx.service.user.incIntegral(uid, order.paymentPrice)
+                await ctx.service.user.incIntegral(order.uid, order.paymentPrice)
 
                 // 处理优惠券，标记为已使用并在优惠券库使用量+1
                 if (order.coupon && order.coupon.id) {
-                    await ctx.service.coupon.userUsed(uid, order.coupon.id, order.coupon.originId)
+                    await ctx.service.coupon.userUsed(order.uid, order.coupon.id, order.coupon.originId)
                 }
 
                 resolve()
@@ -280,6 +268,57 @@ class order extends Service {
             }
 		})
 	}
+
+    /**
+     * 获取用户的进行中订单
+     */
+    async listByUid(uid, type = 1) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                if (!uid) {
+                    return reject('uid不能为空')
+                }
+
+                const search = {
+                    uid: uid
+                }
+
+                // 11: 已支付
+                // 20: 待发货
+                // 21: 已发货
+                // 31: 已完成
+                // 41: 已评价
+                // 90: 交易关闭
+                if (type === 1) {
+                    search.status = {
+                        $in: [11, 20, 21]
+                    }
+                }
+                else {
+                    search.status = {
+                        $in: [31, 41, 90]
+                    }
+                }
+
+                const data = await ctx.model.Order.aggregate([
+                    { $match: search },
+                    { $sort: { paymentTime: -1 } },
+                    { $project: { _id: 0, __v: 0, openId: 0 } },
+                ])
+
+                if (data) {
+                    return resolve(data)
+                }
+                else {
+                    return reject('未找到相关的订单')
+                }
+            }
+            catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
 }
 
 module.exports = order

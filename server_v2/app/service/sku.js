@@ -211,6 +211,64 @@ class sku extends Service {
             }
         })
     }
+
+    /**
+     * 消耗库存
+     */
+    async useStock(list = []) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                // 消耗库存
+                for (let i = 0; i < list.length; i++) {
+                    const d = list[i]
+                    if (d) {
+                        await ctx.model.Sku.update({
+                            _id: d.skuId
+                        }, {
+                            $inc: {
+                                sellCount: d.amount,
+                                stock: -d.amount
+                            }
+                        })
+                    }
+                }
+                resolve()
+            }
+            catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
+
+    /**
+     * 还原库存
+     */
+    async resetStock(list = []) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                // 还原库存
+                for (let i = 0; i < list.length; i++) {
+                    const d = list[i]
+                    if (d) {
+                        await ctx.model.Sku.update({
+                            _id: d.skuId
+                        }, {
+                            $inc: {
+                                sellCount: -d.amount,
+                                stock: d.amount
+                            }
+                        })
+                    }
+                }
+                resolve()
+            }
+            catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
 }
 
 module.exports = sku

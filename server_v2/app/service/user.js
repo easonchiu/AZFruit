@@ -180,7 +180,7 @@ class user extends Service {
                     return resolve(data)
                 }
                 else {
-                    return reject('未找到相关的用户')
+                    return reject('获取用户信息失败，请重新登录')
                 }
             }
             catch (e) {

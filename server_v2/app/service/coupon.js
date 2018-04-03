@@ -303,11 +303,11 @@ class coupon extends Service {
     /**
      * 用户使用优惠券
      */
-    async userUsed(uid, couponId, couponOriginId) {
+    userUsed(uid, couponId, couponOriginId) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
-                if (!uid || !couponId) {
+                if (!uid || !couponId || !couponOriginId) {
                     return reject('参数错误')
                 }
                 
@@ -343,6 +343,48 @@ class coupon extends Service {
         })
     }
     
+    /**
+     * 把优惠券还给用户
+     */
+    giveBackToUser(uid, couponId, couponOriginId) {
+        const ctx = this.ctx
+        return new Promise(async function(resolve, reject) {
+            try {
+                if (!uid || !couponId || !couponOriginId) {
+                    return reject('参数错误')
+                }
+                
+                // 把用户的优惠券标记为未使用
+                const data = await ctx.model.User.update({
+                    _id: uid,
+                    'couponList.id': couponId
+                }, {
+                    $set: {
+                        'couponList.$.used': false
+                    }
+                })
+
+                if (data.n) {
+                    // 优惠券表中该优惠券使用量-1
+                    await ctx.model.Coupon.update({
+                        _id: couponOriginId
+                    }, {
+                        $inc: {
+                            usedAmount: -1
+                        }
+                    })
+
+                    return resolve(data)
+                }
+                else {
+                    return reject('未找到相关的优惠券')
+                }
+            }
+            catch (e) {
+                reject('系统错误')
+            }
+        })
+    }
     
 }
 

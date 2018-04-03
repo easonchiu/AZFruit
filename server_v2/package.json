@@ -11,6 +11,7 @@
     "jsonwebtoken": "^8.2.0",
     "next-routes": "^1.3.0",
     "qiniu": "6",
+    "sha1": "^1.1.1",
     "tenpay": "^2.1.2"
   },
   "devDependencies": {
@@ -27,9 +28,9 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --port=7001 --daemon --title=egg-server-test",
+    "start": "egg-scripts start --port=8020 --daemon --title=egg-server-test",
     "stop": "egg-scripts stop --title=egg-server-test",
-    "dev": "egg-bin dev --port=7001",
+    "dev": "egg-bin dev --port=8020",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",

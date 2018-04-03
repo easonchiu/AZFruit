@@ -218,15 +218,23 @@ class redis extends Service {
     /**
      * 获取预支付订单详情
      */
-    async getPreOrderDetailByUid(orderNo, uid) {
+    async getPreOrderDetailByUid(orderNo) {
         const redis = this.app.redis
         return new Promise(async function(resolve, reject) {
             try {
-                if (!orderNo || !uid) {
+                if (!orderNo) {
                     return reject('缺少参数')
                 }
 
-                const key = 'ORDER.' + orderNo + ':' + uid
+                let key = 'ORDER.' + orderNo + ':*'
+
+                const find = await redis.keys(key)
+                if (!find) {
+                    resolve()
+                }
+                else {
+                    key = find[0]
+                }
 
                 let res = await redis.get(key)
 
@@ -313,6 +321,42 @@ class redis extends Service {
             }
             catch(e) {
                 resolve(0)
+            }
+        })
+    }
+
+    /**
+     * 存微信ticket
+     */
+    async setTicket(ticket) {
+        const redis = this.app.redis
+        return new Promise(async function(resolve, reject) {
+            try {
+                const key = 'TICKET'
+                await redis.set(key, ticket)
+                redis.expire(key, 3000) // 存在3000秒
+
+                resolve()
+            }
+            catch(e) {
+                resolve()
+            }
+        })
+    }
+
+    /**
+     * 拿微信ticket
+     */
+    async getTicket() {
+        const redis = this.app.redis
+        return new Promise(async function(resolve, reject) {
+            try {
+                const ticket = await redis.get('TICKET')
+
+                resolve(ticket)
+            }
+            catch(e) {
+                resolve()
             }
         })
     }

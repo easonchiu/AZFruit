@@ -11,6 +11,7 @@ const quick = require('./routers/quick')
 const sku = require('./routers/sku')
 const upload = require('./routers/upload')
 const user = require('./routers/user')
+const wx = require('./routers/wx')
 
 /**
  * @param {Egg.Application} app - egg application
@@ -29,5 +30,6 @@ module.exports = function(app) {
     sku(router, controller)
     upload(router, controller)
     user(router, controller)
+    wx(router, controller)
     
 }

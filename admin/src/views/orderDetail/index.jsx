@@ -16,7 +16,7 @@ class ViewOrderDetail extends Component {
 			orderNo: '',
 			loading: true,
 			data: null,
-			status: 11,
+			status: 1,
 			statusMark: ''
 		})
 	}
@@ -115,6 +115,14 @@ class ViewOrderDetail extends Component {
 									41: '已评价',
 									90: '交易关闭',
 								}[data.status]
+							}
+							{
+								data.status === 90 ?
+								'（关闭原因：' + data.statusMark + '）' : ''
+							}
+							{
+								data.status === 11 ?
+								'（强烈建议已经支付的订单根据微信订单号去微信商户后台核对一次）' : ''
 							}
 						</strong></p>
 					</Form.Item>

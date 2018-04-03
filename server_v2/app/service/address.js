@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const Service = require('egg').Service;
 const axios = require('axios')
 const amapKey = require('../conf/amapKey')
@@ -145,6 +146,9 @@ class Address extends Service {
                 }
             }
             catch (e) {
+                if (typeof e === 'string') {
+                    return reject(e)
+                }
                 return reject('系统错误')
             }
         })

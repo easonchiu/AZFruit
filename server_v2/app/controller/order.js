@@ -1,6 +1,8 @@
 'use strict';
 
 const Controller = require('egg').Controller;
+const WXPay = require('../middleware/wx')
+
 
 class OrderController extends Controller {
 
@@ -90,17 +92,11 @@ class OrderController extends Controller {
 
             if (type === 1) {
                 list = await ctx.service.redis.getPreOrderListByUid(uid)
-                const dealedList = await ctx.model.Order.find({
-                    uid: uid
-                }, {
-                    _id: 0,
-                    __v: 0,
-                    openId: 0,
-                })
+            }
 
-                if (dealedList && dealedList.length) {
-                    list = list.concat(dealedList)
-                }
+            const dealedList = await ctx.service.order.listByUid(uid, type)
+            if (dealedList && dealedList.length) {
+                list = list.concat(dealedList)
             }
             
             return ctx.success({
@@ -129,7 +125,7 @@ class OrderController extends Controller {
             
             // 先从缓存数据库查找，如果找不到再去正式库找
             if (flag === 1) {
-                res = await ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
+                res = await ctx.service.redis.getPreOrderDetailByUid(orderNo)
             }
 
             // 去正式库找
@@ -176,17 +172,36 @@ class OrderController extends Controller {
         try {
             const { uid } = ctx.jwt || {}
             const { orderNo } = ctx.params
+            const ip = ctx.req.headers['x-forward-for']
 
-            const order = await ctx.service.redis.getPreOrderDetailByUid(orderNo, uid)
+            const order = await ctx.service.redis.getPreOrderDetailByUid(orderNo)
             
             if (!order) {
                 return ctx.error('找不到相关订单')
             }
             
-            // 调试用
-            await ctx.service.order.deal(orderNo, uid, 'wxOrderNo', 'openId')
+            // 查找用户信息
+            const userDoc = await ctx.service.user.getById(uid)
 
-            return ctx.success()
+            // openid必须要有，若没有就报错
+            if (!userDoc || !userDoc.openId) {
+                return ctx.error({
+                    msg: '没有该用户的openId信息'
+                })
+            }
+
+            // 微信预支付
+            const result = await WXPay.getPayParams({
+                out_trade_no: orderNo,
+                body: '描述',
+                total_fee: 1,
+                openid: userDoc.openId,
+                spbill_create_ip: ip
+            })
+
+            return ctx.success({
+                data: result
+            })
 
         }
         catch(e) {
@@ -206,12 +221,24 @@ class OrderController extends Controller {
             
             // 如果是关闭订单，还需要返还用户的coupon
             if (body.status === 90) {
-                console.log('controller.order.updateStatus')
+                // 找到这个订单
+                const data = await ctx.service.order.getByOrderNo(orderNo)
+                
+                // 返还coupon
+                if (data && data.coupon && data.uid) {
+                    const couponId = data.coupon.id
+                    const couponOriginId = data.coupon.originId
+                    await ctx.service.coupon.giveBackToUser(data.uid, couponId, couponOriginId)
+                }
+
+                // 还原库存
+                await ctx.service.sku.resetStock(data.list)
             }
 
             return ctx.success()
         }
         catch (e) {
+            console.log(e)
             return ctx.error(e)
         }
     }
