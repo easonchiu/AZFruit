@@ -88,11 +88,6 @@ class ViewCoupon extends Component {
 								width: 160,
 								prop: 'batch'
 							}, {
-								label: '发放量',
-								width: 90,
-								align: 'center',
-								prop: 'amount'
-							}, {
 								label: '已领取',
 								width: 90,
 								align: 'center',
@@ -131,7 +126,7 @@ class ViewCoupon extends Component {
 										}
 										{
 											data.online ?
-											'使用中' :
+											'发放中' :
 											'停用'
 										}
 										</div>

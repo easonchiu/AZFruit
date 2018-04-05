@@ -1,4 +1,5 @@
 const Controller = require('egg').Controller;
+const distanceOffset = require('../conf/distanceOffset')
 
 class Shoppingcart extends Controller {
 	
@@ -102,7 +103,7 @@ class Shoppingcart extends Controller {
                 }
                 // 获取运费
                 if (targetAddress) {
-                    postage = await ctx.service.postage.getPriceByDistance(targetAddress.distance)
+                    postage = await ctx.service.postage.getPriceByDistance(targetAddress.distance * distanceOffset)
                 }
             }
 

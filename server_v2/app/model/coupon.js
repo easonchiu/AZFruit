@@ -9,8 +9,6 @@ module.exports = function(app) {
 		name: { type: String, required: true },
 		// 批次号
 		batch: { type: String, required: true },
-		// 数量
-		amount: { type: Number, default: 0 },
 		// 已发放数量
 		handOutAmount: { type: Number, default: 0 },
 		// 已使用数量

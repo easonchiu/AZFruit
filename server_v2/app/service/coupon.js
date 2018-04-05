@@ -17,9 +17,6 @@ class coupon extends Service {
                 else if (!data.batch) {
                     return reject('优惠券批次号不能为空')
                 }
-                else if (data.amount == undefined || data.amount <= 0) {
-                    return reject('预设数量必须大于0')
-                }
                 else if (data.worth == undefined || data.worth <= 0) {
                     return reject('可抵扣金额必须大于0')
                 }
@@ -59,9 +56,6 @@ class coupon extends Service {
                 }
                 else if (!data.batch) {
                     return reject('优惠券批次号不能为空')
-                }
-                else if (data.amount == undefined || data.amount <= 0) {
-                    return reject('预设数量必须大于0')
                 }
                 else if (data.worth == undefined || data.worth <= 0) {
                     return reject('可抵扣金额必须大于0')
@@ -213,23 +207,22 @@ class coupon extends Service {
                     for (let i = 0; i < couponData.length; i++) {
                         const d = couponData[i]
 
-                        if (d.handOutAmount < d.amount) {
-                            // 计算过期时间
-                            let date = (new Date().getTime()) + 60 * 60 * 1000 * 24 * d.expiredTime
-                            date = new Date(date)
-                            date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59)
+                        // 计算过期时间
+                        let date = (new Date().getTime()) + 60 * 60 * 1000 * 24 * d.expiredTime
+                        date = new Date(date)
+                        date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59)
 
-                            // 加入发放列表
-                            targetCoupon.push({
-                                id: new mongoose.Types.ObjectId(),
-                                originId: d.id,
-                                name: d.name,
-                                batch: d.batch + '_' + (d.handOutAmount + 1),
-                                worth: d.worth,
-                                condition: d.condition,
-                                expiredTime: date
-                            })
-                        }
+                        // 加入发放列表
+                        targetCoupon.push({
+                            id: new mongoose.Types.ObjectId(),
+                            originId: d.id,
+                            name: d.name,
+                            batch: d.batch + '_' + (d.handOutAmount + 1),
+                            worth: d.worth,
+                            condition: d.condition,
+                            expiredTime: date
+                        })
+
                     }
                 }
 
@@ -251,7 +244,7 @@ class coupon extends Service {
                 for (let i = 0; i < targetCoupon.length; i++) {
                     const d = targetCoupon[i]
                     if (d) {
-                        await ctx.service.coupon.handOut(d.originId)
+                        await ctx.service.coupon.handOut(d.originId, 1)
                     }
                 }
 
@@ -271,7 +264,7 @@ class coupon extends Service {
     /**
      * 记一下优惠券的发放量
      */
-    async handOut(id) {
+    async handOut(id, amount = 1) {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
@@ -283,7 +276,7 @@ class coupon extends Service {
                     _id: id
                 }, {
                     $inc: {
-                        handOutAmount: 1
+                        handOutAmount: amount
                     }
                 })
 

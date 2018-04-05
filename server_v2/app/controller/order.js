@@ -194,7 +194,7 @@ class OrderController extends Controller {
             const result = await WXPay.getPayParams({
                 out_trade_no: orderNo,
                 body: '描述',
-                total_fee: 1,
+                total_fee: 1, // order.paymentPrice
                 openid: userDoc.openId,
                 spbill_create_ip: ip
             })

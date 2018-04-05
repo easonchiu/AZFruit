@@ -1,4 +1,5 @@
 const Controller = require('egg').Controller;
+const distanceOffset = require('../conf/distanceOffset')
 
 class Address extends Controller {
 	/**
@@ -93,6 +94,9 @@ class Address extends Controller {
                         address = res
                     }
                 })
+            }
+            if (address.distance) {
+                address.distance = address.distance * distanceOffset
             }
             
             return ctx.success({

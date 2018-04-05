@@ -16,7 +16,6 @@ class ViewCouponDetail extends Component {
 			name: '',
 			flag: '',
 			batch: '',
-			amount: 1000,
 			payment: 120,
 			worth: 20,
 			condition: 0,
@@ -50,7 +49,6 @@ class ViewCouponDetail extends Component {
 			data.name = res.name
 			data.flag = res.flag
 			data.batch = res.batch
-			data.amount = res.amount
 			data.payment = res.payment
 			data.worth = res.worth / 100
 			data.condition = res.condition / 100
@@ -78,7 +76,6 @@ class ViewCouponDetail extends Component {
 				name: this.data.name,
 				flag: this.data.flag,
 				batch: this.data.batch,
-				amount: this.data.amount,
 				payment: this.data.payment,
 				worth: this.data.worth,
 				condition: this.data.condition,
@@ -125,16 +122,6 @@ class ViewCouponDetail extends Component {
 								disabled={this.data.id != ''}
 								onChange={this.valueChange.bind(this, 'batch')}
 							/>
-						</Form.Item>
-
-						<Form.Item label="发放数量">
-							<InputNumber
-								defaultValue={this.data.amount}
-								value={this.data.amount}
-								disabled={this.data.id != ''}
-								onChange={this.valueChange.bind(this, 'amount')}
-							/>
-							<em>使用完自动切换到非使用状态</em>
 						</Form.Item>
 
 						<Form.Item label="可抵扣金额">
@@ -193,11 +180,11 @@ class ViewCouponDetail extends Component {
 							null
 						}
 
-						<Form.Item label="是否使用">
+						<Form.Item label="使用状态">
 							<Switch
 								value={this.data.online}
-								onText=""
-								offText=""
+								onText="发放"
+								offText="停用"
 								onColor="#13ce66"
 								offColor="#ff4949"
 								onChange={this.valueChange.bind(this, 'online')} />

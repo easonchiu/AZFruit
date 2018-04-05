@@ -104,8 +104,8 @@ class upload extends Service {
                 // 将buffer存到本地目录中
                 await th.savePicToLocal(localFileName, dataBuffer)
                 
-                //上传到七牛后保存的文件名
-                const qnFileName = 'dev_' + fileName + fileType
+                // 上传到七牛后保存的文件名
+                const qnFileName = fileName + fileType
 
                 // 生成上传token
                 const qnToken = th.createQnToken(qnFileName)

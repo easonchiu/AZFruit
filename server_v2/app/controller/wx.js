@@ -50,12 +50,13 @@ class WXController extends Controller {
 	async unifiedorderCallback(ctx, next) {
 		try {
 			const wxres = ctx.request.weixin
-			
+
 			// 如果支付成功
-			if (wxres && wxres.trade_state === 'SUCCESS' && wxres.cash_fee) {
+			if (wxres && wxres.result_code === 'SUCCESS' && wxres.total_fee) {
 				await ctx.service.order.deal(wxres.out_trade_no, wxres.transaction_id, wxres.openid)
 				return ctx.reply()
 			}
+			return ctx.reply('支付没成')
 		}
 		catch (e) {
 			return ctx.reply(e || '其他错误')
