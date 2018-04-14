@@ -1,4 +1,5 @@
 const Service = require('egg').Service;
+const distanceOffset = require('../conf/distanceOffset')
 
 class order extends Service {
     
@@ -64,7 +65,8 @@ class order extends Service {
                 }
                 
                 // 通过判定之后，计算总费用这些
-                const postage = await ctx.service.postage.getPriceByDistance(address.distance)
+                const postage = await ctx.service.postage.getPriceByDistance(address.distance * distanceOffset)
+                address.distance = address.distance * distanceOffset
                 let totalWeight = 0
                 let totalPrice = 0
                 for (let i = 0; i < shoppingcart.length; i++) {

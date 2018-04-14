@@ -30,7 +30,10 @@ class GoodsController extends Controller {
         try {
             let { category } = ctx.query
 
-            const search = {}
+            const search = {
+                online: true
+            }
+
             if (category) {
                 search['category.id'] = category
             }

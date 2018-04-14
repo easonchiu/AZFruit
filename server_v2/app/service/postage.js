@@ -41,7 +41,7 @@ class postage extends Service {
                 let list = []
                 if (count > 0) {
                     list = await ctx.model.Postage.aggregate([
-                        { $sort: { online: -1, index: 1 } },
+                        { $sort: { online: -1, km: 1 } },
                         { $project: { _id: 0, __v: 0 } },
                         { $skip: skip },
                         { $limit: limit }

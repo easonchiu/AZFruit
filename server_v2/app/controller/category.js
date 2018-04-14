@@ -92,7 +92,9 @@ class CategoryController extends Controller {
      */
     async onlineList(ctx) {
         try {
-            const data = await ctx.service.category.allOnlineList()
+            const data = await ctx.service.category.list(0, 99, {
+                online: true
+            })
 
             return ctx.success({
                 data

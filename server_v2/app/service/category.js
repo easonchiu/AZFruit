@@ -63,38 +63,6 @@ class category extends Service {
         })
     }
 	
-	/**
-     * 获取全部在线列表
-     */
-    async allOnlineList() {
-		const ctx = this.ctx
-        return new Promise(async function(resolve, reject) {
-            try {
-                // 计算条目数量
-                const count = await ctx.model.Category.count({
-                    online: true
-                })
-
-                // 查找数据
-                let list = []
-                if (count > 0) {
-                    list = await ctx.model.Category.aggregate([
-                        { $match: { online: true } },
-                        { $sort: { index: 1 } },
-                        { $project: { _id: 0, __v: 0 } },
-                    ])
-                }
-
-                resolve({
-                    list,
-                    count,
-                })
-            }
-            catch (e) {
-                reject('系统错误')
-            }
-        })
-    }
 
     /**
      * 更新分类
