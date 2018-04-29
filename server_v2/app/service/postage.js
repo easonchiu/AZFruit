@@ -40,12 +40,11 @@ class postage extends Service {
                 // 查找数据
                 let list = []
                 if (count > 0) {
-                    list = await ctx.model.Postage.aggregate([
-                        { $sort: { online: -1, km: 1 } },
-                        { $project: { _id: 0, __v: 0 } },
-                        { $skip: skip },
-                        { $limit: limit }
-                    ])
+                    list = await ctx.model.Postage
+                    .find({}, { _id: 0, __v: 0 })
+                    .sort({ online: -1, km: 1 })
+                    .skip(skip)
+                    .limit(limit)
                 }
 
                 resolve({
@@ -170,12 +169,9 @@ class postage extends Service {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
-                const list = await ctx.model.Postage.aggregate([
-                    { $match: { online: true } },
-                    { $sort: { km: -1 } },
-                    { $project: { _id: 0, __v: 0 } },
-                    { $limit: 10 }
-                ])
+                const list = await ctx.model.Postage
+                .find({ online: true }, { _id: 0, __v: 0 })
+                .sort({ km: -1 })
 
                 // 找到最合适的规则
                 let data

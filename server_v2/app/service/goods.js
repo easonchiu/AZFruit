@@ -43,13 +43,11 @@ class goods extends Service {
                 // 查找数据
                 let list = []
                 if (count > 0) {
-                    list = await ctx.model.Goods.aggregate([
-                        { $match: search },
-                        { $sort: { online: -1, index: 1 } },
-                        { $project: { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 } },
-                        { $skip: skip },
-                        { $limit: limit }
-                    ])
+                    list = await ctx.model.Goods
+                    .find(search, { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 })
+                    .sort({ online: -1, index: 1 })
+                    .skip(skip)
+                    .limit(limit)
                 }
 
                 resolve({
@@ -191,12 +189,11 @@ class goods extends Service {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
-                const data = await ctx.model.Goods.aggregate([
-                    { $match: { online: true, skuCount: { '$gt': 0 } } },
-                    { $sort: { ranking: -1 } },
-                    { $limit: length },
-                    { $project: { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 } },
-                ])
+                const data = await ctx.model.Goods
+                .find({ online: true, skuCount: { '$gt': 0 } },
+                    { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 })
+                .sort({ ranking: -1 })
+                .limit(length)
 
                 if (data) {
                     return resolve(data)
@@ -259,12 +256,11 @@ class goods extends Service {
         const ctx = this.ctx
         return new Promise(async function(resolve, reject) {
             try {
-                const data = await ctx.model.Goods.aggregate([
-                    { $match: { online: true, skuCount: { '$gt': 0 } } },
-                    { $sort: { recom: -1 } },
-                    { $limit: length },
-                    { $project: { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 } },
-                ])
+                const data = await ctx.model.Goods
+                .find({ online: true, skuCount: { '$gt': 0 } },
+                    { _id: 0, __v: 0, imgs: 0, parameter: 0, createTime: 0, category: 0 })
+                .sort({ recom: -1 })
+                .limit(length)
 
                 if (data) {
                     return resolve(data)
@@ -329,11 +325,10 @@ class goods extends Service {
         return new Promise(async function(resolve, reject) {
             try {
                 // 获取相关sku，在线，库存大于0的
-                const res = await ctx.model.Sku.aggregate([
-                    { $match: { pid: id, online: true, stock: { $gt: 0 } } },
-                    { $sort: { price: 1 } },
-                    { $project: { _id: 0, unit: 1, price: 1, prePrice: 1 } }
-                ])
+                const res = await ctx.model.Sku
+                .find({ pid: id, online: true, stock: { $gt: 0 } },
+                    { _id: 0, unit: 1, price: 1, prePrice: 1 })
+                .sort({ price: 1 })
                 
                 // 初始化
                 const data = {

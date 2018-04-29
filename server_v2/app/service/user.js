@@ -134,12 +134,10 @@ class user extends Service {
                 // 查找数据
                 let list = []
                 if (count > 0) {
-                    list = await ctx.model.User.aggregate([
-                        { $sort: { createTime: -1 } },
-                        { $project: { _id: 0, id: '$_id', openId: 1, mobile: 1, integral: 1, createTime: 1 } },
-                        { $skip: skip },
-                        { $limit: limit }
-                    ])
+                    list = await ctx.model.User.find({},
+                        { openId: 1, mobile: 1, integral: 1, createTime: 1 })
+                    .skip(skip)
+                    .limit(limit)
                 }
 
                 resolve({

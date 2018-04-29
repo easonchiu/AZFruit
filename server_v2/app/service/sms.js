@@ -34,7 +34,7 @@ class sms extends Service {
                 await ctx.service.redis.setSmsVerifcode(mobile, code, smskey)
 
                 // 发送验证码
-                await th.sendSms(mobile, '您的验证码为：' + code)
+                await th.sendSms(mobile, '爱泽阳光提醒您，您的验证码为：' + code)
 
                 resolve({
                     smskey

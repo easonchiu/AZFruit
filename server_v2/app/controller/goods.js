@@ -119,7 +119,7 @@ class GoodsController extends Controller {
      */
     async rankingList(ctx) {
         try {
-            const data = await ctx.service.goods.rankingList(10)
+            const data = await ctx.service.goods.rankingList(999)
 
             return ctx.success({
                 data
@@ -167,7 +167,7 @@ class GoodsController extends Controller {
      */
     async recomList(ctx) {
         try {
-            const data = await ctx.service.goods.recomList(10)
+            const data = await ctx.service.goods.recomList(999)
 
             return ctx.success({
                 data

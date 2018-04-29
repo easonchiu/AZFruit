@@ -95,7 +95,7 @@ class ViewUser extends Component {
 								render: data => {
 									return (
 										<p className="console">
-											<Link to={`/user/detail/${data.id}`}>
+											<Link to={`/user/detail/${data._id}`}>
 												查看
 											</Link>
 										</p>

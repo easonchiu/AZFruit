@@ -177,12 +177,10 @@ class order extends Service {
                 // 查找数据
                 let list = []
                 if (count > 0) {
-                    list = await ctx.model.Order.aggregate([
-                        { $match: search },
-                        { $project: { _id: 0, __v: 0 } },
-                        { $skip: skip },
-                        { $limit: limit }
-                    ])
+                    list = await ctx.model.Order
+                    .find(search, { _id: 0, __v: 0 })
+                    .skip(skip)
+                    .limit(limit)
                 }
 
                 resolve({
@@ -303,11 +301,9 @@ class order extends Service {
                     }
                 }
 
-                const data = await ctx.model.Order.aggregate([
-                    { $match: search },
-                    { $sort: { paymentTime: -1 } },
-                    { $project: { _id: 0, __v: 0, openId: 0 } },
-                ])
+                const data = await ctx.model.Order
+                .find(search, { _id: 0, __v: 0, openId: 0 })
+                .sort({ paymentTime: -1 })
 
                 if (data) {
                     return resolve(data)

@@ -152,12 +152,10 @@ class upload extends Service {
                 // 查找数据
                 let list = []
                 if (count > 0) {
-                    list = await ctx.model.Upload.aggregate([
-                        { $match: search },
-                        { $project: { _id: 0, __v: 0 } },
-                        { $skip: skip },
-                        { $limit: limit }
-                    ])
+                    list = await ctx.model.Upload
+                    .find(search, { _id: 0, __v: 0 })
+                    .skip(skip)
+                    .limit(limit)
                 }
 
                 resolve({

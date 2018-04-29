@@ -46,13 +46,11 @@ class quick extends Service {
                 // 查找数据
                 let list = []
                 if (count > 0) {
-                    list = await ctx.model.Quick.aggregate([
-                        { $match: search },
-                        { $sort: { online: -1, index: 1 } },
-                        { $project: { _id: 0, __v: 0, createTime: 0 } },
-                        { $skip: skip },
-                        { $limit: limit }
-                    ])
+                    list = await ctx.model.Quick
+                    .find(search, { _id: 0, __v: 0, createTime: 0 })
+                    .sort({ online: -1, index: 1 })
+                    .skip(skip)
+                    .limit(limit)
                 }
 
                 resolve({
